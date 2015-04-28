@@ -1,7 +1,9 @@
 ---
-title: Ceph 集群源码编译部署
+title: Ceph 源码部署
 tags: ceph,deployment
 ---
+
+源码的编译见[Ceph Compile]({{site.baseurl}}/2015/02/23/Ceph-First.html)
 
 Ceph 0.87， 系统ubuntu
 参考[官方配置文档](http://ceph.com/docs/master/install/manual-deployment/)
