@@ -7,7 +7,7 @@ tags: ceph,deployment
 
 Ceph 0.87， 系统ubuntu
 参考[官方配置文档](http://ceph.com/docs/master/install/manual-deployment/)
-集群需要至少一个monitor和至少和存储在集群的object一样多的OSDs。
+集群需要至少1个monitor和2个OSD（对应两个副本）
 
 集群的配置会按照如下的结构，node1作为monitor，node2和node3作为OSD节点。
 ![ceph-arch]({{site.imageurl}}/2015-03-02-ceph-arch.png)
@@ -17,72 +17,72 @@ Ceph 0.87， 系统ubuntu
 
 1.登录到monitor节点
 
-{% highlight shell-session %}
+{% highlight bash %}
 ssh {hostname}
 {% endhighlight %}
 
 2.Ceph的默认配置目录是 `/etc/ceph` 。创建配置文件，默认是 `ceph.conf` ，其中ceph表示集群名
 
-3.为集群生成唯一ID
+3.集群ID
     
-    uuidgen
+{% highlight bash %}
+#生成集群唯一ID
+uuidgen
+#把ID添加到配置文件
+fsid={UUID}
+{% endhighlight %}
 
-4.把上一步的ID添加到配置文件
+4.添加初始monitor(s)和IP地址到配置文件
 
-    fsid={UUID}
-
-5.添加初始monitor(s)到配置文件
-
-    mon initial menbers = {hostname}[,{hostname}]
-
-6.添加初始monitor(s)的IP地址到配置文件
-
-    mon host = {ip-address}[,{ip-address}]
+{% highlight bash %}
+mon initial menbers = {hostname}[,{hostname}]
+mon host = {ip-address}[,{ip-address}]
+{% endhighlight %}
 
 Note: 如果是IPv6，需要设置 `ms bind ipv6` 为 `true`，参考[Network Configuration Reference](http://ceph.com/docs/master/rados/configuration/network-config-ref)。
 
-7.为集群创建密钥环，为monitor生成密钥
+5.创建集群密钥环
 
-    ceph-authtool --create-keyring /tmp/ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'
+{% highlight bash %}
+#为monitor生成密钥
+ceph-authtool --create-keyring /tmp/ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'
+#生成 `client.admin` 用户并添加该用户到密钥环
+sudo ceph-authtool --create-keyring /etc/ceph/ceph.client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow'
+#添加 `client.admin` 密钥到 `ceph.mon.keyring`
+sudo ceph-authtool /tmp/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.admin.keyring
+{% endhighlight %}
 
-8.生成administrator的密钥环，生成 `client.admin` 用户并添加该用户到密钥环
+6.使用hostname，IP地址和FSID生成monitor映射。保存为 `/tmp/monmap`
 
-    sudo ceph-authtool --create-keyring /etc/ceph/ceph.client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow'
+{% highlight bash %}
+monmaptool --create --add {hostname} {ip-address} --fsid {uuid} /tmp/monmap
+#例如：
+monmaptool --create --add ubuntu 192.168.230.128 --fsid 6d3c75f6-458b-4b29-b65f-e3083e7240db /tmp/monmap
+{% endhighlight %}
 
-9.添加 `client.admin` 密钥到 `ceph.mon.keyring`
+7.在monitor上创建一个默认的数据目录
 
-    sudo ceph-authtool /tmp/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.admin.keyring
-
-10.使用hostname，IP地址和FSID生成monitor映射。保存为 `/tmp/monmap`
-
-    monmaptool --create --add {hostname} {ip-address} --fsid {uuid} /tmp/monmap
-
-例如：
-
-    monmaptool --create --add ubuntu 192.168.230.128 --fsid 6d3c75f6-458b-4b29-b65f-e3083e7240db /tmp/monmap
-
-11.在monitor上创建一个默认的数据目录
-
-    sudo mkdir -p /var/lib/ceph/mon/{cluster-name}-{hostname}
-
-例如：
-
-    sudo mkdir -p /var/lib/ceph/mon/ceph-ubuntu
+{% highlight bash %}
+sudo mkdir -p /var/lib/ceph/mon/{cluster-name}-{hostname}
+#例如：
+sudo mkdir -p /var/lib/ceph/mon/ceph-ubuntu
+{% endhighlight %}
 
 详细配置见[Monitor Config Reference - Data](http://ceph.com/docs/master/rados/configuration/mon-config-ref#data)
 
-12.将monitor映射和密钥环添加到monitor守护进程
+8.将monitor映射和密钥环添加到monitor守护进程
 
-    sudo ceph-mon --mkfs -i {hostname} --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+{% highlight bash %}
+sudo ceph-mon --mkfs -i {hostname} --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+#例如
+sudo ceph-mon --mkfs -i ubuntu --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+#实测，上一步创建文件夹可以不做，这一步会默认在/var/lib/ceph/mon/下创建对应文件夹
+{% endhighlight %}
 
-例如：
+9.配置模板
 
-    sudo ceph-mon --mkfs -i ubuntu --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
-
-13.配置模板
-
-    {% highlight yaml %}
-    [global]
+{% highlight yaml %}
+[global]
     fsid = {cluster-id}
     mon initial members = {hostname}[, {hostname}]
     mon host = {ip-address}[, {ip-address}]
@@ -98,12 +98,12 @@ Note: 如果是IPv6，需要设置 `ms bind ipv6` 为 `true`，参考[Network Co
     osd pool default pg num = {n}
     osd pool default pgp num = {n}
     osd crush chooseleaf type = {n}
-    {% endhighlight %}
+{% endhighlight %}
 
 根据前面的配置，得到：
 
-    {% highlight yaml %}
-    [global]
+{% highlight yaml %}
+[global]
     fsid = 6d3c75f6-458b-4b29-b65f-e3083e7240db
     mon initial members = ubuntu
     mon host = 192.168.230.128
@@ -118,70 +118,78 @@ Note: 如果是IPv6，需要设置 `ms bind ipv6` 为 `true`，参考[Network Co
     osd pool default pg num = 333
     osd pool default pgp num = 333
     osd crush chooseleaf type = 1
-    {% endhighlight %}
+{% endhighlight %}
 
-14.新建 `done` 文件
+10.新建 `done` 文件
 
-    标记monitor已经创建，准备好启动了。
+{% highlight bash %}
+#标记monitor已经创建，准备好启动了。
+sudo touch /var/lib/ceph/mon/ceph-ubuntu/done
+{% endhighlight %}
 
-        sudo touch /var/lib/ceph/mon/ceph-ubuntu/done
+11.启动monitor
 
-15.启动monitor
+* 在Ubuntu，使用Upstart
 
-    * 在Ubuntu，使用Upstart
+{% highlight bash %}
+sudo start ceph-mon id=ubuntu
 
-        sudo start ceph-mon id=ubuntu
+#要允许守护进程在每次重启后启动必须创建空文件，如下：
+sudo touch /var/lib/ceph/mon/{cluster-name}-{hostname}/upstart
+#例如：
+sudo touch /var/lib/ceph/mon/ceph-ubuntu/upstart
+{% endhighlight %}
 
-        * 要允许守护进程在每次重启后启动必须创建空文件，如下：
+>启动monitor的时候如果遇到 start: Unknown job: ceph-mon, 是因为使用 `make install` 安装时不会安装 [upstart script](http://ceph.com/docs/master/rados/operations/operating/) ， 可以手动将 `src/upstart` 中的脚本复制到 `/etc/init/` ，但是该方法有个问题，应为编译安装的目录是/usr/local/bin，但upstart中配置文件的启动目录是/usr/bin，所以需要手动修改ceph-mon.conf中两处代码， `pre-start' 中的test路径，和exec的执行路径。不知道有没有更好的方法。
 
-            sudo touch /var/lib/ceph/mon/{cluster-name}-{hostname}/upstart
+* 对于 Debian/CentOs/RHEL，使用sysvinit：
 
-        例如：
-            sudo touch /var/lib/ceph/mon/ceph-ubuntu/upstart
+{% highlight bash %}
+sudo /etc/init.d/ceph -c /etc/ceph/ceph.conf start mon.{hostname}
+{% endhighlight %}
 
-    * 对于 Debian/CentOs/RHEL，使用sysvinit：
-
-        sudo /etc/init.d/ceph start mon.{hostname}
-
-启动monitor的时候如果遇到 `start: Unknown job: ceph-mon`， 是因为使用 `make install` 安装时不会安装 [upstart script](http://ceph.com/docs/master/rados/operations/operating/) ， 可以手动将 `src/upstart` 中的脚本复制到 `/etc/init/` ，但是该方法有个问题，应为编译安装的目录是/usr/local/bin，但upstart中配置文件的启动目录是/usr/bin，所以需要手动修改ceph-mon.conf中两处代码， `pre-start' 中的test路径，和exec的执行路径。不知道有没有更好的方法。
+注意
+{% highlight bash %}
+#centos下，也需要将ceph手动添加到启动项
+sudo cp ceph/src/init-ceph /etc/init.d/ceph
+#需要在mon数据目录添加sysvinit，在原文没有，不加的话会出现 mon.hostname not found
+sudo touch /var/lib/ceph/mon/ceph-ceph-03/sysvinit
+{% endhighlight %}
     
-16.验证Ceph创建的默认池
+12.验证Ceph创建的默认池
 
-        ceph osd lspools
+{% highlight bash %}
+ceph osd lspools
+#输出如下：
+0 rbd，
+{% endhighlight %}
 
-    输出如下：
+>* 如果出现 python的import xx找不到，需要把ceph/src/pybind包含到Python查找路径下，例如，在.bashrc中, export PYTHONPATH=$PYTHONPATH:~/ceph/src/pybind
+* 如果出现 `OSError: librados.so.2` ，需要安装librados包(sudo apt-get install librados-dev)，详见[librados-intro](http://ceph.com/docs/master/rados/api/librados-intro/)
+* 如果出现 `missing keyring, cannot use cephx for authentication` ，需要修改keyring的属性，详见[auth-config-ref](http://ceph.com/docs/master/rados/configuration/auth-config-ref/#keysS)
 
-        0 rbd，
+12.验证monitor正在运行
 
-    如果出现 `OSError: librados.so.2` ，需要安装librados包，详见[librados-intro](http://ceph.com/docs/master/rados/api/librados-intro/)
-        sudo apt-get install librados-dev
-
-    如果出现 `missing keyring, cannot use cephx for authentication` ，需要修改keyring的属性，详见[auth-config-ref](http://ceph.com/docs/master/rados/configuration/auth-config-ref/#keysS)
-
-17.验证monitor正在运行
-
-    ceph -s
-    
-    输出如下：
-
-    {% highlight shell-session %}
-        cluster 6d3c75f6-458b-4b29-b65f-e3083e7240db
-         health HEALTH_ERR 64 pgs stuck inactive; 64 pgs stuck unclean; no osds
-         monmap e1: 1 mons at {ubuntu=192.168.230.128:6789/0}, election epoch 2, quorum 0 ubuntu
-         osdmap e1: 0 osds: 0 up, 0 in
-         pgmap v2: 64 pgs, 1 pools, 0 bytes data, 0 objects
-                0 kB used, 0 kB / 0 kB avail
-                64 creating
-    {% endhighlight %}
+{% highlight bash %}
+ceph -s
+#输出如下：
+cluster 6d3c75f6-458b-4b29-b65f-e3083e7240db
+ health HEALTH_ERR 64 pgs stuck inactive; 64 pgs stuck unclean; no osds
+ monmap e1: 1 mons at {ubuntu=192.168.230.128:6789/0}, election epoch 2, quorum 0 ubuntu
+ osdmap e1: 0 osds: 0 up, 0 in
+ pgmap v2: 64 pgs, 1 pools, 0 bytes data, 0 objects
+        0 kB used, 0 kB / 0 kB avail
+        64 creating
+{% endhighlight %}
 
 添加OSDs
 ---
 
-monitor启动后，就可以添加OSDs了。只有当集群有足够OSDs来处理object的副本时，集群才能达到 `active+clean`状态（例如，osd pool default size=2 需要至少两个OSDs）。在monitor引导启动后，集群有了默认的CRUSH映射，然而，映射中还没有任何Ceph OSD 的守护进程映射到Ceph节点。
+monitor启动后，就可以添加OSDs了。只有当集群有足够OSDs来处理object的副本时，集群才能达到 `active+clean`状态（例如，osd pool default size=2 需要至少两个OSDs）。 在monitor引导启动后，集群有了默认的CRUSH映射，然而，映射中还没有任何Ceph OSD 的守护进程映射到Ceph节点。
 
-<h3 id="short form">简单配置</h3>
+### 简单配置 {#short-form}
 
-Ceph提供了 `ceph-disk` 工具，可以处理磁盘、分区或者目录。该工具通过自增的索引来创建OSD ID。并且该工具会把新的OSD自动添加到主机的CRUSH映射。执行 `ceph-disk -h` 来获得命令的详细信息。工具会自动执行下面[复杂配置](#long form)的流程。
+Ceph提供了 `ceph-disk` 工具，可以处理磁盘、分区或者目录。该工具通过自增的索引来创建OSD ID。并且该工具会把新的OSD自动添加到主机的CRUSH映射。执行 `ceph-disk -h` 来获得命令的详细信息。工具会自动执行下面[复杂配置](#long-form)的流程。
 
 1. 准备OSD
 
@@ -203,7 +211,7 @@ Ceph提供了 `ceph-disk` 工具，可以处理磁盘、分区或者目录。该
     Note: 如果Ceph节点上没有 `/var/lib/ceph/bootstrop-osd/{cluster}.keyring` 需要添加参数 `--activate-key` 。
 
 
-<h3 id="long form">复杂配置</h3>
+###复杂配置 {#long-form}
 
 不利用工具的情况下，可以通过如下配置实现创建OSD，添加OSD到CRUSH映射。通过下面的过程可以更好的了解整个过程。分别登录node2和node3执行以下步骤。
 
