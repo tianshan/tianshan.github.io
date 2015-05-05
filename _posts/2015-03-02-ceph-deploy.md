@@ -153,7 +153,7 @@ sudo /etc/init.d/ceph -c /etc/ceph/ceph.conf start mon.{hostname}
 #centos下，也需要将ceph手动添加到启动项
 sudo cp ceph/src/init-ceph /etc/init.d/ceph
 #需要在mon数据目录添加sysvinit，在原文没有，不加的话会出现 mon.hostname not found
-sudo touch /var/lib/ceph/mon/ceph-ceph-03/sysvinit
+sudo touch /var/lib/ceph/mon/ceph-ubuntu/sysvinit
 {% endhighlight %}
     
 12.验证Ceph创建的默认池
@@ -191,136 +191,150 @@ monitor启动后，就可以添加OSDs了。只有当集群有足够OSDs来处�
 
 Ceph提供了 `ceph-disk` 工具，可以处理磁盘、分区或者目录。该工具通过自增的索引来创建OSD ID。并且该工具会把新的OSD自动添加到主机的CRUSH映射。执行 `ceph-disk -h` 来获得命令的详细信息。工具会自动执行下面[复杂配置](#long-form)的流程。
 
-1. 准备OSD
+1.准备OSD
 
-    ssh {node-name}
-    sudo ceph-disk prepare --cluster {cluster-name} --cluster-uuid {uuid} --fs-type {ext4|xfs|btrfs} {data-path} [{journal-path}]
+{% highlight bash %}
+ssh {node-name}
 
-    例如：
+sudo ceph-disk prepare --cluster {cluster-name} --cluster-uuid {uuid} --fs-type {ext4|xfs|btrfs} {data-path} [{journal-path}]
+#例如
+sudo ceph-disk prepare --cluster ceph --cluster-uuid a7f64266-0894-4f1e-a635-d0aeaca0e993 --fs-type ext4 /dev/hdd1
+{% endhighlight %}
 
-    sudo ceph-disk prepare --cluster ceph --cluster-uuid a7f64266-0894-4f1e-a635-d0aeaca0e993 --fs-type ext4 /dev/hdd1
+2.激活OSD
 
-2. 激活OSD
-
-    sudo ceph-disk activate {data-path} [--activate-key {path}]
-
-    例如：
-
-    sudo ceph-disk activate /dev/hdd1
-
-    Note: 如果Ceph节点上没有 `/var/lib/ceph/bootstrop-osd/{cluster}.keyring` 需要添加参数 `--activate-key` 。
-
+{% highlight bash %}
+sudo ceph-disk activate {data-path} [--activate-key {path}]
+#例如
+sudo ceph-disk activate /dev/hdd1
+{% endhighlight %}
+Note: 如果Ceph节点上没有 `/var/lib/ceph/bootstrop-osd/{cluster}.keyring` 需要添加参数 `--activate-key` 。
 
 ###复杂配置 {#long-form}
 
 不利用工具的情况下，可以通过如下配置实现创建OSD，添加OSD到CRUSH映射。通过下面的过程可以更好的了解整个过程。分别登录node2和node3执行以下步骤。
 
-1. 登录到OSD主机
+1.登录到OSD主机
 
-    ssh {node-name}
+{% highlight bash %}
+ssh {node-name}
+{% endhighlight %}
 
-2. 为OSD生成UUID
+2.为OSD生成UUID
 
-    uuidgen
+{% highlight bash %}
+uuidgen
+{% endhighlight %}
 
-3. 创建OSD，如果不设置UUID，在OSD启动时会自动设定。该命令会输出OSD的编号，在下面的步骤中会用到。
+3.创建OSD，如果不设置UUID，在OSD启动时会自动设定。该命令会输出OSD的编号，在下面的步骤中会用到。
 
-    ceph osd create [{uuid}]
+{% highlight bash %}
+ceph osd create [{uuid}]
+{% endhighlight %}
 
-4. 在新的OSD上创建默认目录
+4.在新的OSD上创建默认目录
 
-    ssh {new-osd-host}
-    sudo mkdir -p /var/lib/ceph/osd/ceph-{osd-number}
+{% highlight bash %}
+sudo mkdir -p /var/lib/ceph/osd/ceph-{osd-number}
+{% endhighlight %}
 
-5. 如果OSD是硬盘而不是系统，需要挂载到刚创建的目录
+5.如果OSD是硬盘而不是系统，需要挂载到刚创建的目录
 
-    ssh {new-osd-host}
-    sudo mkfs -t {fstype} /dev/{hdd}
-    sudo mount -o user_xattr /dev/{hdd} /var/lib/ceph/osd/ceph-{osd-number}
+{% highlight bash %}
+sudo mkfs -t {fstype} /dev/{hdd}
+sudo mount -o user_xattr /dev/{hdd} /var/lib/ceph/osd/ceph-{osd-number}
+#user_xattr 表示启用扩展的用户属性
 
-    user_xattr 表示启用扩展的用户属性
+#如果格式化为btrfs文件系统，且出现 `mkfs.btrfs: no such file or directory` ，需要安装btrfs，
+sudo apt-get install btrfs-tools 
+#如果使用btrfs文件系统，则在mount时不需要 user_xattr 选项，该项btrfs默认支持该选项，否则会出错。
+{% endhighlight %}
 
-    如果格式化为btrfs文件系统，且出现 `mkfs.btrfs: no such file or directory` ，需要安装btrfs，
-    sudo apt-get install btrfs-tools 
+6.初始化OSD的数据目录
 
-    如果使用btrfs文件系统，则在mount时不需要 user_xattr 选项，该项btrfs默认支持该选项，否则会出错。
+{% highlight bash %}
+ssh {new-osd-host}
+sudo ceph-osd -i {osd-num} --mkfs --mkkey --osd-uuid [{uuid}]
+{% endhighlight %}
 
-6. 初始化OSD的数据目录
+在运行 `ceph-osd --mkkey` 之前，该目录必须是空的。并且，ceph-osd 工具需要用参数 `--cluster` 指定自定义的集群名。
 
-    ssh {new-osd-host}
-    sudo ceph-osd -i {osd-num} --mkfs --mkkey --osd-uuid [{uuid}]
+注意
 
-    在运行 `ceph-osd --mkkey` 之前，该目录必须是空的。并且，ceph-osd 工具需要用参数 `--cluster` 指定自定义的集群名。
+* OSD的大小要略于配置文件中的 `osd journal size` ，配置单位为MB。
+* 如果因为配置错误，需要删除osd的挂载目录，该目录是带有只读属性的，可以用chattr修改
 
-    注意
-    * OSD的大小要略于配置文件中的 `osd journal size` ，配置单位为MB。
-    * 如果因为配置错误，需要删除osd的挂载目录，该目录是带有只读属性的，可以用chattr修改
 
-7. 注册OSD的认证密钥。路径中 `ceph-{osd-num}` 的 `ceph` 值为 `$cluster-$id` 。如果集群名不是 `ceph` , 使用你对应的集群名。
+7.注册OSD的认证密钥。路径中 `ceph-{osd-num}` 的 `ceph` 值为 `$cluster-$id` 。如果集群名不是 `ceph` , 使用你对应的集群名。
 
-    sudo ceph auth add osd.{osd-num} osd 'allow *' mon 'allow profile osd' -i /var/lib/ceph/osd/ceph-{osd-num}/keyring
+{% highlight bash %}
+sudo ceph auth add osd.{osd-num} osd 'allow *' mon 'allow profile osd' -i /var/lib/ceph/osd/ceph-{osd-num}/keyring
+{% endhighlight %}
 
-8. 添加Ceph节点到CRUSH映射中
+8.添加Ceph节点到CRUSH映射中
 
-    ceph osd crush add-bucket {hostname} host
+{% highlight bash %}
+ceph osd crush add-bucket {hostname} host
+{% endhighlight %}
 
-9. 把Ceph节点放到根节点 `default` 下
+9.把Ceph节点放到根节点 `default` 下
 
-    ceph osd crush move node1 root=default
+{% highlight bash %}
+ceph osd crush move node1 root=default
+{% endhighlight %}
 
-10. 把OSD添加到CRUSH映射，这样就可以开始接受数据了。同样也可以反编译CRUSH的映射，把OSD添加到设备列表，把主机作为一个bucket(在它还没有加入CRUSH映射前），在主机中把设备当做项目添加，指定一个权重后重新编译并设置。
+10.把OSD添加到CRUSH映射，这样就可以开始接受数据了。 同样也可以反编译CRUSH的映射，把OSD添加到设备列表，把主机作为一个bucket(在它还没有加入CRUSH映射前），在主机中把设备当做项目添加，指定一个权重后重新编译并设置。
 
-    ceph osd crush add {id-or-name} {weight} [{bucket-type}={bucket-name} ...]
+{% highlight bash %}
+ceph osd crush add {id-or-name} {weight} [{bucket-type}={bucket-name} ...]
+#例如
+ceph osd crush add osd.0 1.0 host=node1
+{% endhighlight %}
 
-    例如：
+11.在添加一个OSD到Ceph后，OSD就在配置文件中了。但是还没有运行，OSD处于 `down` 和 `in` 状态。必选启动新的OSD才能开始接收数据。
 
-    ceph osd crush add osd.0 1.0 host=node1
+* Ubuntu中，使用Upstart
 
-11. 在添加一个OSD到Ceph后，OSD就在配置文件中了。但是还没有运行，OSD处于 `down` 和 `in` 状态。必选启动新的OSD才能开始接收数据。
+{% highlight bash %}
+sudo start ceph-osd id={osd-num}
+#例如：
+sudo start ceph-osd id=0
+{% endhighlight %}
 
-    * Ubuntu中，使用Upstart
+注意，和monitor一样，需要复制 `src/upstart` 下的 ceph-osd 到 `/etc/init/` ，同时需要修改文件中 `/usr/bin` 为 `/usr/local/bin`， `/usr/libexec` 为 `/usr/local/libexec` 。
 
-        sudo start ceph-osd id={osd-num}
+* Debian/CentOS/RHEL中，使用sysvint
 
-        例如：
-            sudo start ceph-osd id=0
+{% highlight bash %}
+sudo /etc/init.d/ceph start osd.{osd-num}
+#例如：
+sudo /etc/init.d/ceph start osd.0
 
-        注意，和monitor一样，需要复制 `src/upstart` 下的 ceph-osd 到 `/etc/init/` ，同时需要修改文件中 `/usr/bin` 为 `/usr/local/bin`， `/usr/libexec` 为 `/usr/local/libexec` 。
+#注意：sysvint下需要创建如下的空文件
+sudo touch /var/lib/ceph/osd/{cluster-name}-{osd-num}/sysvinit
+#例如：
+sudo touch /var/lib/ceph/osd/ceph-0/sysvinit
+{% endhighlight %}
 
-    * Debian/CentOS/RHEL中，使用sysvint
-
-        sudo /etc/init.d/ceph start osd.{osd-num}
-
-        例如：
-            sudo /etc/init.d/ceph start osd.0
-
-    在这种情况下，要使守护进程在每次重启后能运行，需要创建如下的空文件
-
-        sudo touch /var/lib/ceph/osd/{cluster-name}-{osd-num}/sysvinit
-
-        例如：
-            sudo touch /var/lib/ceph/osd/ceph-0/sysvinit
-
-    一旦启动了OSD，它就处于 `up` 和 `in` 状态。
-
+一旦启动了OSD，它就处于 `up` 和 `in` 状态。
 
 总结
 ---
 
-一旦有了，monitor和两个OSD启动并运行，通过如下的执行可以查看placement groups节点。
+一旦有了monitor和两个OSD启动并运行，通过如下的执行可以查看placement groups节点。
 
-    ceph -w
-
-查看OSD树：
-    
-    ceph osd tree
-
-将会看到如下信息：
-
+{% highlight bash %}
+ceph -w
+#查看OSD树：   
+ceph osd tree
+#将会看到如下信息：
     # id    weight  type name   up/down reweight
     -1  2   root default
     -2  2       host ubuntu
     0   1           osd.0       up      1   
     1   1           osd.1       up      1
+{% endhighlight %}
 
 要添加或移除额外的monitors，详见[Add/Remove Monitors](http://ceph.com/docs/master/rados/operations/add-or-rm-mons)。要添加或移除额外的Ceph OSD守护进程，详见[Add/Remove OSDs](http://ceph.com/docs/master/rados/operations/add-or-rm-osds)。
+
+注意，monitor和OSD的通信需要在防火墙添加例外，centos 6是iptables，centos 7是firewall。
