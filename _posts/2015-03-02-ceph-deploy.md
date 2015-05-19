@@ -12,7 +12,7 @@ Ceph 0.87， 系统ubuntu
 集群的配置会按照如下的结构，node1作为monitor，node2和node3作为OSD节点。
 ![ceph-arch]({{site.imageurl}}/2015-03-02-ceph-arch.png)
 
-配置monitor
+配置monitor {#monitor}
 ---
 
 1.登录到monitor节点
@@ -182,7 +182,7 @@ cluster 6d3c75f6-458b-4b29-b65f-e3083e7240db
         64 creating
 {% endhighlight %}
 
-添加OSDs
+添加OSDs {#osd}
 ---
 
 monitor启动后，就可以添加OSDs了。只有当集群有足够OSDs来处理object的副本时，集群才能达到 `active+clean`状态（例如，osd pool default size=2 需要至少两个OSDs）。 在monitor引导启动后，集群有了默认的CRUSH映射，然而，映射中还没有任何Ceph OSD 的守护进程映射到Ceph节点。

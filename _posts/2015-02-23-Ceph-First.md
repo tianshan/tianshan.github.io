@@ -53,24 +53,28 @@ Ceph核心思想
     可执行文件会安装在 `/usr/lcoal/bin` ，这里有个坑，通过ceph-deploy安装的可执行文件会在 `/usr/bin` 会有不一样。
 
 
-centos
+centos  {#centos}
 ------
-`git clone https://github.com/ceph/ceph.git`
 
-`cd ceph`
+{% highlight bash %}
+git clone https://github.com/ceph/ceph.git
 
-`./install-deps.sh`
+注意切换到一个release版本
 
-`./autogen.sh`
+cd ceph
 
-`./configure`
+./install-deps.sh
 
-`make -j4`
+./autogen.sh
 
-`sudo make install` (可选)
+./configure
+
+make -j4
+
+sudo make install (可选)
+{% endhighlight %}
 
 >注：需要安装epel源
-sudo yum install epel-release
-sudo yum update
+sudo yum install epel-release && sudo yum update -y
 
 CPU 4核 内存 4G 参数 -j4，编译大概需要20分钟。
