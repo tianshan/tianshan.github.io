@@ -48,3 +48,7 @@ iostat -x sda 2 6
 
     avgqu-sz
   发送到设备的请求的平均队列长度.
+
+
+查看硬盘SATA信息
+cat /var/log/dmesg | grep ata

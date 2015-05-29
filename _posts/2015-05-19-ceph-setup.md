@@ -24,7 +24,7 @@ title: Ceph测试集群搭建
 * osd
 [http://www.quts.me/2015/03/02/ceph-deploy.html#osd]({{site.baseurl}}/2015/03/02/ceph-deploy.html#osd)
 
-把monitor的配置文件同步过来后，OSD可以按简单模式配置，启动参照复杂里的[11]
+先把monitor的配置文件同步过来后，OSD可以按简单模式配置，启动参照复杂里的[11]
 
 
 可能遇到的问题
@@ -45,7 +45,6 @@ Defaults env_reset 改成 Defaults !env_reset
 也是因为路径重置了，一劳永逸的方法，把ceph/src/pybind的内容复制到Python系统路径中。
 
 sudo cp ~/ceph/src/pybind /usr/lib/python2.7/site-packages
-
 
 
 
