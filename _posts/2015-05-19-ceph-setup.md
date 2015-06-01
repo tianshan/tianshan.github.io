@@ -44,7 +44,7 @@ Defaults env_reset 改成 Defaults !env_reset
 3.sudo ceph -s找不到python依赖
 也是因为路径重置了，一劳永逸的方法，把ceph/src/pybind的内容复制到Python系统路径中。
 
-sudo cp ~/ceph/src/pybind /usr/lib/python2.7/site-packages
+sudo cp ~/ceph/src/pybind/* /usr/lib/python2.7/site-packages
 
 
 
