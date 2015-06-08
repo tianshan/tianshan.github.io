@@ -52,3 +52,16 @@ iostat -x sda 2 6
 
 查看硬盘SATA信息
 cat /var/log/dmesg | grep ata
+扫描物理卷
+sudo lvmdiskscan
+显示所有逻辑卷
+sudo pvs
+删除屋里卷
+sudo pvremove /dev/sdb
+
+删除逻辑卷分区，先删除逻辑卷，然后删除逻辑卷组，然后删除分区
+sudo lvremove /dev/centos1/home
+sudo vgremove centos1
+sudo pvremove /dev/sdb2
+#此时，pvs已经看不到分区的逻辑信息了
+

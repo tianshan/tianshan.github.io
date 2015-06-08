@@ -26,21 +26,6 @@ title: Ceph测试集群搭建
 
 > 先把monitor的配置文件同步过来后，OSD可以按简单模式配置，启动参照复杂里的[11]
 
-linux参数调整
----
-
-* 磁盘调度策略
-{% highlight bash %}
-echo deadline > /sys/block/sda/queue/scheduler 
-
-#调整完会运行cat命令，显示如下，表示选中deadline。
-cat /sys/block/sda/queue/scheduler
-noop [deadline] cfq
-#因为参数是维护在内存中的，所以不能直接用vim修改，否则保存时会提示 E667:同步失败
-{% endhighlight %}
-
-
-
 
 可能遇到的问题
 ---
@@ -61,5 +46,31 @@ Defaults env_reset 改成 Defaults !env_reset
 
 sudo cp ~/ceph/src/pybind/* /usr/lib/python2.7/site-packages
 
-    
+
 最后，good luck！
+
+
+linux相关命令
+---
+
+* 磁盘调度策略
+{% highlight bash %}
+echo deadline > /sys/block/sda/queue/scheduler 
+
+#调整完会运行cat命令，显示如下，表示选中deadline。
+cat /sys/block/sda/queue/scheduler
+noop [deadline] cfq
+#因为参数是维护在内存中的，所以不能直接用vim修改，否则保存时会提示 E667:同步失败
+{% endhighlight %}
+
+* 添加用户
+{% highlight bash %}
+sudo useradd ceph   #添加用户
+sudo passwd ceph    #设置密码
+#添加sudo权限
+visudo
+#在下面仿照root，添加
+ceph ALL=(ALL) ALL
+{% endhighlight %}
+
+* 格式化硬盘
