@@ -4,15 +4,15 @@ title: Ceph 读写流程分析
 
 Ceph OSD层的数据层级
 
-1. OSD 
+1.OSD 
     
 主要实现 OSD,OSDService ，每个数据节点的守护进程
 
-2. PG
+2.PG
     
 主要实现 PG,ReplicatedPG,ReplicatedBackend，Object的逻辑组织
 
-3. ObjectStore
+3.ObjectStore
 
 主要实现 FileStore,KeyValueStore,MemStore，直接操作数据
 
