@@ -65,3 +65,8 @@ sudo vgremove centos1
 sudo pvremove /dev/sdb2
 #此时，pvs已经看不到分区的逻辑信息了
 
+fio使用的参考链接
+fio[单机测试](http://blog.sina.com.cn/s/blog_6b1ccd6501012pvl.html)
+fio[参数说明](http://blog.csdn.net/yuesichiu/article/details/8722417)
+iostat[命令详解](http://blog.csdn.net/zhangjay/article/details/6656771)
+
