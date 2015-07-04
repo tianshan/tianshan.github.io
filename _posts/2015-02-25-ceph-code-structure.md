@@ -3,6 +3,10 @@ title: Ceph 代码分析
 tags: ceph
 ---
 
+Ceph代码的目录结构。
+
+<!--more-->
+
 * 网络通信
     * `msg` 目录包括了网络传输的代码
     * `message` 目录里定义了传输的消息格式

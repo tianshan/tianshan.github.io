@@ -1,9 +1,12 @@
 ---
 title: Ceph测试集群搭建
+tags: ceph
 ---
 
 这里整理一篇从源码编译的测试集群搭建方法。
 ceph-deploy的部署方式，可以[参考官网](http://ceph.com/docs/master/start/quick-start-preflight/)。
+
+<!--more-->
 
 1.编译
 ---

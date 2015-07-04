@@ -1,8 +1,12 @@
 ---
 title: Ceph文档编译
+tags: ceph
 ---
 
 Ceph的文档可以从代码中直接编译，主要使用了两个工具`doxygen`和``sphinx`。doxygen会生成xml和一些图表，sphinx会在这些基础上再生成完整的网页。
+
+<!--more-->
+
 文档的编译过程如下：
 
 1.克隆代码

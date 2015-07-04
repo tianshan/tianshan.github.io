@@ -1,6 +1,6 @@
 ---
 title: Ceph 源码部署
-tags: ceph,deployment
+tags: ceph
 ---
 
 源码的编译见[Ceph Compile]({{site.baseurl}}/2015/02/23/Ceph-First.html)
@@ -11,6 +11,8 @@ Ceph 0.87， 系统ubuntu
 
 集群的配置会按照如下的结构，node1作为monitor，node2和node3作为OSD节点。
 ![ceph-arch]({{site.imageurl}}/2015-03-02-ceph-arch.png)
+
+<!--more-->
 
 配置monitor {#monitor}
 ---

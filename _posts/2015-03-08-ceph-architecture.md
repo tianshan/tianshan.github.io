@@ -1,6 +1,6 @@
 ---
-title: Ceph 架构
-tag: ceph,architecture
+title: Ceph架构
+tag: ceph
 ---
 
 翻译自官网，原文：<http://ceph.com/docs/master/architecture/>
@@ -8,6 +8,8 @@ tag: ceph,architecture
 Ceph独特的提供了统一了object， block，和file storage的系统。Ceph高度可靠，容易管理，以及免费。Ceph的优势可以转移公司的IT基础建设和你的能力到管理海量的数据中。Ceph提供额外的扩展性--成千的客户端访问PB和EB大小的数据。一个Ceph节点利用商业硬件和智能守护进程，一个Ceph存储集群可容纳大量的节点，这些节点互相通信来动态复制以及重分配数据。
 
 ![stack]({{site.imageurl}}/2015-03-08-stack.png)
+
+<!--more-->
 
 Ceph的存储集群
 ---

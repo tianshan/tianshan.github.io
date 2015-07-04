@@ -1,6 +1,11 @@
 ---
 title: Ceph 读写流程分析
+tags: ceph
 ---
+
+初步的Ceph读写流程分析。更详细的IO路径整理好了放上来。
+
+<!--more-->
 
 Ceph OSD层的数据层级
 

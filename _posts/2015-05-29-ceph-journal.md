@@ -1,11 +1,14 @@
 ---
 title: Ceph的Journal机制
-tags: ceph,journal
+tags: ceph
 ---
 
 Ceph底层FileStore模式下，采用了写日志，就是Journal。实现机制类似数据库的写日志。写数据时，会在journal上写日志，保证出现故障时可以从日志恢复。
 
+<!--more-->
+
 Journal源代码中主要涉及两个文件，os目录下的FileJournal和FileStore。FileStore中会有FileJournal的一个实例，调用都在这里发生。
+
 
 写Journal有两种模式，parallel和writeahead。顾名思义，parallel就是日志和磁盘数据同时写，writeahead是先写日志，只要日志写成功了，就回返回。后台每隔一段时间后，会同步日志中的写操作，实现落盘。这种方法带来的好处就是，可以把很多小IO合并，形成顺序写盘，提高IOPS。
 

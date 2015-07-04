@@ -1,9 +1,12 @@
 ---
-title: Librados 介绍
+title: Ceph的Librados介绍
+tags: ceph
 ---
 
 Librados是Ceph提供访问存储集群中RADOS（reliable autonomic distributed object store）的接口。
 本文主要翻译自[官方文档](http://ceph.com/docs/master/rados/api/librados-intro/)，代码部分只保留了C++版本，其余见原文。
+
+<!--more-->
 
 通过librados可以和存储集群的两类守护进程交互：
 

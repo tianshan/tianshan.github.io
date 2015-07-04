@@ -3,7 +3,9 @@ title: Ceph 编译
 tags: ceph
 ---
 
-最新开始研究分布式存储Ceph，记录研究过程。
+初学ceph，记录下编译过程。
+
+<!--more-->
 
 Ceph发展优势：是OpenStack热门的开源存储。
 Ceph核心思想

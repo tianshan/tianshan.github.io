@@ -1,8 +1,11 @@
 ---
 title: github pages 域名配置
+tags: blog
 ---
 
 为github pags配置域名，主要步骤参考[https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages/](https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages/)
+
+<!--more-->
 
 * 域名配置
 

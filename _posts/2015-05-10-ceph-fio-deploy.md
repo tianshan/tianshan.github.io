@@ -1,8 +1,12 @@
 ---
 title: ceph性能测试
+tags: ceph
 ---
 
-ceph与fio的结合见[Ceph Performance Analysis: fio and RBD](https://telekomcloud.github.io/ceph/2014/02/26/ceph-performance-analysis_fio_rbd.html)。这是官方给出的样例。
+研究一段时间后，开始测试Ceph性能。
+ceph与fio的结合见[Ceph Performance Analysis: fio and RBD](https://telekomcloud.github.io/ceph/2014/02/26/ceph-performance-analysis_fio_rbd.html)，官方给出了一个样例。
+
+<!--more-->
 
 fio的安装
 ---

@@ -1,7 +1,11 @@
 ---
-title: jekyll kramdown 语法高亮
-tag: jekyll,kramdown,highlighting
+title: jekyll 语法高亮
+tag: blog
 ---
+
+记录折腾博客语法高亮的问题。
+
+<!--more-->
 
 博客解析换成kramdown后，语法高亮的问题。
 

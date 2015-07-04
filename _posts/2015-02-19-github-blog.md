@@ -1,12 +1,12 @@
 ---
 title: 搭建github博客
-tags: github,blog
+tags: blog
 ---
 
-* 基本步骤：参考[阮一峰的博客](http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html)。
-* 另一篇详细点的[博客](http://www.zhanxin.info/jekyll/2013-08-07-jekyll-doc-installation.html)
+记录下搭建本地jekyll环境遇到的问题。
 
-记录下搭建本地jekyll环境遇到的问题
+<!--more-->
+
 ---
 
 * 主要搭建的步骤，参考github[说明](https://help.github.com/articles/using-jekyll-with-pages/)。
@@ -19,3 +19,6 @@ tags: github,blog
 ---
 
 * ubuntu sublime的中文输入问题，参考[博客](http://html5beta.com/page/ubuntu-14-04-install-fcitx-sougoupinyin-sublime-text-3-chinese-input-fix.html)。如果安装的是sublime2，注意要修改 `源（改成2）`  和快捷方式代码中 `Exec值中文件夹sublime_text改成sublime_text_2` 。
+
+* 基本步骤：参考[阮一峰的博客](http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html)。
+* 另一篇详细点的[博客](http://www.zhanxin.info/jekyll/2013-08-07-jekyll-doc-installation.html)
