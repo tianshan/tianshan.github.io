@@ -83,7 +83,7 @@ paginate_path: page/:num
 #
 share_buttons: false
 ogp:
-  image_url: http://qckanemoto.github.io/jekyll-qck-theme/assets/img/ogp.png
+  image_url: http://tianshan.github.io/assets/img/ogp.png
   fb:
     admin: # facebook admin id
     app_id: # facebook application id

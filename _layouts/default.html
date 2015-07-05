@@ -34,8 +34,9 @@
     <meta property="og:image" content="{{ ogp_image_url }}" />
     <meta property="og:url" content="{{ url }}" />
     <meta property="og:site_name" content="{{ site.title }}" />
+    <!--
     <meta property="fb:admins" content="{{ site.ogp.fb.admin }}" />
-    <meta property="fb:app_id" content="{{ site.ogp.fb.app_id }}" />
+    <meta property="fb:app_id" content="{{ site.ogp.fb.app_id }}" />-->
     <meta property="og:description" content="{{ description }}" />
 
     <!--[if lt IE 9]>
@@ -43,7 +44,11 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet">
+    -->
+    <link href="//fonts.useso.com/css?family=Source+Sans+Pro:400,700,700italic,400italic" rel="stylesheet">
+    
 
     <link href="{{ '/assets/lib/easy-social-buttons/jquery.easy-social-buttons.css' | prepend: site.baseurl }}" rel="stylesheet">
     <link href="{{ '/assets/css/style.css' | prepend: site.baseurl }}" rel="stylesheet">
@@ -108,7 +113,11 @@
     </div>
 </footer>
 
+<!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 <script src="{{ '/assets/lib/garand-sticky/jquery.sticky.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/assets/lib/easy-social-buttons/jquery.social-info.js' | prepend: site.baseurl }}"></script>
 <script src="{{ '/assets/lib/easy-social-buttons/jquery.easy-social-buttons.js' | prepend: site.baseurl }}"></script>
