@@ -50,9 +50,26 @@ Defaults env_reset 改成 Defaults !env_reset
 
 sudo cp ~/ceph/src/pybind/* /usr/lib/python2.7/site-packages
 
-
 最后，good luck！
 
+ceph-deploy快速部署
+---
+主要参考[官网](http://ceph.com/docs/master/start/quick-ceph-deploy/)
+这里记录出现的问题
+
+* RuntimeError: NoSectionError: No section: 'ceph'
+
+执行yum remove ceph-release，据说是版本不兼容
+
+* RuntimeError: remote connection got closed, ensure ``requiretty`` is disabled for
+
+进入要部署的机器，执行如下命令
+sudo visudo
+把`Defaults requiretty` 修改为 `Defaults:ceph !requiretty`
+
+如果改完还么起作用，说明免密码的没有配，执行如下
+echo "ceph  ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ceph  
+sudo chmod 0440 /etc/sudoers.d/ceph 
 
 linux相关命令
 ---
