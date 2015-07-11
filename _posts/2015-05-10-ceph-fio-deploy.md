@@ -38,36 +38,59 @@ sudo make install
 {% endhighlight %}
 
 
-测试
+可能用到的一些命令
 ---
 
-查看挂载
+查看挂载  
+
+```
 df -hT
-查看io状态,每隔2s查看sda的扩展统计，共6次,
-[iostat](http://blog.csdn.net/zhangjay/article/details/6656771)
+```
+
+查看io状态,每隔2s查看sda的扩展统计，共6次  
+
+```
 iostat -x sda 2 6
+```
 
-    avgrq-sz
-  发送到设备的请求的平均大小,单位是扇区.
+```bash
+#参数含义
+avgrq-sz    #发送到设备的请求的平均大小,单位是扇区
+avgqu-sz    #发送到设备的请求的平均队列长度
+```
 
-    avgqu-sz
-  发送到设备的请求的平均队列长度.
+查看硬盘SATA信息   
 
+```
+dmesg | grep ata
+```
 
-查看硬盘SATA信息
-cat /var/log/dmesg | grep ata
 扫描物理卷
+
+```
 sudo lvmdiskscan
+```
+
 显示所有逻辑卷
+
+```
 sudo pvs
-删除屋里卷
+```
+
+删除物理卷
+
+```
 sudo pvremove /dev/sdb
+```
 
 删除逻辑卷分区，先删除逻辑卷，然后删除逻辑卷组，然后删除分区
+
+```bash
 sudo lvremove /dev/centos1/home
 sudo vgremove centos1
 sudo pvremove /dev/sdb2
 #此时，pvs已经看不到分区的逻辑信息了
+```
 
 fio使用的参考链接
 ---

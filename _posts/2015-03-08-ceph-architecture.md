@@ -54,16 +54,15 @@ Ceph客户端和OSD守护进程都使用CRUSH算法来高效的计算出对象�
 
 Ceph需要客户端和OSD守护进程知道集群的拓扑，包括了5个映射集合，这就是 “集群映射”。
 
-1.The Monitor Map: 包括集群的 `fsid` ，位置，名字地址，和每一个monitor端口。同时指示了映射的创建时间，和最后的修改时间。查看monitor的映射，通过命令 `ceph mon dump` 。
+**1.The Monitor Map:** 包括集群的 `fsid` ，位置，名字地址，和每一个monitor端口。同时指示了映射的创建时间，和最后的修改时间。查看monitor的映射，通过命令 `ceph mon dump` 。
 
-2.The OSD Map: 包括集群 `fdis` ，映射创建时间和修改时间，池的列表，副本大小，PG个数，OSDs的列表以及他们的状态（例如 `up` ， `in` ）。查看OSD
-映射，执行 `ceph osd dump` 。
+**2.The OSD Map:** 包括集群 `fdis` ，映射创建时间和修改时间，池的列表，副本大小，PG个数，OSDs的列表以及他们的状态（例如 `up` ， `in` ）。查看OSD映射，执行 `ceph osd dump` 。
 
-3.The PG Map: 包括PG的版本，它的时间戳，上一个OSD周期，每个pg的full ratios和细节，比如PG ID，Up Set，PG的状态（例如 active+clean），和每个池子的数据使用率。
+**3.The PG Map:** 包括PG的版本，它的时间戳，上一个OSD周期，每个pg的full ratios和细节，比如PG ID，Up Set，PG的状态（例如 active+clean），和每个池子的数据使用率。
 
-4.The CRUSH Map: 包含一个存储设备的列表，失效域的层级（例如，设备，主机，机架，行，房间等），以及存储数据时遍历层级的规则。查看一个CRUSH的映射，执行 `ceph osd getcrushmap -o {filename}` ；然后通过执行 `crushtool -d {comp-crushmap-filename} -o {decomp-crushmap-filename}` 反编译。可以在文本编辑器或者 `cat` 命令查看反编译映射。
+**4.The CRUSH Map:** 包含一个存储设备的列表，失效域的层级（例如，设备，主机，机架，行，房间等），以及存储数据时遍历层级的规则。查看一个CRUSH的映射，执行 `ceph osd getcrushmap -o {filename}` ；然后通过执行 `crushtool -d {comp-crushmap-filename} -o {decomp-crushmap-filename}` 反编译。可以在文本编辑器或者 `cat` 命令查看反编译映射。
 
-5.The MDS Map: 包含当前MDS映射周期，映射的创建时间，最后的修改时间。同时包含了存储员数据的池子，元数据服务器的列表，以及哪些元数据服务器是 `up` 和 `in` 状态的。查看MDS映射，执行 `ceph mds map` 。
+**5.The MDS Map:** 包含当前MDS映射周期，映射的创建时间，最后的修改时间。 同时包含了存储员数据的池子，元数据服务器的列表，以及哪些元数据服务器是 `up` 和 `in` 状态的。 查看MDS映射，执行 `ceph mds map` 。
 
 每一个映射包含了一个操作状态修改的迭代历史。Ceph Monitor维护了一个集群映射的主拷贝，包括集群成员，状态，修改，以及整体存储集群的健康状况。
 
