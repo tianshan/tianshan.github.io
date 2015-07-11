@@ -10,12 +10,12 @@ ceph-deploy的部署方式，可以[参考官网](http://ceph.com/docs/master/st
 
 1.编译
 ---
-[http://www.quts.me/2015/02/23/Ceph-First.html#centos]({{site.baseurl}}/2015/02/23/Ceph-First.html#centos)
+[Ceph-compile]({% post_url 2015-02-23-ceph-compile %}#centos)
 
 2.部署
 ---
 * monitor
-[http://www.quts.me/2015/03/02/ceph-deploy.html#monitor]({{site.baseurl}}/2015/03/02/ceph-deploy.html#monitor)
+[ceph-deploy]({% post_url 2015-03-02-ceph-deploy %}#配置monitor)
 
 其中，主要步骤
 
@@ -26,7 +26,7 @@ ceph-deploy的部署方式，可以[参考官网](http://ceph.com/docs/master/st
 测试集群的可以省略密钥的配置。
 
 * osd
-[http://www.quts.me/2015/03/02/ceph-deploy.html#osd]({{site.baseurl}}/2015/03/02/ceph-deploy.html#osd)
+[ceph-deploy]({% post_url 2015-03-02-ceph-deploy %}#添加osd)
 
 > 先把monitor的配置文件同步过来后，OSD可以按简单模式配置，启动参照复杂里的[11]
 
@@ -68,8 +68,11 @@ sudo visudo
 把`Defaults requiretty` 修改为 `Defaults:ceph !requiretty`
 
 如果改完还么起作用，说明免密码的没有配，执行如下
+
+```bash
 echo "ceph  ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ceph  
 sudo chmod 0440 /etc/sudoers.d/ceph 
+```
 
 linux相关命令
 ---
