@@ -33,6 +33,7 @@ Calamari比较复杂，文档也比较少，记录下部署中遇到的坑。。
 
 * 从源码部署 <http://ovirt-china.org/mediawiki/index.php/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2Ceph_Calamari>
 
+刚部署完，diamond老是起不来，看log，有个包load不到，`PySNMP`，需要pip装下。
 
 > 特别注意，在下面版本下，需要`Salt-2014.1`版本，出现的症状就是，ceph-server能连上，但是Calamari识别不了ceph集群。
 >
