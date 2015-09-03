@@ -93,6 +93,15 @@
             </ul>
             <hr class="with-no-margin margin-bottom"/>
 
+            <div>
+                <h1>Tags</h1>
+                <ul>
+                    {% for tag in site.tags %}
+                    <a href="{{ site.baseurl }}/tags/#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">{{ tag[0] }}</a> &nbsp;
+                  {% endfor %}
+                </ul>
+            </div>
+
             <div class="block sticky">
                 <h1>{{ site.str_recent_posts }}</h1>
                 <ul>
