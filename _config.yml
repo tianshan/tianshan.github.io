@@ -4,8 +4,8 @@
 #url: http:127.0.0.1:4000
 url: http://tianshan.github.io
 baseurl: ""
-title: tianshan
-description: Do yourself.
+title: tianshan's blog
+description: 
 avatar: /assets/img/ts.jpg
 
 imageurl: "/images"
