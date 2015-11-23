@@ -89,5 +89,6 @@ unsigned ErasureCodeJerasureLiberation::get_alignment() const
 }
 ```
 
-总结，不同的编码本身会有不同的编码要求，跟踪get_chunk_size和get_alignment函数可以得到，了解对齐原理后合理设置参数。
+总结，不同的编码本身会有不同的编码要求，跟踪get_chunk_size和get_alignment函数可以得到，了解对齐原理后合理设置参数，才能使编码性能提高。
+每次编码都会prepare逻辑，object_size过小，会频繁prepare，导致性能下降。
 
