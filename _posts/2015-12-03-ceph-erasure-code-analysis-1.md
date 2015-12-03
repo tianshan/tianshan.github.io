@@ -1,5 +1,5 @@
 ---
-title: Ceph EC的代码分析一
+title: Ceph EC的代码分析(一)
 tags: ceph ErasureCode
 ---
 
@@ -20,7 +20,9 @@ PG层代码，主要有
 * `osd/PG` 定义了PG层的接口
 * `osd/ReplicatedPG` 副本模式的接口实现
 
-在引入EC后，复用了ReplicagePG部分逻辑，所以引入了PGBackend的新接口，用于实现Replicated和EC不同的逻辑。这样的设计，导致现在的PG层逻辑相当混乱，有些会调用PG接口，有写会调用Replicated接口，阅读代码会很困惑。从[Loïc Dachary的博客](http://dachary.org/?p=2320)可以看到Loïc在设计EC时和Sam对PG的讨论。
+在引入EC后，复用了ReplicagePG部分逻辑，所以引入了PGBackend的新接口，用于实现Replicated和EC不同的逻辑。这样的设计，导致现在的PG层逻辑相当混乱，有些会调用PG接口，有写会调用Replicated接口，阅读代码会很困惑。从Loïc Dachary的[博客](http://dachary.org/?p=2320)可以看到Loïc在设计EC时和Sam对PG的讨论。目前Sam在对PG那块的代码进行重构，未来逻辑应该会清晰。
+
+下面就EC的几个典型操作，分析下这层的逻辑。
 
 ###Ceph的EC逻辑
 
@@ -31,4 +33,4 @@ EC读，逻辑简单一点，因为读数据需要读取多个副OSD的数据，
 yahoo在前几个提了一个patch，实现了fast_read，其实就是避免了OSD短板，每次发送读请求给所有OSD，然后取先返回的k个OSD数据解码。读需要等所有数据返回后再解码，在长时间使用过程中，HDD会有性能下降，所以读Op速度取决于k个osd中最慢的那个。从[CDS_Jewel](http://tracker.ceph.com/projects/ceph/wiki/Tail_latency_improvements)可以看到，初步实验结果，fast read可以提升30%性能，但集群负载也会提高。
 
 
-待续。。
+画图中，待续。。。
