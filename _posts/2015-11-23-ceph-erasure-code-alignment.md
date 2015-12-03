@@ -10,6 +10,8 @@ Ceph的EC支持主要是Loïc Dachary实现的。具体的PG层逻辑，复用�
 
 已有的Plugin是Jerasure，Intel ISA，LRC，SHEL，前两者是采用硬件加速的编码库，后两者是基于RS改进的编码方案，主要改进了修复的效率和占用的资源。
 
+<!--more-->
+
 目前Ceph不支持EC的偏移写，只能writefull，或者offset要满足是strip_width的倍数，且正好是原始对象的末尾，所以最终都会转换成一个AppendOp。
 
 编码的流程
