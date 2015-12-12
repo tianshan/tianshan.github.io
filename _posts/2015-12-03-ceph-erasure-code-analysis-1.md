@@ -33,4 +33,9 @@ EC读，逻辑简单一点，因为读数据需要读取多个副OSD的数据，
 yahoo在前几个提了一个patch，实现了fast_read，其实就是避免了OSD短板，每次发送读请求给所有OSD，然后取先返回的k个OSD数据解码。读需要等所有数据返回后再解码，在长时间使用过程中，HDD会有性能下降，所以读Op速度取决于k个osd中最慢的那个。从[CDS_Jewel](http://tracker.ceph.com/projects/ceph/wiki/Tail_latency_improvements)可以看到，初步实验结果，fast read可以提升30%性能，但集群负载也会提高。
 
 
-画图中，待续。。。
+EC read的流程如下，read相对比较简单，因为ec read需要多个osd的数据，所以只支持异步读。
+
+因为EC是条带写的，所以读之前，会把读的范围，通过`ECUtil::stripe_info_t.offset_len_to_stripe_bounds`转换成对应每个osd需要读的范围。
+
+<img src="{{site.imageurl}}/2015-12-03-ec-read.png" width=50% value="ec read"/>
+
