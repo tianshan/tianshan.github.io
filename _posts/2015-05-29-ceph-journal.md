@@ -23,3 +23,6 @@ Journal源代码中主要涉及两个文件，os目录下的FileJournal和FileSt
 注意：这里面提到会停止写操作，从日志队列的表现来看，就是filestore写队列比较满时，日志队列会为空，一般这时候，就是在同步操作。默认的最大同步间隔`filestore max sync interval`为5s。
 
 同步的流程图如下
+
+![iops]({{site.imageurl}}/2015-05-29-journal.png)
+
