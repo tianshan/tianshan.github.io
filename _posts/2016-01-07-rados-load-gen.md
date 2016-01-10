@@ -7,7 +7,7 @@ tags: ceph
 
 <!--more-->
 
-整体流程是这样的
+相关代码在`src/tools/rados/rados.cc`，整体流程是这样的
 
 ```
 1. LoadGen lg(&rados);      // 实例化测试类
@@ -16,6 +16,37 @@ tags: ceph
 3. lg.run();                // 测试过程
     循环生成op提交
 4. lg.cleanup();            // 清理生成的对象
+```
+
+```c++
+#生成next op的主要代码
+void LoadGen::gen_op(LoadGenOp *op)
+{
+  // 随机选取生成好的对象
+  int i = get_random(0, objs.size() - 1);
+  obj_info& info = objs[i];
+  op->oid = info.name;
+
+  // 随机生成长度
+  size_t len = get_random(min_op_len, max_op_len);
+  if (len > info.len)
+    len = info.len;
+
+  // 随机生成偏移
+  size_t off = get_random(0, info.len);
+  if (off + len > info.len)
+    off = info.len - len;
+
+  op->off = off;
+  op->len = len;
+
+  // 随机生成读或写
+  i = get_random(1, 100);
+  if (i > read_percent)
+    op->type = OP_WRITE;
+  else
+    op->type = OP_READ;
+}
 ```
 
 再来看参数设置
