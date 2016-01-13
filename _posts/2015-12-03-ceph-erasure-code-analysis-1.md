@@ -40,5 +40,9 @@ EC read的流程如下，相对比较简单
 
 <img src="{{site.imageurl}}/2015-12-03-ec-read.png" width=50% value="ec read"/>
 
-后续流程整理后再发出。
+
+EC相关的分析链接：
+
+1. [EC的读]({% post_url 2015-12-03-ceph-erasure-code-analysis-1 %})
+2. [EC删除对象的流程]({% post_url 2016-01-13-ceph-ec-remove-object %})
 
