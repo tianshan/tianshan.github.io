@@ -12,7 +12,7 @@ Ceph编译安装经常会出现各种问题，这里记录下。
 
 2.selinux
 
-需要关闭
+需要关闭，否则可能会遇到`filestore(/var/lib/ceph/tmp/mnt.icGL7K) mkjournal error creating journal on /var/lib/ceph/tmp/mnt.icGL7K/journal: (13) Permission denied` 类似的错误
 
 ```sh
 getenfoce       #查看当前设置
@@ -20,6 +20,7 @@ setenforce 0    #临时设置
 
 永久设置，修改文件，然后重启
 /etc/selinux/config
+SELINUX=disabled
 ```
 
 3.动态链接库找不到
