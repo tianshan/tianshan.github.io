@@ -1,124 +1,230 @@
+# Welcome to Jekyll!
 #
-# Basic settings.
-#
-#url: http:127.0.0.1:4000
-url: http://tianshan.github.io
-baseurl: ""
-title: tianshan's blog
-description: 
-avatar: /assets/img/ts.jpg
+# This config file is meant for settings that affect your entire site, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# `jekyll serve`. If you change this file, please restart the server process.
 
-imageurl: "/images"
-uploads: "/uploads"
+# Site Settings
+locale                   : "en-US"
+title                    : "tianshan's blog"
+title_separator          : "-"
+name                     : "tianshan"
+description              : "tianshan's blog"
+url                      : http://tianshan.github.io
+baseurl                  : # the subpath of your site, e.g. "/blog"
+imageurl                 : /images
+gh_repo                  :
+teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
+# breadcrumbs            : false # true, false (default)
+words_per_minute         : 200
+comments:
+  provider               : disqus
+  disqus:
+    shortname            : tianshan
+  facebook:
+    # https://developers.facebook.com/docs/plugins/comments
+    appid                :
+    num_posts            : # 5 (default)
+    colorscheme          : # "light" (default), "dark"
+
+# SEO Related
+google_site_verification :
+bing_site_verification   :
+alexa_site_verification  : 3ltpBGYlhC-yYcLcsl6Lly_V_4U
+yandex_site_verification :
+
+# Social Sharing
+twitter:
+  username               :
+facebook:
+  username               :
+  app_id                 :
+  publisher              :
+og_image                 : # Open Graph/Twitter default site image
+social:
+  type                   : # Person or Organization (defaults to Person)
+  name                   : # If the user or organization name differs from the site's name
+  links: # An array of links to social media profiles
+
+# Analytics
+analytics:
+  provider               : google
+  google:
+    tracking_id          : UA-60561225-1
+
+# Google AdSense
+google_ad_client         :
+google_ad_slot           :
+
+
+# Site Author
+author:
+  name             : "tianshan"
+  avatar           : "ts.jpg"
+  bio              : "learing record"
+  location         : "Somewhere"
+  email            : qutianshan0214@163.com
+  uri              :
+  bitbucket        :
+  codepen          :
+  dribbble         :
+  flickr           :
+  facebook         :
+  foursquare       :
+  github           : tianshan
+  google_plus      :
+  keybase          :
+  instagram        :
+  lastfm           :
+  linkedin         :
+  pinterest        :
+  soundcloud       :
+  stackoverflow    : 
+  steam            :
+  tumblr           :
+  twitter          :
+  vine             :
+  weibo            :
+  xing             :
+  youtube          :
+
+
+# Reading Files
+include:
+  - .htaccess
+  - _pages
+exclude:
+  - "*.sublime-project"
+  - "*.sublime-workspace"
+  - .asset-cache
+  - .bundle
+  - .jekyll-assets-cache
+  - .sass-cache
+  - assets/js/plugins
+  - assets/js/_main.js
+  - assets/js/vendor
+  - Capfile
+  - CHANGELOG
+  - config
+  - Gemfile
+  - Gruntfile.js
+  - gulpfile.js
+  - LICENSE
+  - log
+  - node_modules
+  - package.json
+  - Rakefile
+  - README
+  - tmp
+keep_files:
+  - .git
+  - .svn
+encoding: "utf-8"
+markdown_ext: "markdown,mkdown,mkdn,mkd,md"
+
+
+# Conversion
+markdown: kramdown
+highlighter: rouge
+lsi: false
+excerpt_separator: "\n\n"
+incremental: false
+
+
+# Markdown Processing
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  smart_quotes: lsquo,rsquo,ldquo,rdquo
+  enable_coderay: false
 
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
-      type: "posts"
+      type: posts
     values:
-      layout: "post"
-      author: "tianshan"
-      email: "qutianshan0214@163.com"
+      layout: single
+      author_profile: true
+      read_time: false
+      comments: true
+      share: false
+      related: false
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: single
+      read_time: false
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: archive
+      read_time: false
 
-#
-# Icons
-#
-icons:
-  rss: true
-  email: qutianshan0214@163.com
-  github: tianshan
-  bitbucket:
-  twitter: 
-  facebook:
-  google_plus:
-  tumblr:
-  behance:
-  dribbble:
-  flickr:
-  instagram:
-  linkedin:  # full URL
-  pinterest:
-  reddit:
-  soundcloud:
-  stack_exchange:  # full URL
-  steam:
-  wordpress:
-  youtube:
+# Outputting
+permalink: /:categories/:title/
+paginate: 10 # amount of posts to show
+paginate_path: /page:num/
+timezone: Asia/Shanghai
 
-#
-# Prettify url.
-#
-permalink: pretty
 
-#
-# Scripts.
-#
-google_analytics: UA-60561225-1
-disqus: tianshan
-
-#
-# Localizations.
-#
-str_next: Next
-str_prev: Prev
-str_read_more: Read more...
-str_search: Search
-str_recent_posts: Recent posts
-str_show_all_posts: Show all posts
-
-#
-# Recent posts.
-#
-recent_posts_num: 10
-
-#
-# Pagination.
-#
-paginate: 10
-paginate_path: page/:num
-
-#
-# Social.
-#
-share_buttons: false
-ogp:
-  image_url: http://tianshan.github.io/assets/img/ogp.png
-  fb:
-    admin: # facebook admin id
-    app_id: # facebook application id
-
-#
-# Gems.
-#
+# Plugins
 gems:
-  - jemoji
   - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
 
-#
-# Styles: see "_sass/base/_variables.scss"
-#
+# mimic GitHub Pages with --safe
+whitelist:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
 
-#
-# !! Danger zone !!
-#
 
-include: ["_pages"]
+# Archives
+#  Type
+#  - GitHub Pages compatible archive pages built with Liquid ~> type: liquid (default)
+#  - Jekyll Archives plugin archive pages ~> type: jekyll-archives
+#  Path (examples)
+#  - Archive page should exist at path when using Liquid method or you can
+#    expect broken links (especially with breadcrumbs enabled)
+#  - <base_path>/tags/my-awesome-tag/index.html ~> path: /tags/
+#  - <base_path/categories/my-awesome-category/index.html ~> path: /categories/
+#  - <base_path/my-awesome-category/index.html ~> path: /
+categories:
+  type: liquid
+  path: /categories/
+tags:
+  type: liquid
+  path: /tags/
+# https://github.com/jekyll/jekyll-archives
+# jekyll-archives:
+#   enabled:
+#     - categories
+#     - tags
+#   layouts:
+#     category: archive-taxonomy
+#     tag: archive-taxonomy
+#   permalinks:
+#     category: /categories/:name/
+#     tag: /tags/:name/
 
-markdown: kramdown
-redcarpet:
-  extensions: ["autolink", "fenced_code_blocks", "strikethrough", "superscript", "with_toc_data", "tables", "footnotes", "no_intra_emphasis"]
-highlighter: rouge
 
-excerpt_separator: <!--more-->
+# HTML Compression
+# - http://jch.penibelst.de/
+compress_html:
+  clippings: all
+  ignore:
+    envs: development
 
-sass:
-  sass_dir: _sass
-  style: :compressed # or :expanded
 
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - LICENSE
-  - README.md
-  - vendor
