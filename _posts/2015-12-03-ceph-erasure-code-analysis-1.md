@@ -11,7 +11,7 @@ Ceph的EC目前支持append写，为丰富接口，对接nfs等，最近就在�
 
 <!--more-->
 
-###Placemeng Group
+### Placemeng Group
 
 PG全称Placement Group， 用于对象的第一层逻辑聚合，对象到PG的映射就是oid的一次取模，这层映射是不变的，所以当OSD变动时，不会导致大量元数据的变动。
 
@@ -24,7 +24,7 @@ PG层代码，主要有
 
 下面就EC的几个典型操作，分析下这层的逻辑。
 
-###Ceph的EC逻辑
+### Ceph的EC逻辑
 
 EC写，是client发送数据到主OSD，然后编码数据生成ObjectStore的Transaction，然后发送SubOp到对应的副OSD，都reply后，会回调完成。
 
@@ -38,7 +38,7 @@ EC read的流程如下，相对比较简单
 * 因为ec read需要多个osd的数据，所以只支持异步读。
 * EC是条带写的，所以读之前，会把读的范围，通过`ECUtil::stripe_info_t.offset_len_to_stripe_bounds`转换成对应每个osd需要读的范围。
 
-<img src="{{site.imageurl}}/2015-12-03-ec-read.png" width=50% value="ec read"/>
+![ec read]({{site.imageurl}}/2015-12-03-ec-read.png){:width="50%"}
 
 
 EC相关的分析链接：
