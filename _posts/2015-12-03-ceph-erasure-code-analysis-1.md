@@ -38,7 +38,7 @@ EC read的流程如下，相对比较简单
 * 因为ec read需要多个osd的数据，所以只支持异步读。
 * EC是条带写的，所以读之前，会把读的范围，通过`ECUtil::stripe_info_t.offset_len_to_stripe_bounds`转换成对应每个osd需要读的范围。
 
-![ec read]({{site.imageurl}}/2015-12-03-ec-read.png){:width="50%"}
+![ec read]({{site.imageurl}}/2015-12-03-ec-read.png){:width="75%"}
 
 
 EC相关的分析链接：

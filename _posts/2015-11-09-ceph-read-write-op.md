@@ -8,8 +8,8 @@ tag: ceph
 
 读OP：OSD_OP_READ
 
-<img src="{{site.imageurl}}/2015-11-09-do_osd_op_read.png" width=40% />
+![OSD_OP_READ]({{site.imageurl}}/2015-11-09-do_osd_op_read.png){:width="40%"}
 
 写OP：OSD_OP_WRITE
 
-![OSD_OP_READ]({{site.imageurl}}/2015-11-09-do_osd_op_write.png)
+![OSD_OP_WRITE]({{site.imageurl}}/2015-11-09-do_osd_op_write.png)

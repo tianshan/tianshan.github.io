@@ -11,7 +11,7 @@ MemStore总体的结构比较简单，Object通过Collection的概念来组织Ob
 
 ![memstore]({{site.imageurl}}/objectstore/memstore.jpg)
 
-###关键变量  
+### 关键变量  
 
 * object_hash  
     object的hash结构，使用了STL的unordered_map，类似于Java的HashMap。 object可以快速定位
@@ -25,7 +25,7 @@ MemStore总体的结构比较简单，Object通过Collection的概念来组织Ob
 1.分多个Collection的作用(对应不同pool？)  
 2.omap的映射还没整理
 
-###关键函数
+### 关键函数
 
 * `read(cid,oid,offset,len,bl,op_flags,allow_eio)`  
 读的情况比较简单，有读的请求会直接调用本函数。

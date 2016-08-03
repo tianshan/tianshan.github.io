@@ -14,7 +14,7 @@ Ceph 0.87， 系统ubuntu
 
 <!--more-->
 
-##配置monitor
+## 配置monitor
 
 1.登录到monitor节点
 
@@ -183,11 +183,11 @@ cluster 6d3c75f6-458b-4b29-b65f-e3083e7240db
         64 creating
 {% endhighlight %}
 
-##添加OSD
+## 添加OSD
 
 monitor启动后，就可以添加OSDs了。只有当集群有足够OSDs来处理object的副本时，集群才能达到 `active+clean`状态（例如，osd pool default size=2 需要至少两个OSDs）。 在monitor引导启动后，集群有了默认的CRUSH映射，然而，映射中还没有任何Ceph OSD 的守护进程映射到Ceph节点。
 
-###简单配置 {#short-form}
+### 简单配置 {#short-form}
 
 Ceph提供了 `ceph-disk` 工具，可以处理磁盘、分区或者目录。该工具通过自增的索引来创建OSD ID。并且该工具会把新的OSD自动添加到主机的CRUSH映射。执行 `ceph-disk -h` 来获得命令的详细信息。工具会自动执行下面[复杂配置](#long-form)的流程。
 
@@ -210,7 +210,7 @@ sudo ceph-disk activate /dev/hdd1
 {% endhighlight %}
 Note: 如果Ceph节点上没有 `/var/lib/ceph/bootstrop-osd/{cluster}.keyring` 需要添加参数 `--activate-key` 。
 
-###复杂配置 {#long-form}
+### 复杂配置 {#long-form}
 
 不利用工具的情况下，可以通过如下配置实现创建OSD，添加OSD到CRUSH映射。通过下面的过程可以更好的了解整个过程。分别登录node2和node3执行以下步骤。
 

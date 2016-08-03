@@ -31,10 +31,10 @@ rollback常见于数据库中，是对之前操作的撤销。Ceph中同样实�
 
 下面看下被删除对象的两个去处。
 
-###需要回滚的时候
+### 需要回滚的时候
 在集群状态发生变化的时候，pg会进入peering状态，然后发现pglog有不同时会merge日志，具体的函数为`PGLog::_merge_object_divergent_entries`。其中，在发现自己比权威日志多出一部分时，就会把多出的日志添加到`PG::PGLogEntryHandler`对象的`to_rollback`列表中。然后在下次记录日志调用`PG::append_log`时（比如下一次写操作），在`handler.apply(this, &t)`函数中生成回滚事务。
 
-###对象真正的删除
+### 对象真正的删除
 
 ![object-remove]({{site.imageurl}}/2015-01-13-ceph-ec-remove-object.png)
 

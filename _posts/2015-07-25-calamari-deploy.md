@@ -23,11 +23,11 @@ Calamari比较复杂，文档也比较少，记录下部署中遇到的坑。。
 部署
 ---
 
-###Ubuntu下的Calamari部署
+### Ubuntu下的Calamari部署
 
 可以[参考官方](http://calamari.readthedocs.org/en/latest/operations/server_install.html)的介绍。没有尝试过。。
 
-###主要是Centos的部署
+### 主要是Centos的部署
 
 * 从安装包部署 <https://bbs.ceph.org.cn/topic/135>
 
