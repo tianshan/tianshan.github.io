@@ -1,0 +1,853 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ceph," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="源码的编译见Ceph Compile Ceph 0.87， 系统ubuntu参考官方配置文档集群需要至少1个monitor和2个OSD（对应两个副本） 集群的配置会按照如下的结构，node1作为monitor，node2和node3作为OSD节点。">
+<meta name="keywords" content="ceph">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph 源码部署">
+<meta property="og:url" content="http://tianshan.github.io/2015-03-02-ceph-deploy/index.html">
+<meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:description" content="源码的编译见Ceph Compile Ceph 0.87， 系统ubuntu参考官方配置文档集群需要至少1个monitor和2个OSD（对应两个副本） 集群的配置会按照如下的结构，node1作为monitor，node2和node3作为OSD节点。">
+<meta property="og:image" content="http://tianshan.github.io/images/2015-03-02-ceph-arch.png">
+<meta property="og:updated_time" content="2017-07-02T12:12:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ceph 源码部署">
+<meta name="twitter:description" content="源码的编译见Ceph Compile Ceph 0.87， 系统ubuntu参考官方配置文档集群需要至少1个monitor和2个OSD（对应两个副本） 集群的配置会按照如下的结构，node1作为monitor，node2和node3作为OSD节点。">
+<meta name="twitter:image" content="http://tianshan.github.io/images/2015-03-02-ceph-arch.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://tianshan.github.io/2015-03-02-ceph-deploy/"/>
+
+
+
+
+
+  <title>Ceph 源码部署 | tianshan's blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-60561225-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tianshan's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2015-03-02-ceph-deploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/ts.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Ceph 源码部署</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-03-02T00:00:00+08:00">
+                2015-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015-03-02-ceph-deploy/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015-03-02-ceph-deploy/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>源码的编译见<a href="/2015-02-23-ceph-compile/">Ceph Compile</a></p>
+<p>Ceph 0.87， 系统ubuntu<br>参考<a href="http://ceph.com/docs/master/install/manual-deployment/" target="_blank" rel="external">官方配置文档</a><br>集群需要至少1个monitor和2个OSD（对应两个副本）</p>
+<p>集群的配置会按照如下的结构，node1作为monitor，node2和node3作为OSD节点。<br><img src="/images/2015-03-02-ceph-arch.png" alt="ceph-arch"></p>
+<a id="more"></a>
+<h2 id="配置monitor"><a href="#配置monitor" class="headerlink" title="配置monitor"></a>配置monitor</h2><p>1.登录到monitor节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh &#123;hostname&#125;</div></pre></td></tr></table></figure>
+<p>2.Ceph的默认配置目录是 <code>/etc/ceph</code> 。创建配置文件，默认是 <code>ceph.conf</code> ，其中ceph表示集群名</p>
+<p>3.集群ID</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#生成集群唯一ID</div><div class="line">uuidgen</div><div class="line">#把ID添加到配置文件</div><div class="line">fsid=&#123;UUID&#125;</div></pre></td></tr></table></figure>
+<p>4.添加初始monitor(s)和IP地址到配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mon initial menbers = &#123;hostname&#125;[,&#123;hostname&#125;]</div><div class="line">mon host = &#123;ip-address&#125;[,&#123;ip-address&#125;]</div></pre></td></tr></table></figure>
+<p>Note: 如果是IPv6，需要设置 <code>ms bind ipv6</code> 为 <code>true</code>，参考<a href="http://ceph.com/docs/master/rados/configuration/network-config-ref" target="_blank" rel="external">Network Configuration Reference</a>。</p>
+<p>5.创建集群密钥环</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#为monitor生成密钥</div><div class="line">ceph-authtool --create-keyring /tmp/ceph.mon.keyring --gen-key -n mon. --cap mon &apos;allow *&apos;</div><div class="line">#生成 `client.admin` 用户并添加该用户到密钥环</div><div class="line">sudo ceph-authtool --create-keyring /etc/ceph/ceph.client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon &apos;allow *&apos; --cap osd &apos;allow *&apos; --cap mds &apos;allow&apos;</div><div class="line">#添加 `client.admin` 密钥到 `ceph.mon.keyring`</div><div class="line">sudo ceph-authtool /tmp/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.admin.keyring</div></pre></td></tr></table></figure>
+<p>6.使用hostname，IP地址和FSID生成monitor映射。保存为 <code>/tmp/monmap</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">monmaptool --create --add &#123;hostname&#125; &#123;ip-address&#125; --fsid &#123;uuid&#125; /tmp/monmap</div><div class="line">#例如：</div><div class="line">monmaptool --create --add ubuntu 192.168.230.128 --fsid 6d3c75f6-458b-4b29-b65f-e3083e7240db /tmp/monmap</div></pre></td></tr></table></figure>
+<p>7.在monitor上创建一个默认的数据目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo mkdir -p /var/lib/ceph/mon/&#123;cluster-name&#125;-&#123;hostname&#125;</div><div class="line">#例如：</div><div class="line">sudo mkdir -p /var/lib/ceph/mon/ceph-ubuntu</div></pre></td></tr></table></figure>
+<p>详细配置见<a href="http://ceph.com/docs/master/rados/configuration/mon-config-ref#data" target="_blank" rel="external">Monitor Config Reference - Data</a></p>
+<p>8.将monitor映射和密钥环添加到monitor守护进程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sudo ceph-mon --mkfs -i &#123;hostname&#125; --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring</div><div class="line">#例如</div><div class="line">sudo ceph-mon --mkfs -i ubuntu --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring</div><div class="line">#实测，上一步创建文件夹可以不做，这一步会默认在/var/lib/ceph/mon/下创建对应文件夹</div></pre></td></tr></table></figure>
+<p>9.配置模板</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">    fsid = &#123;cluster-id&#125;</div><div class="line">    mon initial members = &#123;hostname&#125;[, &#123;hostname&#125;]</div><div class="line">    mon host = &#123;ip-address&#125;[, &#123;ip-address&#125;]</div><div class="line">    public network = &#123;network&#125;[, &#123;network&#125;]</div><div class="line">    cluster network = &#123;network&#125;[, &#123;network&#125;]</div><div class="line">    auth cluster required = cephx</div><div class="line">    auth service required = cephx</div><div class="line">    auth client required = cephx</div><div class="line">    osd journal size = &#123;n&#125;</div><div class="line">    filestore xattr use omap = true</div><div class="line">    osd pool default size = &#123;n&#125;  # Write an object n times.</div><div class="line">    osd pool default min size = &#123;n&#125; # Allow writing n copy in a degraded state.</div><div class="line">    osd pool default pg num = &#123;n&#125;</div><div class="line">    osd pool default pgp num = &#123;n&#125;</div><div class="line">    osd crush chooseleaf type = &#123;n&#125;</div></pre></td></tr></table></figure>
+<p>根据前面的配置，得到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">[global]</div><div class="line">    fsid = 6d3c75f6-458b-4b29-b65f-e3083e7240db</div><div class="line">    mon initial members = ubuntu</div><div class="line">    mon host = 192.168.230.128</div><div class="line">    public network = 192.168.230.0/24</div><div class="line">    auth cluster required = cephx</div><div class="line">    auth service required = cephx</div><div class="line">    auth client required = cephx</div><div class="line">    osd journal size = 1024</div><div class="line">    filestore xattr use omap = true</div><div class="line">    osd pool default size = 2</div><div class="line">    osd pool default min size = 1</div><div class="line">    osd pool default pg num = 333</div><div class="line">    osd pool default pgp num = 333</div><div class="line">    osd crush chooseleaf type = 1</div></pre></td></tr></table></figure>
+<p>10.新建 <code>done</code> 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">#标记monitor已经创建，准备好启动了。</div><div class="line">sudo touch /var/lib/ceph/mon/ceph-ubuntu/done</div></pre></td></tr></table></figure>
+<p>11.启动monitor</p>
+<ul>
+<li>在Ubuntu，使用Upstart</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">sudo start ceph-mon id=ubuntu</div><div class="line"></div><div class="line">#要允许守护进程在每次重启后启动必须创建空文件，如下：</div><div class="line">sudo touch /var/lib/ceph/mon/&#123;cluster-name&#125;-&#123;hostname&#125;/upstart</div><div class="line">#例如：</div><div class="line">sudo touch /var/lib/ceph/mon/ceph-ubuntu/upstart</div></pre></td></tr></table></figure>
+<blockquote>
+<p>启动monitor的时候如果遇到 start: Unknown job: ceph-mon, 是因为使用 <code>make install</code> 安装时不会安装 <a href="http://ceph.com/docs/master/rados/operations/operating/" target="_blank" rel="external">upstart script</a> ， 可以手动将 <code>src/upstart</code> 中的脚本复制到 <code>/etc/init/</code> ，但是该方法有个问题，应为编译安装的目录是/usr/local/bin，但upstart中配置文件的启动目录是/usr/bin，所以需要手动修改ceph-mon.conf中两处代码， `pre-start’ 中的test路径，和exec的执行路径。不知道有没有更好的方法。</p>
+</blockquote>
+<ul>
+<li>对于 Debian/CentOs/RHEL，使用sysvinit：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo /etc/init.d/ceph -c /etc/ceph/ceph.conf start mon.&#123;hostname&#125;</div></pre></td></tr></table></figure>
+<p>注意<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#centos下，也需要将ceph手动添加到启动项</div><div class="line">sudo cp ceph/src/init-ceph /etc/init.d/ceph</div><div class="line">#需要在mon数据目录添加sysvinit，在原文没有，不加的话会出现 mon.hostname not found</div><div class="line">sudo touch /var/lib/ceph/mon/ceph-ubuntu/sysvinit</div></pre></td></tr></table></figure></p>
+<p>12.验证Ceph创建的默认池</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ceph osd lspools</div><div class="line">#输出如下：</div><div class="line">0 rbd，</div></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>如果出现 python的import xx找不到，需要把ceph/src/pybind包含到Python查找路径下，例如，在.bashrc中, export PYTHONPATH=$PYTHONPATH:~/ceph/src/pybind</li>
+<li>如果出现 <code>OSError: librados.so.2</code> ，需要安装librados包(sudo apt-get install librados-dev)，详见<a href="http://ceph.com/docs/master/rados/api/librados-intro/" target="_blank" rel="external">librados-intro</a></li>
+<li>如果出现 <code>missing keyring, cannot use cephx for authentication</code> ，需要修改keyring的属性，详见<a href="http://ceph.com/docs/master/rados/configuration/auth-config-ref/#keysS" target="_blank" rel="external">auth-config-ref</a></li>
+</ul>
+</blockquote>
+<p>12.验证monitor正在运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">ceph -s</div><div class="line">#输出如下：</div><div class="line">cluster 6d3c75f6-458b-4b29-b65f-e3083e7240db</div><div class="line"> health HEALTH_ERR 64 pgs stuck inactive; 64 pgs stuck unclean; no osds</div><div class="line"> monmap e1: 1 mons at &#123;ubuntu=192.168.230.128:6789/0&#125;, election epoch 2, quorum 0 ubuntu</div><div class="line"> osdmap e1: 0 osds: 0 up, 0 in</div><div class="line"> pgmap v2: 64 pgs, 1 pools, 0 bytes data, 0 objects</div><div class="line">        0 kB used, 0 kB / 0 kB avail</div><div class="line">        64 creating</div></pre></td></tr></table></figure>
+<h2 id="添加OSD"><a href="#添加OSD" class="headerlink" title="添加OSD"></a>添加OSD</h2><p>monitor启动后，就可以添加OSDs了。只有当集群有足够OSDs来处理object的副本时，集群才能达到 <code>active+clean</code>状态（例如，osd pool default size=2 需要至少两个OSDs）。 在monitor引导启动后，集群有了默认的CRUSH映射，然而，映射中还没有任何Ceph OSD 的守护进程映射到Ceph节点。</p>
+<h3 id="简单配置"><a href="#简单配置" class="headerlink" title="简单配置 "></a><a href="#short-form">简单配置 </a></h3><p>Ceph提供了 <code>ceph-disk</code> 工具，可以处理磁盘、分区或者目录。该工具通过自增的索引来创建OSD ID。并且该工具会把新的OSD自动添加到主机的CRUSH映射。执行 <code>ceph-disk -h</code> 来获得命令的详细信息。工具会自动执行下面<a href="#long-form">复杂配置</a>的流程。</p>
+<p>1.准备OSD</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ssh &#123;node-name&#125;</div><div class="line"></div><div class="line">sudo ceph-disk prepare --cluster &#123;cluster-name&#125; --cluster-uuid &#123;uuid&#125; --fs-type &#123;ext4|xfs|btrfs&#125; &#123;data-path&#125; [&#123;journal-path&#125;]</div><div class="line">#例如</div><div class="line">sudo ceph-disk prepare --cluster ceph --cluster-uuid a7f64266-0894-4f1e-a635-d0aeaca0e993 --fs-type ext4 /dev/hdd1</div></pre></td></tr></table></figure>
+<p>2.激活OSD</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo ceph-disk activate &#123;data-path&#125; [--activate-key &#123;path&#125;]</div><div class="line">#例如</div><div class="line">sudo ceph-disk activate /dev/hdd1</div></pre></td></tr></table></figure>
+<p>Note: 如果Ceph节点上没有 <code>/var/lib/ceph/bootstrop-osd/{cluster}.keyring</code> 需要添加参数 <code>--activate-key</code> 。</p>
+<h3 id="复杂配置"><a href="#复杂配置" class="headerlink" title="复杂配置 "></a><a href="#long-form">复杂配置 </a></h3><p>不利用工具的情况下，可以通过如下配置实现创建OSD，添加OSD到CRUSH映射。通过下面的过程可以更好的了解整个过程。分别登录node2和node3执行以下步骤。</p>
+<p>1.登录到OSD主机</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh &#123;node-name&#125;</div></pre></td></tr></table></figure>
+<p>2.为OSD生成UUID</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">uuidgen</div></pre></td></tr></table></figure>
+<p>3.创建OSD，如果不设置UUID，在OSD启动时会自动设定。该命令会输出OSD的编号，在下面的步骤中会用到。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd create [&#123;uuid&#125;]</div></pre></td></tr></table></figure>
+<p>4.在新的OSD上创建默认目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo mkdir -p /var/lib/ceph/osd/ceph-&#123;osd-number&#125;</div></pre></td></tr></table></figure>
+<p>5.如果OSD是硬盘而不是系统，需要挂载到刚创建的目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sudo mkfs -t &#123;fstype&#125; /dev/&#123;hdd&#125;</div><div class="line">sudo mount -o user_xattr /dev/&#123;hdd&#125; /var/lib/ceph/osd/ceph-&#123;osd-number&#125;</div><div class="line">#user_xattr 表示启用扩展的用户属性</div><div class="line"></div><div class="line">#如果格式化为btrfs文件系统，且出现 `mkfs.btrfs: no such file or directory` ，需要安装btrfs，</div><div class="line">sudo apt-get install btrfs-tools </div><div class="line">#如果使用btrfs文件系统，则在mount时不需要 user_xattr 选项，该项btrfs默认支持该选项，否则会出错。</div></pre></td></tr></table></figure>
+<p>6.初始化OSD的数据目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ssh &#123;new-osd-host&#125;</div><div class="line">sudo ceph-osd -i &#123;osd-num&#125; --mkfs --mkkey --osd-uuid [&#123;uuid&#125;]</div></pre></td></tr></table></figure>
+<p>在运行 <code>ceph-osd --mkkey</code> 之前，该目录必须是空的。并且，ceph-osd 工具需要用参数 <code>--cluster</code> 指定自定义的集群名。</p>
+<p>注意</p>
+<ul>
+<li>OSD的大小要略于配置文件中的 <code>osd journal size</code> ，配置单位为MB。</li>
+<li>如果因为配置错误，需要删除osd的挂载目录，该目录是带有只读属性的，可以用chattr修改</li>
+</ul>
+<p>7.注册OSD的认证密钥。路径中 <code>ceph-{osd-num}</code> 的 <code>ceph</code> 值为 <code>$cluster-$id</code> 。如果集群名不是 <code>ceph</code> , 使用你对应的集群名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ceph auth add osd.&#123;osd-num&#125; osd &apos;allow *&apos; mon &apos;allow profile osd&apos; -i /var/lib/ceph/osd/ceph-&#123;osd-num&#125;/keyring</div></pre></td></tr></table></figure>
+<p>8.添加Ceph节点到CRUSH映射中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd crush add-bucket &#123;hostname&#125; host</div></pre></td></tr></table></figure>
+<p>9.把Ceph节点放到根节点 <code>default</code> 下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ceph osd crush move node1 root=default</div></pre></td></tr></table></figure>
+<p>10.把OSD添加到CRUSH映射，这样就可以开始接受数据了。 同样也可以反编译CRUSH的映射，把OSD添加到设备列表，把主机作为一个bucket(在它还没有加入CRUSH映射前），在主机中把设备当做项目添加，指定一个权重后重新编译并设置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ceph osd crush add &#123;id-or-name&#125; &#123;weight&#125; [&#123;bucket-type&#125;=&#123;bucket-name&#125; ...]</div><div class="line">#例如</div><div class="line">ceph osd crush add osd.0 1.0 host=node1</div></pre></td></tr></table></figure>
+<p>11.在添加一个OSD到Ceph后，OSD就在配置文件中了。但是还没有运行，OSD处于 <code>down</code> 和 <code>in</code> 状态。必选启动新的OSD才能开始接收数据。</p>
+<ul>
+<li>Ubuntu中，使用Upstart</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo start ceph-osd id=&#123;osd-num&#125;</div><div class="line">#例如：</div><div class="line">sudo start ceph-osd id=0</div></pre></td></tr></table></figure>
+<p>注意，和monitor一样，需要复制 <code>src/upstart</code> 下的 ceph-osd 到 <code>/etc/init/</code> ，同时需要修改文件中 <code>/usr/bin</code> 为 <code>/usr/local/bin</code>， <code>/usr/libexec</code> 为 <code>/usr/local/libexec</code> 。</p>
+<ul>
+<li>Debian/CentOS/RHEL中，使用sysvint</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">sudo /etc/init.d/ceph start osd.&#123;osd-num&#125;</div><div class="line">#例如：</div><div class="line">sudo /etc/init.d/ceph start osd.0</div><div class="line"></div><div class="line">#注意：sysvint下需要创建如下的空文件</div><div class="line">sudo touch /var/lib/ceph/osd/&#123;cluster-name&#125;-&#123;osd-num&#125;/sysvinit</div><div class="line">#例如：</div><div class="line">sudo touch /var/lib/ceph/osd/ceph-0/sysvinit</div></pre></td></tr></table></figure>
+<p>一旦启动了OSD，它就处于 <code>up</code> 和 <code>in</code> 状态。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一旦有了monitor和两个OSD启动并运行，通过如下的执行可以查看placement groups节点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">ceph -w</div><div class="line">#查看OSD树：   </div><div class="line">ceph osd tree</div><div class="line">#将会看到如下信息：</div><div class="line">    # id    weight  type name   up/down reweight</div><div class="line">    -1  2   root default</div><div class="line">    -2  2       host ubuntu</div><div class="line">    0   1           osd.0       up      1   </div><div class="line">    1   1           osd.1       up      1</div></pre></td></tr></table></figure>
+<p>要添加或移除额外的monitors，详见<a href="http://ceph.com/docs/master/rados/operations/add-or-rm-mons" target="_blank" rel="external">Add/Remove Monitors</a>。要添加或移除额外的Ceph OSD守护进程，详见<a href="http://ceph.com/docs/master/rados/operations/add-or-rm-osds" target="_blank" rel="external">Add/Remove OSDs</a>。</p>
+<p>注意，monitor和OSD的通信需要在防火墙添加例外，centos 6是iptables，centos 7是firewall。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ceph/" rel="tag"># ceph</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015-02-25-ceph-code-structure/" rel="next" title="Ceph 代码分析">
+                <i class="fa fa-chevron-left"></i> Ceph 代码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015-03-04-LVM/" rel="prev" title="Linux LVM逻辑卷的配置">
+                Linux LVM逻辑卷的配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/ts.jpg"
+               alt="tianshan" />
+          <p class="site-author-name" itemprop="name">tianshan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/tianshan/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置monitor"><span class="nav-number">1.</span> <span class="nav-text">配置monitor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加OSD"><span class="nav-number">2.</span> <span class="nav-text">添加OSD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单配置"><span class="nav-number">2.1.</span> <span class="nav-text">简单配置 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂配置"><span class="nav-number">2.2.</span> <span class="nav-text">复杂配置 </span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tianshan</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://tianshan.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://tianshan.github.io/2015-03-02-ceph-deploy/';
+          this.page.identifier = '2015-03-02-ceph-deploy/';
+          this.page.title = 'Ceph 源码部署';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://tianshan.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

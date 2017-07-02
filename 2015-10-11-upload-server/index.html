@@ -1,0 +1,741 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nginx," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="需求很简单，就是一个能够存取文件的服务器，其他的事情都由客户端自己完成。">
+<meta name="keywords" content="nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建简易的文件服务器">
+<meta property="og:url" content="http://tianshan.github.io/2015-10-11-upload-server/index.html">
+<meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:description" content="需求很简单，就是一个能够存取文件的服务器，其他的事情都由客户端自己完成。">
+<meta property="og:updated_time" content="2017-07-02T12:34:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="搭建简易的文件服务器">
+<meta name="twitter:description" content="需求很简单，就是一个能够存取文件的服务器，其他的事情都由客户端自己完成。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://tianshan.github.io/2015-10-11-upload-server/"/>
+
+
+
+
+
+  <title>搭建简易的文件服务器 | tianshan's blog</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-60561225-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">tianshan's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2015-10-11-upload-server/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/ts.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">搭建简易的文件服务器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-10-11T00:00:00+08:00">
+                2015-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015-10-11-upload-server/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2015-10-11-upload-server/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>需求很简单，就是一个能够存取文件的服务器，其他的事情都由客户端自己完成。</p>
+<a id="more"></a>
+<p>选定nginx服务器后，折腾怎么上传，最多的选择是编译添加nginx-upload-module。<br>不过看了下，官方版本v2.2很久没更新了，和最新的nginx编译会出现编译出错，使用了一些不再支持的函数。</p>
+<p>然后发现了国外13年的一片博文，<a href="https://coderwall.com/p/swgfvw/nginx-direct-file-upload-without-passing-them-through-backend" target="_blank" rel="external">Nginx direct file upload without passing them through backend</a>, 尝试了 <code>clientbodyinfileonly</code> 感觉不太好使又去搜寻。</p>
+<p>最后发现nginx-upload-module的github仓库的2.2分支最后14年有更新，而且解决了编译问题，所以还是回归这个，网上的教程也比较多。<br>可以通过 <code>git clone -b 2.2 https://github.com/vkholodkov/nginx-upload-module</code> 直接clone相应代码。<br>编译过程就不列出来了，demo里都有。</p>
+<p>nginx搞定后加个后端稍微处理下文件。默认的nginx接收文件后，会以hash文件名保存到<code>upload_store</code>定义的文件夹。 用django移动到指定目录下，并重命名。（django有点大了，后面学习下flask重搞下）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#搭建django</span></div><div class="line">django-admin.py startproject uploadmodule</div><div class="line"><span class="comment">#启动工程</span></div><div class="line">python manager.py runserver 0.0.0.0:9999</div></pre></td></tr></table></figure>
+<p>然后修改下<code>uploadmodule/urls.py</code>, 改成</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">urlpatterns = [</div><div class="line">    url(<span class="string">r'^upload/'</span>, <span class="string">'uploadmodule.view.upload'</span>),</div><div class="line">    <span class="comment">#第二个参数指定到view中的处理函数</span></div><div class="line">]</div></pre></td></tr></table></figure>
+<p>在<code>uploadmodule/</code>中添加<code>view.py</code>，相比原来的文章，加了LOG和一点小处理，还有把文件的移动改调用 <code>os.rename</code>，这样在同一个块设备上不会涉及数据复制。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> json</div><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> logging</div><div class="line"> </div><div class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse</div><div class="line"><span class="keyword">from</span> django.views.decorators.csrf <span class="keyword">import</span> csrf_exempt</div><div class="line"> </div><div class="line"></div><div class="line"><span class="comment"># init logger</span></div><div class="line">UPLOAD_FILE_PATH = os.path.join(os.path.dirname(__file__), <span class="string">'..'</span>, <span class="string">'..'</span>, <span class="string">'files'</span>)</div><div class="line">os.environ[<span class="string">"TZ"</span>] = <span class="string">"Asia/Shanghai"</span></div><div class="line">log_path = <span class="string">'log/upload.log'</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(os.path.dirname(log_path)):</div><div class="line">    os.makedirs(os.path.dirname(log_path))</div><div class="line"></div><div class="line">LOG = logging.getLogger(<span class="string">'view'</span>)</div><div class="line">LOG.setLevel(logging.DEBUG)</div><div class="line">filehandler = logging.handlers.TimedRotatingFileHandler(</div><div class="line">    log_path, <span class="string">'midnight'</span>)</div><div class="line">formatter = logging.Formatter(</div><div class="line">    <span class="string">'%(asctime)s %(name)-8s %(levelname)-5s: %(message)s'</span>)</div><div class="line">filehandler.setFormatter(formatter)</div><div class="line">filehandler.suffix = <span class="string">"%Y%m%d"</span></div><div class="line">LOG.addHandler(filehandler)</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@csrf_exempt</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span><span class="params">(request)</span>:</span></div><div class="line">    request_params = request.POST</div><div class="line">    file_name = request_params[<span class="string">'file_name'</span>]</div><div class="line">    file_content_type = request_params[<span class="string">'file_content_type'</span>]</div><div class="line">    file_md5 = request_params[<span class="string">'file_md5'</span>]</div><div class="line">    file_path = request_params[<span class="string">'file_path'</span>]</div><div class="line">    file_size = request_params[<span class="string">'file_size'</span>]</div><div class="line">    file_user = request_params.get(<span class="string">'user'</span>, <span class="keyword">None</span>)</div><div class="line"></div><div class="line">    ip_address = request.META.get(<span class="string">'HTTP_X_REAL_IP'</span>) <span class="keyword">or</span> request.META.get(<span class="string">'HTTP_REMOTE_ADD'</span>)</div><div class="line"></div><div class="line">    content = &#123;</div><div class="line">        <span class="string">'name'</span>: file_name,</div><div class="line">        <span class="string">'content_type'</span>: file_content_type,</div><div class="line">        <span class="string">'path'</span>: file_path,</div><div class="line">        <span class="string">'size'</span>: file_size,</div><div class="line">        <span class="string">'ip'</span>: ip_address,</div><div class="line">        <span class="string">'state'</span>: <span class="number">0</span>,</div><div class="line">        <span class="string">'error'</span>: <span class="string">''</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> file_user:</div><div class="line">        content[<span class="string">'state'</span>] = <span class="number">-1</span></div><div class="line">        content[<span class="string">'error'</span>] = <span class="string">'user field not set'</span></div><div class="line">        LOG.error(<span class="string">'no user request: %s %s'</span> % (file_name, ip_address) )</div><div class="line">        <span class="keyword">return</span> http_response(content)</div><div class="line"> </div><div class="line">    <span class="comment"># move to new name 'date+some_tag+name'</span></div><div class="line">    now = time.strftime(<span class="string">"%Y%m%d_%H%M"</span>, time.localtime())</div><div class="line">    new_file_name = <span class="string">'%s_%s'</span> % (now, file_name)</div><div class="line">    new_file_dir = os.path.join(UPLOAD_FILE_PATH, file_user)</div><div class="line">    new_file_path = os.path.join(new_file_dir, new_file_name)</div><div class="line"></div><div class="line">    LOG.info(<span class="string">'result: %s %s %s'</span> % (file_user, file_name, ip_address))</div><div class="line"></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(new_file_dir):</div><div class="line">        os.makedirs(new_file_dir)</div><div class="line"></div><div class="line">    <span class="comment"># 使用重命名修改文件属性，相比shutil.move是复制数据</span></div><div class="line">    os.rename(file_path, new_file_path)</div><div class="line"> </div><div class="line">    response = http_response(content)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> response</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">http_response</span><span class="params">(content)</span>:</span></div><div class="line">    content = json.dumps(content)</div><div class="line">    response = HttpResponse(content, content_type=<span class="string">'application/json; charset=utf-8'</span>)</div><div class="line">    <span class="keyword">return</span> response</div></pre></td></tr></table></figure>
+<p>最后，使用uwsgi来启动服务，添加配置文件<code>uwsgi.ini</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[uwsgi]</div><div class="line">socket = 127.0.0.1:9999</div><div class="line">master = true</div><div class="line">pidfile = /tmp/uwsgi-upload-server.pid</div><div class="line">daemonize = /tmp/uwsgi-upload-server.log</div><div class="line">process = 1 </div><div class="line">module = uploadmodule.wsgi:application</div><div class="line">max-requests = 100</div><div class="line">vacuum = true</div><div class="line">limit-as = 1024</div><div class="line">logdate = true</div><div class="line">env = DJANGO_SETTINGS_MODULE=uploadmodule.settings</div><div class="line">enable-threads = true</div></pre></td></tr></table></figure>
+<p>完整的demo放在<a href="https://github.com/tianshan/upload-server" target="_blank" rel="external">github</a>上了。</p>
+<p>参考:<br><a href="http://xianglong.me/article/use-nginx-upload-module-to-implement-uploading-file-feature/" target="_blank" rel="external">使用Nginx Upload Module实现上传文件功能</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nginx/" rel="tag"># nginx</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015-09-14-pytest-mock/" rel="next" title="pytest的mocking模块">
+                <i class="fa fa-chevron-left"></i> pytest的mocking模块
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015-11-09-ceph-read-write-op/" rel="prev" title="Ceph读写流程分析二">
+                Ceph读写流程分析二 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/ts.jpg"
+               alt="tianshan" />
+          <p class="site-author-name" itemprop="name">tianshan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/tianshan/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tianshan</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://tianshan.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://tianshan.github.io/2015-10-11-upload-server/';
+          this.page.identifier = '2015-10-11-upload-server/';
+          this.page.title = '搭建简易的文件服务器';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://tianshan.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
