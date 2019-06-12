@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/02/23/ceph-compile/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="初学ceph，记录下编译过程。">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T11:54:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ceph 编译">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/02/23/ceph-compile/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/02/23/ceph-compile/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/02/23/ceph-compile/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/02/23/ceph-compile/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/02/23/ceph-compile/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -371,24 +371,24 @@
 <li><p>其中 no tcmalloc found 的手动安装方法。tcmalloc是Google Preftools内的一个组件，可以通过如下方法安装。</p>
 <ul>
 <li><p>step 1. linux 64位先安装libunwind，32位不需要</p>
-<p>wget <a href="http://download.savannah.gnu.org/releases/libunwind/libunwind-1.1.tar.gz" target="_blank" rel="external">http://download.savannah.gnu.org/releases/libunwind/libunwind-1.1.tar.gz</a><br>tar zxvf libunwind-1.1.tar.gz<br>cd libunwind-1.1/<br>CFLAGS=-fPIC ./configure –enable-shared<br>make CFLAGS=-fPIC<br>make CFLAGS=-fPIC install</p>
+<p>wget <a href="http://download.savannah.gnu.org/releases/libunwind/libunwind-1.1.tar.gz" target="_blank" rel="noopener">http://download.savannah.gnu.org/releases/libunwind/libunwind-1.1.tar.gz</a><br>tar zxvf libunwind-1.1.tar.gz<br>cd libunwind-1.1/<br>CFLAGS=-fPIC ./configure –enable-shared<br>make CFLAGS=-fPIC<br>make CFLAGS=-fPIC install</p>
 </li>
 <li><p>step 2. 安装Google Performance Tools</p>
-<p>wget <a href="https://gperftools.googlecode.com/files/gperftools-2.4.tar.gz" target="_blank" rel="external">https://gperftools.googlecode.com/files/gperftools-2.4.tar.gz</a><br>tar zxvf gperftools-2.4.tar.gz<br>cd gpe<a href="http://blog.coolceph.com/?p=85rftools-2.4/" target="_blank" rel="external">http://blog.coolceph.com/?p=85rftools-2.4/</a><br>./configure<br>make -j8<br>make install<br>sudo sh -c ‘echo “/usr/local/lib” &gt; /etc/ld.so.conf.d/usr_local_lib.conf’<br>/sbin/ldconfig</p>
+<p>wget <a href="https://gperftools.googlecode.com/files/gperftools-2.4.tar.gz" target="_blank" rel="noopener">https://gperftools.googlecode.com/files/gperftools-2.4.tar.gz</a><br>tar zxvf gperftools-2.4.tar.gz<br>cd gpe<a href="http://blog.coolceph.com/?p=85rftools-2.4/" target="_blank" rel="noopener">http://blog.coolceph.com/?p=85rftools-2.4/</a><br>./configure<br>make -j8<br>make install<br>sudo sh -c ‘echo “/usr/local/lib” &gt; /etc/ld.so.conf.d/usr_local_lib.conf’<br>/sbin/ldconfig</p>
 </li>
 </ul>
 </li>
 </ul>
-<ol>
+<ol start="3">
 <li><code>make</code></li>
 </ol>
 <p>机器配置不好的话，编译需要时间比较长。可以使用”make -j”增加并发度，8表示同时执行的make方法数。</p>
-<ol>
+<ol start="4">
 <li><p><code>sudo make install</code></p>
 <p> 可执行文件会安装在 <code>/usr/lcoal/bin</code> ，这里有个坑，通过ceph-deploy安装的可执行文件会在 <code>/usr/bin</code> 会有不一样。</p>
 </li>
 </ol>
-<h2 id="centos"><a href="#centos" class="headerlink" title="centos"></a><a href="#centos">centos</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/ceph/ceph.git</div><div class="line"></div><div class="line">注意切换到一个release版本</div><div class="line"></div><div class="line">cd ceph</div><div class="line"></div><div class="line">./install-deps.sh</div><div class="line"></div><div class="line">./autogen.sh</div><div class="line"></div><div class="line">./configure</div><div class="line"></div><div class="line">make -j4</div><div class="line"></div><div class="line">sudo make install (可选)</div></pre></td></tr></table></figure>
+<h2 id="centos"><a href="#centos" class="headerlink" title="centos"></a><a href="#centos">centos</a></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ceph/ceph.git</span><br><span class="line"></span><br><span class="line">注意切换到一个release版本</span><br><span class="line"></span><br><span class="line">cd ceph</span><br><span class="line"></span><br><span class="line">./install-deps.sh</span><br><span class="line"></span><br><span class="line">./autogen.sh</span><br><span class="line"></span><br><span class="line">./configure</span><br><span class="line"></span><br><span class="line">make -j4</span><br><span class="line"></span><br><span class="line">sudo make install (可选)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>注：需要安装epel源<br>sudo yum install epel-release &amp;&amp; sudo yum update -y</p>
 </blockquote>
@@ -502,7 +502,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -513,9 +513,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -526,7 +524,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -605,10 +603,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2016/07/11/ceph-rgw-multipart/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="最近研究了跟了Ceph的RGW S3协议的multipart的一个bug15886，顺着bug分析了下多块上传的流程。问题主要是多块上传中，如果有相同upload id的重传，就有可能丢数据，目前H版和J版都已修复，并在s3-tests的master分支添加了对应的测试用例test_multipart_resend_first_finishes_last。 Multipart是客户端发起的一个分块">
+<meta property="og:locale" content="en">
 <meta property="og:image" content="http://tianshan.github.io/images/2016-07-11-ceph-rgw-multipart.png">
 <meta property="og:updated_time" content="2017-07-02T12:36:29.000Z">
 <meta name="twitter:card" content="summary">
@@ -133,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2016/07/11/ceph-rgw-multipart/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2016/07/11/ceph-rgw-multipart/">
 
 
 
@@ -182,7 +183,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -212,7 +213,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -222,7 +223,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -232,7 +233,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -242,7 +243,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -281,7 +282,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -326,8 +327,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/07/11/ceph-rgw-multipart/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/07/11/ceph-rgw-multipart/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/11/ceph-rgw-multipart/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -352,7 +352,7 @@
       
 
       
-        <p>最近研究了跟了Ceph的RGW S3协议的multipart的一个<a href="http://tracker.ceph.com/issues/15886" target="_blank" rel="external">bug15886</a>，顺着bug分析了下多块上传的流程。问题主要是多块上传中，如果有相同upload id的重传，就有可能丢数据，目前H版和J版都已修复，并在s3-tests的master分支添加了对应的测试用例<code>test_multipart_resend_first_finishes_last</code>。</p>
+        <p>最近研究了跟了Ceph的RGW S3协议的multipart的一个<a href="http://tracker.ceph.com/issues/15886" target="_blank" rel="noopener">bug15886</a>，顺着bug分析了下多块上传的流程。问题主要是多块上传中，如果有相同upload id的重传，就有可能丢数据，目前H版和J版都已修复，并在s3-tests的master分支添加了对应的测试用例<code>test_multipart_resend_first_finishes_last</code>。</p>
 <p>Multipart是客户端发起的一个分块上传的协议。首先是一个POST消息，请求upload id，然后就是每一块的PUT上传，PUT过程类似普通块的上传。<br>如下图，是multipart的put流程图。出错逻辑主要是函数<code>add_written_obj</code>，他的作用是，记录正在写的对象，如果出错，那么会在销毁processor时清除该对象。问题在于原来函数调用位置在<code>handle_obj_data</code>，也就是写对象之前，导致对象重复时，实际没有写入，但把原来正确的对象清除了。修正后在<code>throttle_data</code>中调用，改在对象写成功后，就不会有问题了。</p>
 <p>测试的用例是，先写A，然后以重传形式写B，然后complet B，再完成A。这时实际对象内容应该是A。在B写入时，发现upload id相同的分片存在，就会重新生成临时upload id，保证不重复，所以B也就是一个临时对象，最后complete的A为实际对象内容。</p>
 <p><img src="/images/2016-07-11-ceph-rgw-multipart.png" alt="Ceph RGW Multipart 流程图"></p>
@@ -467,9 +467,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -480,7 +478,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -543,10 +541,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

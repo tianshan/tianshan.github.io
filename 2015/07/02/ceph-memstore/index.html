@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/07/02/ceph-memstore/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="MemStore总体的结构比较简单，Object通过Collection的概念来组织Object，每个Collection有两个结构存储Object映射。">
+<meta property="og:locale" content="en">
 <meta property="og:image" content="http://tianshan.github.io/images/objectstore/memstore.jpg">
 <meta property="og:updated_time" content="2017-07-02T12:30:46.000Z">
 <meta name="twitter:card" content="summary">
@@ -133,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/07/02/ceph-memstore/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/07/02/ceph-memstore/">
 
 
 
@@ -182,7 +183,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -212,7 +213,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -222,7 +223,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -232,7 +233,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -242,7 +243,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -281,7 +282,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -326,8 +327,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/07/02/ceph-memstore/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/07/02/ceph-memstore/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/02/ceph-memstore/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -372,7 +372,7 @@
 </li>
 <li><p><code>_write_into_bl(src, offset, dst)</code><br>将src数据写到dst的offset位置后面。<br>实现步骤，新建bufferlist newdata，先拷贝dst到newdata，如果长度小于offset，则补0，然后将src数据append在newdata后面，最后dst的数据重新映射到newdata</p>
 </li>
-<li><p><code>_truncate(cid, oid, size)</code><br>调整object大小<br>如果size<o.len，复制o的前面size大小数据到新的bl，然后o重新映射到新的bl； 如果size="">o.len，新建size-o.len长度的bl，补0后append在o后面</o.len，复制o的前面size大小数据到新的bl，然后o重新映射到新的bl；></p>
+<li><p><code>_truncate(cid, oid, size)</code><br>调整object大小<br>如果size&lt;o.len，复制o的前面size大小数据到新的bl，然后o重新映射到新的bl；<br>如果size&gt;o.len，新建size-o.len长度的bl，补0后append在o后面</p>
 </li>
 <li><p><code>_remove(cid, oid)</code><br>从cid的collection的object_map和object_hash中删除oid</p>
 </li>
@@ -492,7 +492,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -503,9 +503,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -516,7 +514,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -595,10 +593,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

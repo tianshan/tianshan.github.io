@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/03/08/ceph-architecture/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="翻译自官网，原文：http://ceph.com/docs/master/architecture/ Ceph独特的提供了统一了object， block，和file storage的系统。Ceph高度可靠，容易管理，以及免费。Ceph的优势可以转移公司的IT基础建设和你的能力到管理海量的数据中。Ceph提供额外的扩展性–成千的客户端访问PB和EB大小的数据。一个Ceph节点利用商业硬件和智能守护">
+<meta property="og:locale" content="en">
 <meta property="og:image" content="http://tianshan.github.io/images/2015-03-08-stack.png">
 <meta property="og:image" content="http://tianshan.github.io/images/2015-03-08-daemons.png">
 <meta property="og:image" content="http://tianshan.github.io/images/2015-03-08-storage-1.png">
@@ -157,7 +158,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/03/08/ceph-architecture/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/03/08/ceph-architecture/">
 
 
 
@@ -206,7 +207,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -236,7 +237,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -246,7 +247,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -256,7 +257,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -266,7 +267,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -305,7 +306,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -350,8 +351,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/03/08/ceph-architecture/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/03/08/ceph-architecture/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/08/ceph-architecture/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -376,15 +376,15 @@
       
 
       
-        <p>翻译自官网，原文：<a href="http://ceph.com/docs/master/architecture/" target="_blank" rel="external">http://ceph.com/docs/master/architecture/</a></p>
+        <p>翻译自官网，原文：<a href="http://ceph.com/docs/master/architecture/" target="_blank" rel="noopener">http://ceph.com/docs/master/architecture/</a></p>
 <p>Ceph独特的提供了统一了object， block，和file storage的系统。Ceph高度可靠，容易管理，以及免费。Ceph的优势可以转移公司的IT基础建设和你的能力到管理海量的数据中。Ceph提供额外的扩展性–成千的客户端访问PB和EB大小的数据。一个Ceph节点利用商业硬件和智能守护进程，一个Ceph存储集群可容纳大量的节点，这些节点互相通信来动态复制以及重分配数据。</p>
 <p><img src="/images/2015-03-08-stack.png" alt="stack"></p>
 <a id="more"></a>
-<h2 id="Ceph的存储集群"><a href="#Ceph的存储集群" class="headerlink" title="Ceph的存储集群"></a>Ceph的存储集群</h2><p>Ceph基于RADOS(Reliable Autonomic Distributed Object Store)提供了无限可扩展的存储集群，详细可以阅读<a href="http://ceph.com/papers/weil-rados-pdsw07.pdf" target="_blank" rel="external">论文</a></p>
+<h2 id="Ceph的存储集群"><a href="#Ceph的存储集群" class="headerlink" title="Ceph的存储集群"></a>Ceph的存储集群</h2><p>Ceph基于RADOS(Reliable Autonomic Distributed Object Store)提供了无限可扩展的存储集群，详细可以阅读<a href="http://ceph.com/papers/weil-rados-pdsw07.pdf" target="_blank" rel="noopener">论文</a></p>
 <p>一个Ceph存储集群包含两类守护进程</p>
 <ul>
-<li><a href="http://ceph.com/docs/master/glossary/#term-ceph-monitor" target="_blank" rel="external"><em>Ceph Monitor</em></a></li>
-<li><a href="http://ceph.com/docs/master/glossary/#term-ceph-osd-daemon" target="_blank" rel="external"><em>Ceph OSD Daemon</em></a></li>
+<li><a href="http://ceph.com/docs/master/glossary/#term-ceph-monitor" target="_blank" rel="noopener"><em>Ceph Monitor</em></a></li>
+<li><a href="http://ceph.com/docs/master/glossary/#term-ceph-osd-daemon" target="_blank" rel="noopener"><em>Ceph OSD Daemon</em></a></li>
 </ul>
 <p><img src="/images/2015-03-08-daemons.png" alt="daemons"></p>
 <p>Ceph monitor维护了集群映射的主拷贝。Ceph的monitors集群通过监控守护进程的失效确保了集群的高可靠性。存储集群客户端通过montior检索集群映射的拷贝。<br>Ceph OSD 守护进程检查自身的状态以及其他OSDs的状态并报告给monitors。</p>
@@ -396,7 +396,7 @@
 <p>Note: 对象的ID在整个集群中都是唯一的，并不只是本地文件系统。</p>
 <h3 id="扩展性和高可靠性"><a href="#扩展性和高可靠性" class="headerlink" title="扩展性和高可靠性"></a>扩展性和高可靠性</h3><p>在传统架构中，客户端需要和中心组件交互（例如网关，broker，API，facade等），中心组件往往是进入一个复杂子系统的唯一入口。这样的设定引入了单点故障，就限制了性能和可靠性。</p>
 <p>Ceph去除了中心网关来使客户端能够和OSD守护进程直接交互。OSD守护进程在其他节点上创建对象副本来确保数据安全和高可靠性。Ceph同时使用了一个monitor集群来确保可靠性。为了实现去中心化，Ceph使用了CRUSH算法。</p>
-<h4 id="CRUSH介绍"><a href="#CRUSH介绍" class="headerlink" title="CRUSH介绍"></a>CRUSH介绍</h4><p>Ceph客户端和OSD守护进程都使用CRUSH算法来高效的计算出对象位置信息，而不是依赖于一个中心的查询表。CRUSH使用了智能的数据副本来确保弹性，这点更适合超大规模的存储。接下来的章节提供了CRUSH如何运作的额外细节。CRUSH的详细讨论见<a href="http://ceph.com/papers/weil-crush-sc06.pdf" target="_blank" rel="external">论文</a>.</p>
+<h4 id="CRUSH介绍"><a href="#CRUSH介绍" class="headerlink" title="CRUSH介绍"></a>CRUSH介绍</h4><p>Ceph客户端和OSD守护进程都使用CRUSH算法来高效的计算出对象位置信息，而不是依赖于一个中心的查询表。CRUSH使用了智能的数据副本来确保弹性，这点更适合超大规模的存储。接下来的章节提供了CRUSH如何运作的额外细节。CRUSH的详细讨论见<a href="http://ceph.com/papers/weil-crush-sc06.pdf" target="_blank" rel="noopener">论文</a>.</p>
 <h4 id="集群映射"><a href="#集群映射" class="headerlink" title="集群映射"></a>集群映射</h4><p>Ceph需要客户端和OSD守护进程知道集群的拓扑，包括了5个映射集合，这就是 “集群映射”。</p>
 <p><strong>1.The Monitor Map:</strong> 包括集群的 <code>fsid</code> ，位置，名字地址，和每一个monitor端口。同时指示了映射的创建时间，和最后的修改时间。查看monitor的映射，通过命令 <code>ceph mon dump</code> 。</p>
 <p><strong>2.The OSD Map:</strong> 包括集群 <code>fdis</code> ，映射创建时间和修改时间，池的列表，副本大小，PG个数，OSDs的列表以及他们的状态（例如 <code>up</code> ， <code>in</code> ）。查看OSD映射，执行 <code>ceph osd dump</code> 。</p>
@@ -405,14 +405,14 @@
 <p><strong>5.The MDS Map:</strong> 包含当前MDS映射周期，映射的创建时间，最后的修改时间。 同时包含了存储员数据的池子，元数据服务器的列表，以及哪些元数据服务器是 <code>up</code> 和 <code>in</code> 状态的。 查看MDS映射，执行 <code>ceph mds map</code> 。</p>
 <p>每一个映射包含了一个操作状态修改的迭代历史。Ceph Monitor维护了一个集群映射的主拷贝，包括集群成员，状态，修改，以及整体存储集群的健康状况。</p>
 <h4 id="高可靠性Monitors"><a href="#高可靠性Monitors" class="headerlink" title="高可靠性Monitors"></a>高可靠性Monitors</h4><p>在客户端能够读写数据前，需要先联系Monitor来获得集群映射的最近拷贝。Ceph的存储集群在有一个monitor就可以工作；然而，这会带来了单点故障（例如，如果monitor宕机，客户端就不能读写数据了）</p>
-<p>为了增加可靠性和容错性，Ceph支持monitors集群。在monitors集群中，延迟和其他错误会导致一个或者更多的monitors的状态落后于集群。因此，Ceph必须在大量monitor实例中达成一致，不管集群的状态。Ceph总是使用一个主要的monitor（例如，1,2:3,4:5,4:6，等）和<a href="http://en.wikipedia.org/wiki/Paxos_(computer_science" target="_blank" rel="external">pacos</a>)算法就集群当前状态在monitors之间达成一致。</p>
-<p>monitors配置的详细说明见 <a href="http://ceph.com/docs/master/rados/configuration/mon-config-ref" target="_blank" rel="external">Monitor Config Reference</a></p>
+<p>为了增加可靠性和容错性，Ceph支持monitors集群。在monitors集群中，延迟和其他错误会导致一个或者更多的monitors的状态落后于集群。因此，Ceph必须在大量monitor实例中达成一致，不管集群的状态。Ceph总是使用一个主要的monitor（例如，1,2:3,4:5,4:6，等）和<a href="http://en.wikipedia.org/wiki/Paxos_(computer_science" target="_blank" rel="noopener">pacos</a>)算法就集群当前状态在monitors之间达成一致。</p>
+<p>monitors配置的详细说明见 <a href="http://ceph.com/docs/master/rados/configuration/mon-config-ref" target="_blank" rel="noopener">Monitor Config Reference</a></p>
 <h4 id="高可靠性验证"><a href="#高可靠性验证" class="headerlink" title="高可靠性验证"></a>高可靠性验证</h4><p>为了区分用户以及抵御中间人攻击，Ceph提供 <code>Cephx</code> 验证系统俩授权用户和守护进程。</p>
 <blockquote>
 <p>注意，Cephx协议并不在传输过程或者其他对数据加密（例如，SSL/TLS）。</p>
 </blockquote>
 <p>Ceph使用共享密钥来授权，意味着客户端和monitor集群都会有客户端的密钥。如此的验证协议就是双方都能给对方证明拥有密钥的拷贝而不用真的展示。这创建了共同的授权，集群确定用户拥有密钥，并且用户确定集群拥有密钥的拷贝。</p>
-<p>Ceph密钥的可伸缩性使得Ceph对象存储不需要一个中心接口，这意味着Ceph客户端需要和OSDs直接交互。为了保护数据，Ceph提供 <code>cephx</code> 验证系统，用来给用户操作客户端授权。 <code>cephx</code> 协议的操作方法类似 <a href="http://en.wikipedia.org/wiki/Kerberos_(protocol" target="_blank" rel="external">Kerberos</a>)。</p>
+<p>Ceph密钥的可伸缩性使得Ceph对象存储不需要一个中心接口，这意味着Ceph客户端需要和OSDs直接交互。为了保护数据，Ceph提供 <code>cephx</code> 验证系统，用来给用户操作客户端授权。 <code>cephx</code> 协议的操作方法类似 <a href="http://en.wikipedia.org/wiki/Kerberos_(protocol" target="_blank" rel="noopener">Kerberos</a>)。</p>
 <p>用户或者执行者调用Ceph客户端来和monitor通信。不同于Kerberos，每一个monitor都可以授权用户和分发密钥，所以不存在单点故障或者瓶颈。monitor返回一个类似于Kerberos ticket的授权数据结构，包含一个回话钥匙用来获得Ceph服务。这个会话钥匙本身使用用户的永久密钥加密，所以只有对应的用户才能向Ceph monitor(s)请求服务。客户端然后使用会话钥匙来向monitor请求服务，monitor会提供ticket给客户端，授权客户端访问OSDs处理数据的权限。Ceph monitors和OSDs共享一个密钥，所以客户端可以使用monitor提供的ticket访问集群中的任意OSD或者元数据服务器。类似于Kerberos， <code>cephx</code> 的tickets会过期，所以攻击者不能偷偷的使用过期的ticket或者会话钥匙。这种形式的授权可以防止攻击者通过访问通信媒介用其他用户的id伪造假消息或者改变其他用户正常的消息，只要用户的密钥不在过期前泄露。</p>
 <p>要使用 <code>cephx</code> ，管理员必须先设定用户。在下面的途中， <code>client.admin</code> 从命令行调用 <code>ceph auth get-or-create-key</code> 来生成用户名和密钥。Ceph的 <code>auth</code> 子系统生成用户名和密钥，存储一份到monitor(s)并发回给 <code>client.admin</code> 用户。这意味着客户端和monitor共享一个密钥。</p>
 <blockquote>
@@ -424,13 +424,13 @@
 <p><code>cephx</code> 协议授权通信在客户端机器和Ceph服务器之间。每一条消息的发送在客户端和服务器之间，然后初始化授权，用ticket签名后，monitors、OSDs和元数据服务器就可以验证共享密钥了。</p>
 <p><img src="/images/2015-03-08-auth-3.png" alt="auth-3"></p>
 <p>授权提供的Ceph客户端和服务器主机之间的协议。授权不会超出Ceph客户端之外。如果用户从远程主机访问Ceph客户端，Ceph的授权不会应用到用户主机到客户端主机之间。</p>
-<p>详细的配置，见<a href="http://ceph.com/docs/master/rados/configuration/auth-config-ref" target="_blank" rel="external">Ceph Config Guide</a>。用户管理的详细配置，见<a href="http://ceph.com/docs/master/rados/operations/user-management" target="_blank" rel="external">User Mangement</a>。</p>
+<p>详细的配置，见<a href="http://ceph.com/docs/master/rados/configuration/auth-config-ref" target="_blank" rel="noopener">Ceph Config Guide</a>。用户管理的详细配置，见<a href="http://ceph.com/docs/master/rados/operations/user-management" target="_blank" rel="noopener">User Mangement</a>。</p>
 <h4 id="支撑超大规模的智能守护进程"><a href="#支撑超大规模的智能守护进程" class="headerlink" title="支撑超大规模的智能守护进程"></a>支撑超大规模的智能守护进程</h4><p>在许多集群架构中，集群成员的主要目的是提供中心化的接口，就是节点可以访问。这类中心化的接口通过双重调度向客户端提供服务–这就会在PB到EB规模时造成了巨大的瓶颈。</p>
 <p>Ceph去除了这样的瓶颈：Ceph的OSD守护进程和客户端是集群感知的。类似于Ceph客户端，每一个OSD守护进程知道集群中其他ISD守护进程。这使得OSD守护进程可以和其他OSD守护进程和monitors直接交互。除此以外，这使得客户端能够直接和OSD守护进程交互。</p>
 <p>Ceph客户端，monitor，OSD守护进程能够相互交互，意味着OSD守护进程可以利用Ceph节点的CPU和RAM很容易的执行那些使中心服务器负担的任务。计算能力的利用会带来如下几点益处：</p>
 <p>1.OSDs直接服务客户端：因为网络设备可支持的连接数是有限的，一个中心化的系统在大规模系统中有较低的物理上限。通过使客户端和OSD守护进程直连，Ceph同时增加了性能和整个系统的容量，并移除了单点故障。当需要时，客户端可以和OSD守护进程保持一个会话，而不是中心服务器。</p>
-<p>2.OSD成员和状态：OSD守护进程加入一个集群并报告状态。在最底层，OSD守护进程状态为 <code>up</code> 或者 <code>down</code> 反映是否在运行并且能够服务客户端。如果OSD守护进程状态是 <code>down</code> 和 <code>in</code> ，这个状态表示OSD守护进程已经失效。如果OSD守护进程不在运行（例如宕机了），OSD不能通知Monitor它 <code>down</code> 了。monitor可以周期性的ping OSD守护进程来确定他是运行状态。然而，Ceph同样授权OSD守护进程来决定相邻的OSD守护进程是否是 <code>down</code> 来更新集群映射并报告给monitor(s)。这意味着monitors可以保持为轻量级的处理方法。额外的细节见<a href="http://ceph.com/docs/master/rados/operations/monitoring-osd-pg/#monitoring-osds" target="_blank" rel="external">Monitoring OSDs</a>和<a href="http://ceph.com/docs/master/rados/configuration/mon-osd-interaction" target="_blank" rel="external">Heartbeats</a>。</p>
-<p>3.数据清洗：为了维护数据干净和一致性，OSD守护进程可以在pg内清洗对象。OSD守护进程可以在pg内和其他OSD的对象副本比较元数据。清洗方法（通常一天一次）捕获bugs或者文件系统错误。OSD守护进程同样通过逐位比较对象中数据执行更深层的清洗。深层清洗（通常一周一次）会发现轻清洗不能发现的硬盘坏扇区。清洗的详细配置见<a href="http://ceph.com/docs/master/rados/configuration/osd-config-ref#scrubbing" target="_blank" rel="external">Data Scrubbing</a></p>
+<p>2.OSD成员和状态：OSD守护进程加入一个集群并报告状态。在最底层，OSD守护进程状态为 <code>up</code> 或者 <code>down</code> 反映是否在运行并且能够服务客户端。如果OSD守护进程状态是 <code>down</code> 和 <code>in</code> ，这个状态表示OSD守护进程已经失效。如果OSD守护进程不在运行（例如宕机了），OSD不能通知Monitor它 <code>down</code> 了。monitor可以周期性的ping OSD守护进程来确定他是运行状态。然而，Ceph同样授权OSD守护进程来决定相邻的OSD守护进程是否是 <code>down</code> 来更新集群映射并报告给monitor(s)。这意味着monitors可以保持为轻量级的处理方法。额外的细节见<a href="http://ceph.com/docs/master/rados/operations/monitoring-osd-pg/#monitoring-osds" target="_blank" rel="noopener">Monitoring OSDs</a>和<a href="http://ceph.com/docs/master/rados/configuration/mon-osd-interaction" target="_blank" rel="noopener">Heartbeats</a>。</p>
+<p>3.数据清洗：为了维护数据干净和一致性，OSD守护进程可以在pg内清洗对象。OSD守护进程可以在pg内和其他OSD的对象副本比较元数据。清洗方法（通常一天一次）捕获bugs或者文件系统错误。OSD守护进程同样通过逐位比较对象中数据执行更深层的清洗。深层清洗（通常一周一次）会发现轻清洗不能发现的硬盘坏扇区。清洗的详细配置见<a href="http://ceph.com/docs/master/rados/configuration/osd-config-ref#scrubbing" target="_blank" rel="noopener">Data Scrubbing</a></p>
 <p>4.副本：类似于客户端，OSD守护进程使用CRUSH算法，但是OSD用它来计算对象的副本该存在什么地方（重平衡也会用到）。在典型的写场景，客户端使用CRUSH算法来计算存放对象的位置，映射对象到pool和pg，然后查看CRUSH映射来发现pg的主OSD。</p>
 <p>客户端把对象写到对应pg的主OSD。然后，主OSD在自己的CRUSH映射拷贝中发现第二和第三OSDs来放置副本，然后复制对象到第二第三OSDs（额外副本数）中对应的pg，在确认数据成功存储后（注，这里的存储成功指成功存储到内存缓冲区）回应给客户端。</p>
 <p><img src="/images/2015-03-08-data-1.png" alt="data-1"></p>
@@ -448,7 +448,7 @@
 <li><p>要使用的CRUSH规则集</p>
 </li>
 </ul>
-<p>详细见<a href="http://ceph.com/docs/master/rados/operations/pools#set-pool-values" target="_blank" rel="external">Set Pool Values</a></p>
+<p>详细见<a href="http://ceph.com/docs/master/rados/operations/pools#set-pool-values" target="_blank" rel="noopener">Set Pool Values</a></p>
 <h4 id="映射PGs到OSDs"><a href="#映射PGs到OSDs" class="headerlink" title="映射PGs到OSDs"></a>映射PGs到OSDs</h4><p>每个pool有一定数量的pg。CRUSH直接映射PGs到OSDs。当客户端存储数据时，CRUSH映射每一个对象到pg3。</p>
 <p>映射对象到pg在OSD守护进程和客户端之间创建了一个间接层。Ceph存储集群必须能够在存数据时动态的扩大（或者收缩）以及重平衡。如果客户端知道某个OSD守护进程所拥有的对象，这就在客户端和OSD守护进程创建了一个紧密的耦合。相反，CRUSH算法映射每一个对象到pg然后映射每一个pg到一个或者多个OSD守护进程。这一层费直接联接允许Ceph在新OSD守护进程上线或者失效OSD守护进程恢复时动态重平衡。下面的图描述了CRUSH如何映射对象到pgs，以及pgs到OSDs。</p>
 <p><img src="/images/2015-03-08-map-1.png" alt="map-1"></p>
@@ -460,7 +460,7 @@
 <p>客户端唯一需要的输入是对象ID和pool。很简单：Ceph存储数据在有命名的pool中（例如，”liverpool”）。当客户端想要存储有命名的对象（例如: “john”, “<br>paul”, “george”, “ringo” 等），它会用对象名的哈希值，pool中的PGs数，pool名字俩计算pg。客户端使用如下步骤计算：</p>
 <p>1.客户端输入pool ID和对象ID（例如，pool=”liverpool”, object-id=”john”）。<br>2.Ceph拿到对象ID然后计算哈希值。<br>3.用哈希值取余PGs的数量（例如，58）然后得到PG ID。<br>4.Ceph用pool获得pool ID（例如，”liverpool”=4）。<br>5.Ceph连接pool ID到PG ID前面（例如，4.58）</p>
 <p>计算对象位置远快于在会话中查询对象位置。CRUSH算法允许客户端来计算对象要存的位置，并且允许客户端连接主OSD来存储或者检索对象。</p>
-<h4 id="Peering-and-sets"><a href="#Peering-and-sets" class="headerlink" title="Peering and sets"></a>Peering and sets</h4><p>在前面的章节中，我们注意到OSD守护进程互相检查心跳然后报告给monitor。OSD守护进程做的另外一个是 ‘peering’ ，该方法使所有存储Placement Group(PG)的OSDs对PG中所有对象（以及他们的元数据）的状态达成一致。事实上，OSD守护进程<a href="http://ceph.com/docs/master/rados/configuration/mon-osd-interaction#osds-report-peering-failure" target="_blank" rel="external">报告对等失败</a>给monitors。对等问题通常是自己解决；然而，如果这个问题仍然存在，可以参考<a href="http://ceph.com/docs/master/rados/troubleshooting/troubleshooting-pg#placement-group-down-peering-failure" target="_blank" rel="external">Troubleshooting Peering Failure</a>章节。</p>
+<h4 id="Peering-and-sets"><a href="#Peering-and-sets" class="headerlink" title="Peering and sets"></a>Peering and sets</h4><p>在前面的章节中，我们注意到OSD守护进程互相检查心跳然后报告给monitor。OSD守护进程做的另外一个是 ‘peering’ ，该方法使所有存储Placement Group(PG)的OSDs对PG中所有对象（以及他们的元数据）的状态达成一致。事实上，OSD守护进程<a href="http://ceph.com/docs/master/rados/configuration/mon-osd-interaction#osds-report-peering-failure" target="_blank" rel="noopener">报告对等失败</a>给monitors。对等问题通常是自己解决；然而，如果这个问题仍然存在，可以参考<a href="http://ceph.com/docs/master/rados/troubleshooting/troubleshooting-pg#placement-group-down-peering-failure" target="_blank" rel="noopener">Troubleshooting Peering Failure</a>章节。</p>
 <blockquote>
 <p>注意：状态达成一致并不意味着PGs有最新的内容。</p>
 </blockquote>
@@ -474,7 +474,7 @@
 <h4 id="重平衡"><a href="#重平衡" class="headerlink" title="重平衡"></a>重平衡</h4><p>当添加一个OSD守护进程到存储集群时，集群映射就会用新的OSD更新。回看<a href="#计算PG的ID">计算PG IDs</a>，这会改变集群映射。因此，它改变了对象放置，因为它改变了计算的输入。下面的图描述了重平衡过程（尽管非常粗糙，因为它在大集群中基本影响很小），一些但并不是所有PGs从已有的OSDs（OSD 1和OSD 2）迁移到新的OSD（OSD 3）。就算在重平衡中，Ceph也是稳定的。许多pg仍然是原来配置，每一个OSD获得一些新的容量，所以在重平衡结束后新OSD不会出现负载峰值。</p>
 <p><img src="/images/2015-03-08-rebalance-1.png" alt="rebalance-1"></p>
 <h4 id="数据一致性"><a href="#数据一致性" class="headerlink" title="数据一致性"></a>数据一致性</h4><p>作为维护数据一致性和干净的一部分，Ceph同样可以在pg内清洗对象。也就是说，OSDs可以在一个pg内和其他OSDs的pg存储的副本比较对象元数据。清洗（通常是一天一次）捕获OSD的bugs和文件系统错误。OSD守护进程同样通过逐位比较对象中数据执行更深层的清洗。深层清洗（通常一周一次）会发现轻清洗不能发现的硬盘坏扇区。</p>
-<p>清洗的详细配置见<a href="http://ceph.com/docs/master/rados/configuration/osd-config-ref#scrubbing" target="_blank" rel="external">Data Scrubbing</a>。</p>
+<p>清洗的详细配置见<a href="http://ceph.com/docs/master/rados/configuration/osd-config-ref#scrubbing" target="_blank" rel="noopener">Data Scrubbing</a>。</p>
 <h3 id="纠删码"><a href="#纠删码" class="headerlink" title="纠删码"></a>纠删码</h3><p>使用纠删码的pool存储每个对象为 <code>K+M</code> 块。分为K个数据块和M个编码块。该pool被配置为K+M大小，所以每个块都存在活动集中的一个OSD。块的排列存储为对象的属性。</p>
 <p>例如，使用纠删码的pool被创建有5个OSDs（K+M=5），支持两块丢失（M=2）。</p>
 <h4 id="读写编码块"><a href="#读写编码块" class="headerlink" title="读写编码块"></a>读写编码块</h4><p>当包含 <code>ABCDEFGHI</code> 的对象 <strong>NYAN</strong> 写到pool时，纠删码函数简单的分割内容到3个块：第一块包含 <code>ABC</code> ，第二块包含 <code>DEF</code> 和最后一块 <code>GHI</code> 。如果内容不是K的倍数，会添加内容直到满足。该函数同时创建了两个编码块：第四块 <code>YXY</code> 和第五块 <code>GQC</code> 。每一块都存储到活动集的OSD中。这些块会存到名字（ <strong>NYAN</strong>）相同的对象中，但是在不同的OSDs上。除了名字，块的创建顺序也必须保留，并存储在对象的属性中（ <code>shard_t</code> )。块1 包含 <code>ABC</code> ，存储在OSD5上，而块4包含 <code>YXY</code> 存储在OSD3上。</p>
@@ -493,9 +493,9 @@
 <p>但是以外发生了。如果D2v2还没写入时OSD1失效了，对象的版本2只写了一部分：OSD3有1个块，但是不够恢复。它就会丢失两个块：D1v2和D2v2，纠删码参数K=2,M=1需要至少2个块来重建第三块。OSD4成为了新的主要的，发现日志记录 <code>last_complete</code> （也就是，这条记录之前的所有对象是可以在之前的活动集的OSDs获得的）是1,1，然后这会变成新的权威日志的head。</p>
 <p><img src="/images/2015-03-08-erasure-coding-7.png" alt="erasure-coding-7"></p>
 <p>OSD3上发现的日志记录 1,2 和OSD4上新的权威日志有分歧：然后他就被抛弃了，包含块C1v2块的文件就被删除了。然后D1v1块会在数据清理时通过解码函数重建并存储新的主OSD 4。</p>
-<p>额外的细节见<a href="https://github.com/ceph/ceph/blob/40059e12af88267d0da67d8fd8d9cd81244d8f93/doc/dev/osd_internals/erasure_coding/developer_notes.rst" target="_blank" rel="external">Erasure Code Notes</a></p>
+<p>额外的细节见<a href="https://github.com/ceph/ceph/blob/40059e12af88267d0da67d8fd8d9cd81244d8f93/doc/dev/osd_internals/erasure_coding/developer_notes.rst" target="_blank" rel="noopener">Erasure Code Notes</a></p>
 <h3 id="缓存层"><a href="#缓存层" class="headerlink" title="缓存层"></a>缓存层</h3><p>缓存层可以给客户端提供后端存储层的数据子集更好的I/O表现。缓存层包含相对快速，昂贵存储设备（例如，ssd）上创建的pool，配置用来当做缓存层，以及一个后端pool，不管是纠删编码的或者是相对缓慢、便宜的设备配置为商业存储层。Ceph对象处理处理放置对象的位置，层级代理决定向缓存还是后端存储写入对象。所以，缓存层和后端存储层对客户端来说都是透明的。</p>
-<p><img src="/images/2015-03-08-cache-1.png" alt="cache-1"><br>额外细节见<a href="http://ceph.com/docs/master/rados/operations/cache-tiering" target="_blank" rel="external">Cache Tiering</a></p>
+<p><img src="/images/2015-03-08-cache-1.png" alt="cache-1"><br>额外细节见<a href="http://ceph.com/docs/master/rados/operations/cache-tiering" target="_blank" rel="noopener">Cache Tiering</a></p>
 <h3 id="扩展Ceph"><a href="#扩展Ceph" class="headerlink" title="扩展Ceph"></a>扩展Ceph</h3><p>可以通过创建共享对象类 <code>Ceph class</code> 来扩展Ceph。Ceph直接加载存储在 <code>osd class dir</code> 目录中的 <code>.so</code> 类（例如， 默认是$libdir/rados-classes）。当你实现一个类后，可以创建能够调用存储集群的本地方法的新的对象方法，或者其他其他类库或者你自己创建的其他类方法。</p>
 <p>在写的时候，Ceph类可以调用本地或者类方法，可以对未归纳数据（inbound data）执行任何系列操作，然后生成Ceph的原子级应用的结果写入事务。</p>
 <p>在读的时候，Ceph类可以调用本地或者类方法，可以对出站数据（outbound data）执行系列操作然后返回数据到客户端。</p>
@@ -503,7 +503,7 @@
 <p><strong>Ceph类样例</strong><br>内容管理系统的呈现特定大小和纵横比图片的Ceph类，可以读取归类的位图图像，裁剪到特定纵横比，改变大小，并嵌入不可见的版权或者水印俩帮助保护知识版权；然后保存结果位图到对象存储。</p>
 </blockquote>
 <p>可以通过 <code>src/objclass/objclass.h</code> ， <code>src/fooclass.cc</code> 和 <code>src/barclass</code> 查看样例实现。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Ceph存储集群就像充满活力的有机体。然而，许多存储应用并没有完全应用典型CPU和RAM，但是Ceph做到了。从心跳，到对等，到重平衡集群或者从失效中恢复，Ceph减轻了客户端的责任（以及解除了中心化的网关，所以Ceph架构并不需要），并使用了OSDs的计算能力执行任务。参考<a href="http://ceph.com/docs/master/install/hardware-recommendations" target="_blank" rel="external">Hardware Recommendations</a>和<a href="http://ceph.com/docs/master/rados/configuration/network-config-ref" target="_blank" rel="external">Network Config Reference</a>来理解Ceph如何利用计算资源的概念。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Ceph存储集群就像充满活力的有机体。然而，许多存储应用并没有完全应用典型CPU和RAM，但是Ceph做到了。从心跳，到对等，到重平衡集群或者从失效中恢复，Ceph减轻了客户端的责任（以及解除了中心化的网关，所以Ceph架构并不需要），并使用了OSDs的计算能力执行任务。参考<a href="http://ceph.com/docs/master/install/hardware-recommendations" target="_blank" rel="noopener">Hardware Recommendations</a>和<a href="http://ceph.com/docs/master/rados/configuration/network-config-ref" target="_blank" rel="noopener">Network Config Reference</a>来理解Ceph如何利用计算资源的概念。</p>
 <h2 id="Ceph-协议"><a href="#Ceph-协议" class="headerlink" title="Ceph 协议"></a>Ceph 协议</h2><p>Ceph客户端使用本地协议来和存储集群交互。Ceph把这些功能打包到了 <code>librados</code> 库，所以可以创建你自己的客户端。下面的图描述了基本的架构。</p>
 <p><img src="/images/2015-03-08-protocol-1.png" alt="protocol-1"></p>
 <h3 id="本地协议和-LIBRADOS"><a href="#本地协议和-LIBRADOS" class="headerlink" title="本地协议和 LIBRADOS"></a>本地协议和 LIBRADOS</h3><p>现代应用需要一个有异步通信能力的简单对象存储接口。Ceph存储集群就提供了这样的能力。接口提供了在整个集群中直接，并行访问对象的能力。</p>
@@ -518,7 +518,7 @@
 </ul>
 <h3 id="对象观察-通知"><a href="#对象观察-通知" class="headerlink" title="对象观察/通知"></a>对象观察/通知</h3><p>客户端可以对一个对象注册持久关注并保持和主OSD会话的打开。客户端可以发送一个通知消息并通过有效数据传输给所有观察者，在观察者收到通知后会收到回传通知。这使得客户端能够使用任何对象的异步通信通道。</p>
 <p><img src="/images/2015-03-08-object-1.png" alt="object-1"></p>
-<h3 id="数据分段"><a href="#数据分段" class="headerlink" title="数据分段"></a>数据分段</h3><p>存储设备有吞吐量限制，这影响了性能和扩展性。所以，存储系统通常支持<a href="http://en.wikipedia.org/wiki/Data_striping" target="_blank" rel="external">分段</a>-向多个存储设备存储信息的连续片段-来增加吞吐量和性能。数据分片最常见的形式是<a href="http://en.wikipedia.org/wiki/RAID" target="_blank" rel="external">RAID</a>。和Ceph的分段最类似的是<a href="http://en.wikipedia.org/wiki/RAID_0#RAID_0" target="_blank" rel="external">RAID 0</a>，或者 ‘striped volume’ 。Ceph的分段提供了RAID 0分段的吞吐量，n-RAID镜像的可靠性和更快的恢复性。</p>
+<h3 id="数据分段"><a href="#数据分段" class="headerlink" title="数据分段"></a>数据分段</h3><p>存储设备有吞吐量限制，这影响了性能和扩展性。所以，存储系统通常支持<a href="http://en.wikipedia.org/wiki/Data_striping" target="_blank" rel="noopener">分段</a>-向多个存储设备存储信息的连续片段-来增加吞吐量和性能。数据分片最常见的形式是<a href="http://en.wikipedia.org/wiki/RAID" target="_blank" rel="noopener">RAID</a>。和Ceph的分段最类似的是<a href="http://en.wikipedia.org/wiki/RAID_0#RAID_0" target="_blank" rel="noopener">RAID 0</a>，或者 ‘striped volume’ 。Ceph的分段提供了RAID 0分段的吞吐量，n-RAID镜像的可靠性和更快的恢复性。</p>
 <p>Ceph提供三类客户端：Ceph块设备，Ceph文件系统，Ceph对象存储。Ceph客户端把数据从它提供给用户的描述模式（一个块设备图，RESTful对象，CephFS文件系统目录）转换为用来存储到Ceph存储系统的对象。</p>
 <blockquote>
 <p> <strong>提示：</strong> Ceph存储系统存储忽的对象并不是分段的。Ceph对象存储，Ceph块设备和Ceph文件系统在存储集群上多个对象上分段数据。客户端通过 <code>librados</code> 直接写到存储集群时必须执行分段（和并行I/O）来获得这些益处。</p>
@@ -546,17 +546,17 @@
 </blockquote>
 <h2 id="Ceph-客户端"><a href="#Ceph-客户端" class="headerlink" title="Ceph 客户端"></a>Ceph 客户端</h2><p>Ceph客户端包括一系列服务接口，包括：</p>
 <ul>
-<li>块设备：<a href="http://ceph.com/docs/master/glossary/#term-ceph-block-device" target="_blank" rel="external">Ceph块设备</a>（又名RBD）服务提供可变大小，精简配置的块设备，拥有快照和克隆功能。Ceph分段集群中的块设备来获得高性能。Ceph支持内核对象（KO）和直接使用 <code>librdb</code> 的QEMU虚拟机-避免内核对象出现在虚拟系统上层。</li>
-<li>对象存储：<a href="http://ceph.com/docs/master/glossary/#term-ceph-object-storage" target="_blank" rel="external">Ceph对象存储</a>（又名，RGW）服务提供RESTful接口和Amazon S3和OpenStack Swift兼容。</li>
-<li>文件系统：<a href="http://ceph.com/docs/master/glossary/#term-ceph-filesystemhttp://ceph.com/docs/master/glossary/#term-ceph-filesystem" target="_blank" rel="external">Ceph 文件系统</a>（CephFS）服务提供POSIX兼容的文件系统，可以使用 mount 作为文件系统或者在用户空间（FUSE）。</li>
+<li>块设备：<a href="http://ceph.com/docs/master/glossary/#term-ceph-block-device" target="_blank" rel="noopener">Ceph块设备</a>（又名RBD）服务提供可变大小，精简配置的块设备，拥有快照和克隆功能。Ceph分段集群中的块设备来获得高性能。Ceph支持内核对象（KO）和直接使用 <code>librdb</code> 的QEMU虚拟机-避免内核对象出现在虚拟系统上层。</li>
+<li>对象存储：<a href="http://ceph.com/docs/master/glossary/#term-ceph-object-storage" target="_blank" rel="noopener">Ceph对象存储</a>（又名，RGW）服务提供RESTful接口和Amazon S3和OpenStack Swift兼容。</li>
+<li>文件系统：<a href="http://ceph.com/docs/master/glossary/#term-ceph-filesystemhttp://ceph.com/docs/master/glossary/#term-ceph-filesystem" target="_blank" rel="noopener">Ceph 文件系统</a>（CephFS）服务提供POSIX兼容的文件系统，可以使用 mount 作为文件系统或者在用户空间（FUSE）。</li>
 </ul>
 <p>Ceph可以运行额外的OSDs，MDSs和Monitors实例来扩展和获得高可用性。下图描述了上层架构。</p>
 <p><img src="/images/2015-03-08-client-1.png" alt="client-1"></p>
 <h3 id="Ceph对象存储"><a href="#Ceph对象存储" class="headerlink" title="Ceph对象存储"></a>Ceph对象存储</h3><p>Ceph的对象存储守护进程， <code>radisgw</code> ，是一个FastCGI服务，提供RESTful HTTP API来存储对象和元数据。它有自己的数据格式，位于Ceph存储集群的顶层，并维护自己的用户数据库，授权和访问控制。RADOS网关使用统一的命名空间，这意味着，你可以使用OpenStack Swift兼容的API或者Amazon S3兼容的API。例如，你可以在一个应用用S3兼容的API写数据然后在另一个应用用Swift兼容的API来读数据。</p>
 <blockquote>
-<p>S3/Swift对象和存储集群对象比较<br>Ceph的对象存储使用术语 <em>对象</em> 来描述存储的数据。S3和Swift对象和Ceph写到存储集群的对象并不一样。Ceph对象存储的对象是映射到Ceph存储集群的对象。S3和Swift对象并不需要和存储集群存储的对象以1:1的方式符合。S3或者Swift的对象映射到多个Ceph对象也是可以的。</p>
+<p>S3/Swift对象和存储集群对象比较<br>Ceph的对象存储使用术语 _对象_ 来描述存储的数据。S3和Swift对象和Ceph写到存储集群的对象并不一样。Ceph对象存储的对象是映射到Ceph存储集群的对象。S3和Swift对象并不需要和存储集群存储的对象以1:1的方式符合。S3或者Swift的对象映射到多个Ceph对象也是可以的。</p>
 </blockquote>
-<p>详见<a href="http://ceph.com/docs/master/radosgw/" target="_blank" rel="external">Ceph对象存储</a></p>
+<p>详见<a href="http://ceph.com/docs/master/radosgw/" target="_blank" rel="noopener">Ceph对象存储</a></p>
 <h3 id="Ceph块设备"><a href="#Ceph块设备" class="headerlink" title="Ceph块设备"></a>Ceph块设备</h3><p>Ceph块设备在存储系统多个对象间分段块设备镜像，每个对象映射到pg并分发，pg在整个集群中独立的 <code>ceph-osd</code> 守护进程之间传播。</p>
 <blockquote>
 <p>分段技术可以使RBD块设备比单个服务器表现更好！</p>
@@ -681,7 +681,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -692,9 +692,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -705,7 +703,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -784,10 +782,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hexo, NexT" />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -97,6 +97,7 @@
 <meta property="og:title" content="tianshan&#39;s blog">
 <meta property="og:url" content="http://tianshan.github.io/page/3/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="tianshan&#39;s blog">
 
@@ -126,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/page/3/"/>
+  <link rel="canonical" href="http://tianshan.github.io/page/3/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -272,11 +273,137 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2015/06/08/ceph-readwrite/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/ts.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/06/08/ceph-readwrite/" itemprop="url">Ceph读写流程分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-06-08T00:00:00+08:00">
+                2015-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2015/06/08/ceph-readwrite/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/08/ceph-readwrite/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>初步的Ceph读写流程分析。更详细的IO路径整理好了放上来。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/06/08/ceph-readwrite/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2015/05/29/ceph-journal/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -323,8 +450,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/05/29/ceph-journal/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/05/29/ceph-journal/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/05/29/ceph-journal/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -403,7 +529,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -450,8 +576,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/05/19/ceph-setup/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/05/19/ceph-setup/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/05/19/ceph-setup/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -477,7 +602,7 @@
 
       
         
-          <p>这里整理一篇从源码编译的测试集群搭建方法。<br>ceph-deploy的部署方式，可以<a href="http://ceph.com/docs/master/start/quick-start-preflight/" target="_blank" rel="external">参考官网</a>。</p>
+          <p>这里整理一篇从源码编译的测试集群搭建方法。<br>ceph-deploy的部署方式，可以<a href="http://ceph.com/docs/master/start/quick-start-preflight/" target="_blank" rel="noopener">参考官网</a>。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2015/05/19/ceph-setup/#more" rel="contents">
@@ -530,7 +655,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -577,8 +702,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/05/10/ceph-fio-deploy/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/05/10/ceph-fio-deploy/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/05/10/ceph-fio-deploy/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -604,7 +728,7 @@
 
       
         
-          <p>研究一段时间后，开始测试Ceph性能。<br>ceph与fio的结合见<a href="https://telekomcloud.github.io/ceph/2014/02/26/ceph-performance-analysis_fio_rbd.html" target="_blank" rel="external">Ceph Performance Analysis: fio and RBD</a>，官方给出了一个样例。</p>
+          <p>研究一段时间后，开始测试Ceph性能。<br>ceph与fio的结合见<a href="https://telekomcloud.github.io/ceph/2014/02/26/ceph-performance-analysis_fio_rbd.html" target="_blank" rel="noopener">Ceph Performance Analysis: fio and RBD</a>，官方给出了一个样例。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2015/05/10/ceph-fio-deploy/#more" rel="contents">
@@ -657,7 +781,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -704,8 +828,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/04/28/github-domain/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/04/28/github-domain/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/04/28/github-domain/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -731,7 +854,7 @@
 
       
         
-          <p>为github pags配置域名，主要步骤参考<a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages/" target="_blank" rel="external">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages/</a></p>
+          <p>为github pags配置域名，主要步骤参考<a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages/" target="_blank" rel="noopener">https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages/</a></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2015/04/28/github-domain/#more" rel="contents">
@@ -784,7 +907,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -831,8 +954,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/04/27/understand-lbfgs/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/04/27/understand-lbfgs/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/04/27/understand-lbfgs/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -911,7 +1033,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -958,8 +1080,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/03/18/ceph-documentation/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/03/18/ceph-documentation/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/18/ceph-documentation/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -985,7 +1106,7 @@
 
       
         
-          <p>Ceph的文档可以从代码中直接编译，主要使用了两个工具<code>doxygen</code>和<code>`sphinx</code>。doxygen会生成xml和一些图表，sphinx会在这些基础上再生成完整的网页。</p>
+          <p>Ceph的文档可以从代码中直接编译，主要使用了两个工具<code>doxygen</code>和<code></code>sphinx`。doxygen会生成xml和一些图表，sphinx会在这些基础上再生成完整的网页。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2015/03/18/ceph-documentation/#more" rel="contents">
@@ -1038,7 +1159,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -1085,8 +1206,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/03/17/introduction-to-librados/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/03/17/introduction-to-librados/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/17/introduction-to-librados/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1112,7 +1232,7 @@
 
       
         
-          <p>Librados是Ceph提供访问存储集群中RADOS（reliable autonomic distributed object store）的接口。<br>本文主要翻译自<a href="http://ceph.com/docs/master/rados/api/librados-intro/" target="_blank" rel="external">官方文档</a>，代码部分只保留了C++版本，其余见原文。</p>
+          <p>Librados是Ceph提供访问存储集群中RADOS（reliable autonomic distributed object store）的接口。<br>本文主要翻译自<a href="http://ceph.com/docs/master/rados/api/librados-intro/" target="_blank" rel="noopener">官方文档</a>，代码部分只保留了C++版本，其余见原文。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2015/03/17/introduction-to-librados/#more" rel="contents">
@@ -1165,7 +1285,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -1212,8 +1332,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/03/08/ceph-architecture/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/03/08/ceph-architecture/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/08/ceph-architecture/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1239,7 +1358,7 @@
 
       
         
-          <p>翻译自官网，原文：<a href="http://ceph.com/docs/master/architecture/" target="_blank" rel="external">http://ceph.com/docs/master/architecture/</a></p>
+          <p>翻译自官网，原文：<a href="http://ceph.com/docs/master/architecture/" target="_blank" rel="noopener">http://ceph.com/docs/master/architecture/</a></p>
 <p>Ceph独特的提供了统一了object， block，和file storage的系统。Ceph高度可靠，容易管理，以及免费。Ceph的优势可以转移公司的IT基础建设和你的能力到管理海量的数据中。Ceph提供额外的扩展性–成千的客户端访问PB和EB大小的数据。一个Ceph节点利用商业硬件和智能守护进程，一个Ceph存储集群可容纳大量的节点，这些节点互相通信来动态复制以及重分配数据。</p>
 <p><img src="/images/2015-03-08-stack.png" alt="stack"></p>
           <!--noindex-->
@@ -1294,7 +1413,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -1341,8 +1460,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/03/05/blog-highlight/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/03/05/blog-highlight/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/05/blog-highlight/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1372,133 +1490,6 @@
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2015/03/05/blog-highlight/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2015/03/04/LVM/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/ts.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tianshan's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2015/03/04/LVM/" itemprop="url">Linux LVM逻辑卷的配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-03-04T00:00:00+08:00">
-                2015-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2015/03/04/LVM/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/03/04/LVM/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>LVM全程Logical Volume Manager 逻辑卷管理器，是Linux对磁盘分区进行管理的一种机制，是建立在硬盘和分区之上、文件系统之下的一个逻辑层，可提高磁盘分区管理的灵活性。<br>要创建逻辑卷，首先要创建物理卷PV（Physical Volume），然后卷组VG（Volume Group），最后逻辑卷LV（Logical Volume）。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/03/04/LVM/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -1571,9 +1562,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -1584,7 +1573,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1647,10 +1636,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

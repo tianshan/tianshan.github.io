@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="pytest," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="pytest,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/09/14/pytest-mock/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="在用tox集成py.test时遇到个问题，一个测试脚本需要测试运行流程的正确性，但某个测试函数会调用外部的ceph的命令，又会产生一些其他的依赖，而这些函数不是测试重点，就可以使用mock模块，用一个其他函数来替换有依赖的函数，两个函数输入一致，但是这个函数可以不做任何处理，所以就跳过了依赖调用。">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T12:32:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="pytest的mocking模块">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/09/14/pytest-mock/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/09/14/pytest-mock/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/09/14/pytest-mock/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/09/14/pytest-mock/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/09/14/pytest-mock/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -353,15 +353,15 @@
         <p>在用tox集成py.test时遇到个问题，一个测试脚本需要测试运行流程的正确性，但某个测试函数会调用外部的ceph的命令，又会产生一些其他的依赖，而这些函数不是测试重点，就可以使用mock模块，用一个其他函数来替换有依赖的函数，两个函数输入一致，但是这个函数可以不做任何处理，所以就跳过了依赖调用。</p>
 <a id="more"></a>
 <p>具体场景是这样的，有个函数需要调用ceph命令获取磁盘，ceph命令又会依赖python-rados，而这个函数这一步并不需要去做检测。所以可以用另一个函数替换，如下：</p>
-<p>mock有很多实现，有python的独立安装包<a href="http://www.voidspace.org.uk/python/mock/" target="_blank" rel="external">mock</a>等，pytest通过monkeypatch参数实现了这一功能，不用额外依赖。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 因为是替换的class中的函数，所以会有self参数</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">mock_get_blocks</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">'/dev/sda'</span></div><div class="line"></div><div class="line"><span class="comment"># 注意，这里需要参数monkeypatch，pytest会自动处理</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_run</span><span class="params">(monkeypatch)</span>:</span></div><div class="line">    <span class="comment"># 这里会替换 MyClass.get_blocks()函数</span></div><div class="line">    monkeypatch.setattr(MyClass, <span class="string">'get_blocks'</span>, mock_get_blocks)</div><div class="line">    <span class="comment"># 如果不想import MyClass类，可以通过传入raising来跳过检测</span></div><div class="line">    monkeypatch.setattr(MyClass, <span class="string">'get_blocks'</span>, mock_get_blocks, raising=<span class="keyword">False</span>)</div></pre></td></tr></table></figure>
+<p>mock有很多实现，有python的独立安装包<a href="http://www.voidspace.org.uk/python/mock/" target="_blank" rel="noopener">mock</a>等，pytest通过monkeypatch参数实现了这一功能，不用额外依赖。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 因为是替换的class中的函数，所以会有self参数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mock_get_blocks</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'/dev/sda'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意，这里需要参数monkeypatch，pytest会自动处理</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_run</span><span class="params">(monkeypatch)</span>:</span></span><br><span class="line">    <span class="comment"># 这里会替换 MyClass.get_blocks()函数</span></span><br><span class="line">    monkeypatch.setattr(MyClass, <span class="string">'get_blocks'</span>, mock_get_blocks)</span><br><span class="line">    <span class="comment"># 如果不想import MyClass类，可以通过传入raising来跳过检测</span></span><br><span class="line">    monkeypatch.setattr(MyClass, <span class="string">'get_blocks'</span>, mock_get_blocks, raising=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
 <p>接下来就可以愉快的使用 <code>tox -e py27</code> 来做集成测试了。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># tox集成pytest的简单示例</div><div class="line">[testenv:py27]</div><div class="line">deps =</div><div class="line">    pytest</div><div class="line">commands =</div><div class="line">    py.test tests/ &#123;posargs&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tox集成pytest的简单示例</span></span><br><span class="line"><span class="section">[testenv:py27]</span></span><br><span class="line"><span class="attr">deps</span> =</span><br><span class="line">    pytest</span><br><span class="line"><span class="attr">commands</span> =</span><br><span class="line">    py.test tests/ &#123;posargs&#125;</span><br></pre></td></tr></table></figure>
 <p>目前应该用场景比较简单，后面有更复杂的话再记录。</p>
 <p>参考</p>
 <ul>
-<li>pytest文档对monkeypatch的简单介绍：<a href="https://pytest.org/latest/monkeypatch.html" target="_blank" rel="external">https://pytest.org/latest/monkeypatch.html</a>  </li>
-<li>tox集成pytest的样例：<a href="http://tox.readthedocs.org/en/latest/example/pytest.html" target="_blank" rel="external">http://tox.readthedocs.org/en/latest/example/pytest.html</a></li>
+<li>pytest文档对monkeypatch的简单介绍：<a href="https://pytest.org/latest/monkeypatch.html" target="_blank" rel="noopener">https://pytest.org/latest/monkeypatch.html</a>  </li>
+<li>tox集成pytest的样例：<a href="http://tox.readthedocs.org/en/latest/example/pytest.html" target="_blank" rel="noopener">http://tox.readthedocs.org/en/latest/example/pytest.html</a></li>
 </ul>
 
       
@@ -474,9 +474,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -487,7 +485,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -550,10 +548,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

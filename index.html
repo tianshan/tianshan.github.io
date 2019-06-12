@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hexo, NexT" />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -97,6 +97,7 @@
 <meta property="og:title" content="tianshan&#39;s blog">
 <meta property="og:url" content="http://tianshan.github.io/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="tianshan&#39;s blog">
 
@@ -126,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/"/>
+  <link rel="canonical" href="http://tianshan.github.io/">
 
 
 
@@ -177,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -207,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -217,7 +218,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -227,7 +228,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -237,7 +238,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -272,11 +273,140 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2019/06/12/Civetweb大并发超时分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/ts.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/12/Civetweb大并发超时分析/" itemprop="url">Civetweb大并发超时分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-12T15:38:45+08:00">
+                2019-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/12/Civetweb大并发超时分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/12/Civetweb大并发超时分析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          背景Ceph RGW压测大并发时，由于底层性能不足，会造成服务端请求超时。如果在中间有ngxin做负载均衡时，压测工具Cosbench会显示有请求失败，而直连rgw则不会显示失败，为了分析这个问题，研究了下rgw请求超时过程中发生了什么。
+而关于Cosbench请求是否失败的问题，其实比较简单，由于中间有nginx时，nginx在判断server超时时，会给客户端返回50x错误，直连rgw时，请求
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/06/12/Civetweb大并发超时分析/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2017/07/16/ceph-rgw-multisite-bucket-create/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -323,8 +453,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/07/16/ceph-rgw-multisite-bucket-create/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/07/16/ceph-rgw-multisite-bucket-create/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/16/ceph-rgw-multisite-bucket-create/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -406,7 +535,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -453,8 +582,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/07/02/ceph-rgw-multisite/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/07/02/ceph-rgw-multisite/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/02/ceph-rgw-multisite/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -537,7 +665,7 @@ ceph从J版开始，重构了multisite方案，改变了原来配置复杂，同
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -584,8 +712,7 @@ ceph从J版开始，重构了multisite方案，改变了原来配置复杂，同
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/07/02/2017-middle/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/07/02/2017-middle/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/02/2017-middle/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -670,7 +797,7 @@ ceph从J版开始，重构了multisite方案，改变了原来配置复杂，同
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -717,8 +844,7 @@ ceph从J版开始，重构了multisite方案，改变了原来配置复杂，同
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/07/11/ceph-rgw-multipart/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/07/11/ceph-rgw-multipart/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/07/11/ceph-rgw-multipart/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -800,7 +926,7 @@ Multipart是客户端发起的一个分块
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -847,8 +973,7 @@ Multipart是客户端发起的一个分块
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/03/13/fast-16/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/03/13/fast-16/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/03/13/fast-16/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -930,7 +1055,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -977,8 +1102,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/02/21/inside-the-c++-object-model/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/02/21/inside-the-c++-object-model/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/21/inside-the-c++-object-model/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1057,7 +1181,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -1104,8 +1228,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/02/08/to-myself/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/02/08/to-myself/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/08/to-myself/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1188,7 +1311,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -1235,8 +1358,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/01/27/ceph-deploy-mon-error/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/01/27/ceph-deploy-mon-error/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/27/ceph-deploy-mon-error/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1319,7 +1441,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -1366,8 +1488,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/01/13/ceph-ec-remove-object/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/01/13/ceph-ec-remove-object/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/13/ceph-ec-remove-object/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1398,133 +1519,6 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2016/01/13/ceph-ec-remove-object/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2016/01/07/rados-load-gen/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/ts.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tianshan's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/01/07/rados-load-gen/" itemprop="url">Ceph Rados的测试：load-gen</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-01-07T00:00:00+08:00">
-                2016-01-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/01/07/rados-load-gen/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/01/07/rados-load-gen/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>对Ceph的性能测试，常见的有fio测试rbd，而对rados的直接测试，可以通过<code>rados bench</code>命令，本篇介绍另外一个命令<code>rados load-gen</code></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2016/01/07/rados-load-gen/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -1597,9 +1591,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -1610,7 +1602,7 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1673,10 +1665,10 @@ Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replic
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

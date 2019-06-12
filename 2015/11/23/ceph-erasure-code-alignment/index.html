@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph ErasureCode," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph ErasureCode,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/11/23/ceph-erasure-code-alignment/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="ErasureCode应用在存储中的是满足MDS性质的线性分组码，最常用的是Reed Solomon编码。 将一份数据切成K块数据块，然后编码成M块校验块，放到K+M个OSD上，可以容忍任意M块丢失。 Ceph的EC支持主要是Loïc Dachary实现的。具体的PG层逻辑，复用了ReplicatedPG，写数据前的准备工作，都是在主OSD完成。编码的工作由对应的plugin完成，可以很灵活的实现">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T12:34:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ceph中EC的对齐">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/11/23/ceph-erasure-code-alignment/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/11/23/ceph-erasure-code-alignment/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/11/23/ceph-erasure-code-alignment/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/11/23/ceph-erasure-code-alignment/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/11/23/ceph-erasure-code-alignment/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,17 +351,17 @@
 
       
         <p>ErasureCode应用在存储中的是满足MDS性质的线性分组码，最常用的是Reed Solomon编码。 将一份数据切成K块数据块，然后编码成M块校验块，放到K+M个OSD上，可以容忍任意M块丢失。</p>
-<p>Ceph的EC支持主要是Loïc Dachary实现的。具体的PG层逻辑，复用了ReplicatedPG，写数据前的准备工作，都是在主OSD完成。<br>编码的工作由对应的plugin完成，可以很灵活的实现自己的编码。Plugin的选用是在创建ecpool时的ecprofile中指定的，具体的设置可以参考<a href="http://docs.ceph.com/docs/master/rados/operations/erasure-code/" target="_blank" rel="external">官网</a>。</p>
+<p>Ceph的EC支持主要是Loïc Dachary实现的。具体的PG层逻辑，复用了ReplicatedPG，写数据前的准备工作，都是在主OSD完成。<br>编码的工作由对应的plugin完成，可以很灵活的实现自己的编码。Plugin的选用是在创建ecpool时的ecprofile中指定的，具体的设置可以参考<a href="http://docs.ceph.com/docs/master/rados/operations/erasure-code/" target="_blank" rel="noopener">官网</a>。</p>
 <p>已有的Plugin是Jerasure，Intel ISA，LRC，SHEL，前两者是采用硬件加速的编码库，后两者是基于RS改进的编码方案，主要改进了修复的效率和占用的资源。</p>
 <a id="more"></a>
 <p>目前Ceph不支持EC的偏移写，只能writefull，或者offset要满足是strip_width的倍数，且正好是原始对象的末尾，所以最终都会转换成一个AppendOp。</p>
 <p>编码的流程</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// ECTransaction::TransGenerator</div><div class="line">void operator()(const ECTransaction::AppendOp &amp;op)</div><div class="line"></div><div class="line">// 每次编码的buf大小是stripe_width=K*chunk_size，循环编码</div><div class="line">ECUtil::encode(sinfo, ecimpl, bl, want, &amp;buffers);</div><div class="line"></div><div class="line">// ECPlugin实现的编码过程</div><div class="line">ecimpl-&gt;encode(want, buf, &amp;encoded);</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ECTransaction::TransGenerator</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> ECTransaction::AppendOp &amp;op)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 每次编码的buf大小是stripe_width=K*chunk_size，循环编码</span></span></span><br><span class="line">ECUtil::encode(sinfo, ecimpl, bl, want, &amp;buffers);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ECPlugin实现的编码过程</span></span><br><span class="line">ecimpl-&gt;encode(want, buf, &amp;encoded);</span><br></pre></td></tr></table></figure>
 <p>其中，chunk_size也是每个osd上要存的数据量，就是一次要对齐的大小，再来看chunk_size是怎么来的。</p>
 <p>ECBackend中有这样一个变量，<code>ECUtil::stripe_info_t sinfo</code>，sinfo包含变量stripe_width。<br>sinfo是在ECBackend构造的时候实例化的。</p>
 <p>实例化过程</p>
 <p>OSDMonitor::prepare_new_pool -&gt; prepare_pool_stripe_width</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ErasureCodeInterfaceRef erasure_code;</div><div class="line"><span class="comment">// 实例化ecprofile定义的ECPlugin</span></div><div class="line">get_erasure_code(erasure_code_profile, &amp;erasure_code, ss);</div><div class="line"><span class="comment">// 用户期望的条带大小，读取配置文件的选项 osd_pool_erasure_code_stripe_width</span></div><div class="line"><span class="keyword">uint32_t</span> desired_stripe_width = g_conf-&gt;osd_pool_erasure_code_stripe_width;</div><div class="line"><span class="comment">// 调用ECPlugin的函数来获取条带大小</span></div><div class="line">stripe_width = erasure_code-&gt;get_data_chunk_count() *</div><div class="line">      erasure_code-&gt;get_chunk_size(desired_stripe_width);</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ErasureCodeInterfaceRef erasure_code;</span><br><span class="line"><span class="comment">// 实例化ecprofile定义的ECPlugin</span></span><br><span class="line">get_erasure_code(erasure_code_profile, &amp;erasure_code, ss);</span><br><span class="line"><span class="comment">// 用户期望的条带大小，读取配置文件的选项 osd_pool_erasure_code_stripe_width</span></span><br><span class="line"><span class="keyword">uint32_t</span> desired_stripe_width = g_conf-&gt;osd_pool_erasure_code_stripe_width;</span><br><span class="line"><span class="comment">// 调用ECPlugin的函数来获取条带大小</span></span><br><span class="line">stripe_width = erasure_code-&gt;get_data_chunk_count() *</span><br><span class="line">      erasure_code-&gt;get_chunk_size(desired_stripe_width);</span><br></pre></td></tr></table></figure>
 <p>不同的ECPlugin会有不同的条带大小，下面主要分析下Jerasure为例。get_chunk_size的对齐过程</p>
 <ul>
 <li><p>调用<code>alignment = get_alignment()</code>返回ECPlugin实现的编码本身需要的对齐长度，就是一次矩阵运算需要的byte数</p>
@@ -372,7 +372,7 @@
 </li>
 </ul>
 <p>详细代码</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">ErasureCodeJerasure::get_chunk_size(<span class="keyword">int</span> object_size)</div><div class="line">&#123;</div><div class="line">  <span class="keyword">unsigned</span> alignment = get_alignment();</div><div class="line">  <span class="keyword">if</span> (per_chunk_alignment) &#123;</div><div class="line">    <span class="keyword">unsigned</span> chunk_size = object_size / k;</div><div class="line">    <span class="keyword">if</span> (object_size % k)</div><div class="line">      chunk_size++;</div><div class="line">    <span class="keyword">unsigned</span> modulo = chunk_size % alignment;</div><div class="line">    <span class="keyword">if</span> (modulo) &#123;</div><div class="line">      chunk_size += alignment - modulo;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> chunk_size;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">unsigned</span> tail = object_size % alignment;</div><div class="line">    <span class="keyword">unsigned</span> padded_length = object_size + ( tail ?  ( alignment - tail ) : <span class="number">0</span> );</div><div class="line">    <span class="keyword">return</span> padded_length / k;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// Jerasure支持不同的编码方案，会有部分差别，这只是一个例子</span></div><div class="line"><span class="keyword">unsigned</span> ErasureCodeJerasureLiberation::get_alignment() <span class="keyword">const</span></div><div class="line">&#123;</div><div class="line">  <span class="comment">// k: data chunk数</span></div><div class="line">  <span class="comment">// w: 一次编码的字长，也是有限域运算的位长，默认为8。GF(2^8)上的运算可以查表</span></div><div class="line">  <span class="comment">// packetsize: 一次编码组的个数</span></div><div class="line">  <span class="comment">// sizeof(int): jerasure是把数据存在int中的，所以要对齐int</span></div><div class="line">  <span class="keyword">unsigned</span> alignment = k * w * packetsize * <span class="keyword">sizeof</span>(<span class="keyword">int</span>);</div><div class="line">  <span class="comment">// LARGEST_VECTOR_WORDSIZE 的作用未知</span></div><div class="line">  <span class="keyword">if</span> ( ((w*packetsize*<span class="keyword">sizeof</span>(<span class="keyword">int</span>))%LARGEST_VECTOR_WORDSIZE) )</div><div class="line">    alignment = k*w*packetsize*LARGEST_VECTOR_WORDSIZE;</div><div class="line">  <span class="keyword">return</span> alignment;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ErasureCodeJerasure::get_chunk_size(<span class="keyword">int</span> object_size)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">unsigned</span> alignment = get_alignment();</span><br><span class="line">  <span class="keyword">if</span> (per_chunk_alignment) &#123;</span><br><span class="line">    <span class="keyword">unsigned</span> chunk_size = object_size / k;</span><br><span class="line">    <span class="keyword">if</span> (object_size % k)</span><br><span class="line">      chunk_size++;</span><br><span class="line">    <span class="keyword">unsigned</span> modulo = chunk_size % alignment;</span><br><span class="line">    <span class="keyword">if</span> (modulo) &#123;</span><br><span class="line">      chunk_size += alignment - modulo;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> chunk_size;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">unsigned</span> tail = object_size % alignment;</span><br><span class="line">    <span class="keyword">unsigned</span> padded_length = object_size + ( tail ?  ( alignment - tail ) : <span class="number">0</span> );</span><br><span class="line">    <span class="keyword">return</span> padded_length / k;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Jerasure支持不同的编码方案，会有部分差别，这只是一个例子</span></span><br><span class="line"><span class="keyword">unsigned</span> ErasureCodeJerasureLiberation::get_alignment() <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// k: data chunk数</span></span><br><span class="line">  <span class="comment">// w: 一次编码的字长，也是有限域运算的位长，默认为8。GF(2^8)上的运算可以查表</span></span><br><span class="line">  <span class="comment">// packetsize: 一次编码组的个数</span></span><br><span class="line">  <span class="comment">// sizeof(int): jerasure是把数据存在int中的，所以要对齐int</span></span><br><span class="line">  <span class="keyword">unsigned</span> alignment = k * w * packetsize * <span class="keyword">sizeof</span>(<span class="keyword">int</span>);</span><br><span class="line">  <span class="comment">// LARGEST_VECTOR_WORDSIZE 的作用未知</span></span><br><span class="line">  <span class="keyword">if</span> ( ((w*packetsize*<span class="keyword">sizeof</span>(<span class="keyword">int</span>))%LARGEST_VECTOR_WORDSIZE) )</span><br><span class="line">    alignment = k*w*packetsize*LARGEST_VECTOR_WORDSIZE;</span><br><span class="line">  <span class="keyword">return</span> alignment;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>总结，不同的编码本身会有不同的编码要求，跟踪get_chunk_size和get_alignment函数可以得到，了解对齐原理后合理设置参数，才能使编码性能提高。<br>每次编码都会prepare逻辑，object_size过小，会频繁prepare，导致性能下降。</p>
 
       
@@ -485,9 +485,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -498,7 +496,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -561,10 +559,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/05/10/ceph-fio-deploy/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="研究一段时间后，开始测试Ceph性能。ceph与fio的结合见Ceph Performance Analysis: fio and RBD，官方给出了一个样例。">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T12:29:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ceph性能测试">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/05/10/ceph-fio-deploy/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/05/10/ceph-fio-deploy/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/05/10/ceph-fio-deploy/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/05/10/ceph-fio-deploy/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/05/10/ceph-fio-deploy/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -350,28 +350,28 @@
       
 
       
-        <p>研究一段时间后，开始测试Ceph性能。<br>ceph与fio的结合见<a href="https://telekomcloud.github.io/ceph/2014/02/26/ceph-performance-analysis_fio_rbd.html" target="_blank" rel="external">Ceph Performance Analysis: fio and RBD</a>，官方给出了一个样例。</p>
+        <p>研究一段时间后，开始测试Ceph性能。<br>ceph与fio的结合见<a href="https://telekomcloud.github.io/ceph/2014/02/26/ceph-performance-analysis_fio_rbd.html" target="_blank" rel="noopener">Ceph Performance Analysis: fio and RBD</a>，官方给出了一个样例。</p>
 <a id="more"></a>
 <h2 id="fio的安装"><a href="#fio的安装" class="headerlink" title="fio的安装"></a>fio的安装</h2><p>centos下，从源码编译安装</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">wget http://brick.kernel.dk/snaps/fio-2.2.8.tar.gz</div><div class="line">tar -zxvf fio-2.2.8.tar.gz</div><div class="line">#安装依赖包,librbd用于连接ceph测试</div><div class="line">sudo yum install -y libaio-devel zlib-devel librbd1-devel</div><div class="line"></div><div class="line">#其中，librbd1-devel提供fio rbd测试接口，安装需要配置ceph的源</div><div class="line">sudo vim /etc/yum.repos.d/ceph.repo</div><div class="line">#粘贴如下内容，其中hammer是当前release版本，el7表示centos7，下载源用的欧洲的，注意把gpgcheck置0，因为经常连不上</div><div class="line">[ceph-noarch]</div><div class="line">name=Ceph noarch packages</div><div class="line">baseurl=http://eu.ceph.com/rpm-hammer/el7/noarch</div><div class="line">enabled=1</div><div class="line">gpgcheck=0</div><div class="line">type=rpm-md</div><div class="line">gpgkey=https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc</div><div class="line">#添加完后执行，sudo yum update</div><div class="line"></div><div class="line">cd fio-2.2.8</div><div class="line">#安装librbd后可以看到`Rados Block Device engine`选项为yes</div><div class="line">./configure</div><div class="line">make</div><div class="line">sudo make install</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">wget http://brick.kernel.dk/snaps/fio-2.2.8.tar.gz</span><br><span class="line">tar -zxvf fio-2.2.8.tar.gz</span><br><span class="line">#安装依赖包,librbd用于连接ceph测试</span><br><span class="line">sudo yum install -y libaio-devel zlib-devel librbd1-devel</span><br><span class="line"></span><br><span class="line">#其中，librbd1-devel提供fio rbd测试接口，安装需要配置ceph的源</span><br><span class="line">sudo vim /etc/yum.repos.d/ceph.repo</span><br><span class="line">#粘贴如下内容，其中hammer是当前release版本，el7表示centos7，下载源用的欧洲的，注意把gpgcheck置0，因为经常连不上</span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=http://eu.ceph.com/rpm-hammer/el7/noarch</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc</span><br><span class="line">#添加完后执行，sudo yum update</span><br><span class="line"></span><br><span class="line">cd fio-2.2.8</span><br><span class="line">#安装librbd后可以看到`Rados Block Device engine`选项为yes</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
 <h2 id="可能用到的一些命令"><a href="#可能用到的一些命令" class="headerlink" title="可能用到的一些命令"></a>可能用到的一些命令</h2><p>查看挂载  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">df -hT</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -hT</span><br></pre></td></tr></table></figure>
 <p>查看io状态,每隔2s查看sda的扩展统计，共6次  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">iostat -x sda 2 6</div></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#参数含义</span></div><div class="line">avgrq-sz    <span class="comment">#发送到设备的请求的平均大小,单位是扇区</span></div><div class="line">avgqu-sz    <span class="comment">#发送到设备的请求的平均队列长度</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iostat -x sda 2 6</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#参数含义</span></span><br><span class="line">avgrq-sz    <span class="comment">#发送到设备的请求的平均大小,单位是扇区</span></span><br><span class="line">avgqu-sz    <span class="comment">#发送到设备的请求的平均队列长度</span></span><br></pre></td></tr></table></figure>
 <p>查看硬盘SATA信息   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dmesg | grep ata</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dmesg | grep ata</span><br></pre></td></tr></table></figure>
 <p>扫描物理卷</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo lvmdiskscan</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lvmdiskscan</span><br></pre></td></tr></table></figure>
 <p>显示所有逻辑卷</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo pvs</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pvs</span><br></pre></td></tr></table></figure>
 <p>删除物理卷</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo pvremove /dev/sdb</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pvremove /dev/sdb</span><br></pre></td></tr></table></figure>
 <p>删除逻辑卷分区，先删除逻辑卷，然后删除逻辑卷组，然后删除分区</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sudo lvremove /dev/centos1/home</div><div class="line">sudo vgremove centos1</div><div class="line">sudo pvremove /dev/sdb2</div><div class="line"><span class="comment">#此时，pvs已经看不到分区的逻辑信息了</span></div></pre></td></tr></table></figure>
-<h2 id="fio使用的参考链接"><a href="#fio使用的参考链接" class="headerlink" title="fio使用的参考链接"></a>fio使用的参考链接</h2><p>fio<a href="http://blog.sina.com.cn/s/blog_6b1ccd6501012pvl.html" target="_blank" rel="external">单机测试</a></p>
-<p>fio<a href="http://blog.csdn.net/yuesichiu/article/details/8722417" target="_blank" rel="external">参数说明</a></p>
-<p>iostat<a href="http://blog.csdn.net/zhangjay/article/details/6656771" target="_blank" rel="external">命令详解</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo lvremove /dev/centos1/home</span><br><span class="line">sudo vgremove centos1</span><br><span class="line">sudo pvremove /dev/sdb2</span><br><span class="line"><span class="comment">#此时，pvs已经看不到分区的逻辑信息了</span></span><br></pre></td></tr></table></figure>
+<h2 id="fio使用的参考链接"><a href="#fio使用的参考链接" class="headerlink" title="fio使用的参考链接"></a>fio使用的参考链接</h2><p>fio<a href="http://blog.sina.com.cn/s/blog_6b1ccd6501012pvl.html" target="_blank" rel="noopener">单机测试</a></p>
+<p>fio<a href="http://blog.csdn.net/yuesichiu/article/details/8722417" target="_blank" rel="noopener">参数说明</a></p>
+<p>iostat<a href="http://blog.csdn.net/zhangjay/article/details/6656771" target="_blank" rel="noopener">命令详解</a></p>
 
       
     </div>
@@ -481,7 +481,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -492,9 +492,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -505,7 +503,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -584,10 +582,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

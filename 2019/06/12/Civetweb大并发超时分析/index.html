@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="ceph,">
+  <meta name="keywords" content="rgw,">
 
 
 
@@ -93,18 +93,18 @@
 
 
 
-<meta name="description" content="这里整理一篇从源码编译的测试集群搭建方法。ceph-deploy的部署方式，可以参考官网。">
-<meta name="keywords" content="ceph">
+<meta name="description" content="背景Ceph RGW压测大并发时，由于底层性能不足，会造成服务端请求超时。如果在中间有ngxin做负载均衡时，压测工具Cosbench会显示有请求失败，而直连rgw则不会显示失败，为了分析这个问题，研究了下rgw请求超时过程中发生了什么。 而关于Cosbench请求是否失败的问题，其实比较简单，由于中间有nginx时，nginx在判断server超时时，会给客户端返回50x错误，直连rgw时，请求">
+<meta name="keywords" content="rgw">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ceph测试集群搭建">
-<meta property="og:url" content="http://tianshan.github.io/2015/05/19/ceph-setup/index.html">
+<meta property="og:title" content="Civetweb大并发超时分析">
+<meta property="og:url" content="http://tianshan.github.io/2019/06/12/Civetweb大并发超时分析/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
-<meta property="og:description" content="这里整理一篇从源码编译的测试集群搭建方法。ceph-deploy的部署方式，可以参考官网。">
+<meta property="og:description" content="背景Ceph RGW压测大并发时，由于底层性能不足，会造成服务端请求超时。如果在中间有ngxin做负载均衡时，压测工具Cosbench会显示有请求失败，而直连rgw则不会显示失败，为了分析这个问题，研究了下rgw请求超时过程中发生了什么。 而关于Cosbench请求是否失败的问题，其实比较简单，由于中间有nginx时，nginx在判断server超时时，会给客户端返回50x错误，直连rgw时，请求">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-07-02T12:29:24.000Z">
+<meta property="og:updated_time" content="2019-06-12T15:35:17.642Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ceph测试集群搭建">
-<meta name="twitter:description" content="这里整理一篇从源码编译的测试集群搭建方法。ceph-deploy的部署方式，可以参考官网。">
+<meta name="twitter:title" content="Civetweb大并发超时分析">
+<meta name="twitter:description" content="背景Ceph RGW压测大并发时，由于底层性能不足，会造成服务端请求超时。如果在中间有ngxin做负载均衡时，压测工具Cosbench会显示有请求失败，而直连rgw则不会显示失败，为了分析这个问题，研究了下rgw请求超时过程中发生了什么。 而关于Cosbench请求是否失败的问题，其实比较简单，由于中间有nginx时，nginx在判断server超时时，会给客户端返回50x错误，直连rgw时，请求">
 
 
 
@@ -132,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/05/19/ceph-setup/">
+  <link rel="canonical" href="http://tianshan.github.io/2019/06/12/Civetweb大并发超时分析/">
 
 
 
 
 
-  <title>Ceph测试集群搭建 | tianshan's blog</title>
+  <title>Civetweb大并发超时分析 | tianshan's blog</title>
   
 
 
@@ -276,7 +276,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2015/05/19/ceph-setup/">
+    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2019/06/12/Civetweb大并发超时分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
@@ -293,7 +293,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Ceph测试集群搭建</h1>
+          <h1 class="post-title" itemprop="name headline">Civetweb大并发超时分析</h1>
         
 
         <div class="post-meta">
@@ -305,8 +305,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2015-05-19T00:00:00+08:00">
-                2015-05-19
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-12T15:38:45+08:00">
+                2019-06-12
               </time>
             
 
@@ -324,8 +324,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2015/05/19/ceph-setup/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/05/19/ceph-setup/" itemprop="commentCount"></span>
+                <a href="/2019/06/12/Civetweb大并发超时分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/12/Civetweb大并发超时分析/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -350,49 +350,38 @@
       
 
       
-        <p>这里整理一篇从源码编译的测试集群搭建方法。<br>ceph-deploy的部署方式，可以<a href="http://ceph.com/docs/master/start/quick-start-preflight/" target="_blank" rel="noopener">参考官网</a>。</p>
-<a id="more"></a>
-<h2 id="1-编译"><a href="#1-编译" class="headerlink" title="1.编译"></a>1.编译</h2><p><a href="!--￼3--&gt;#centos">Ceph-compile</a></p>
-<h2 id="2-部署"><a href="#2-部署" class="headerlink" title="2.部署"></a>2.部署</h2><ul>
-<li>monitor<br><a href="!--￼4--&gt;#配置monitor">ceph-deploy</a></li>
-</ul>
-<p>其中，主要步骤</p>
-<pre><code>* 配置文件相关：2，3，4，9
-* 集群准备：6，7，8
-* 启动：11
-</code></pre><p>测试集群的可以省略密钥的配置。</p>
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>Ceph RGW压测大并发时，由于底层性能不足，会造成服务端请求超时。如果在中间有ngxin做负载均衡时，压测工具Cosbench会显示有请求失败，而直连rgw则不会显示失败，为了分析这个问题，研究了下rgw请求超时过程中发生了什么。</p>
+<p>而关于Cosbench请求是否失败的问题，其实比较简单，由于中间有nginx时，nginx在判断server超时时，会给客户端返回50x错误，直连rgw时，请求超时返回的是客户端错误，而cosbench对客户端错误只是打印了一行warn日志，不会报错，所以导致两种测试方式结果有差异，本质上都是服务端来不及处理客户端请求了。</p>
+<h1 id="TCP状态"><a href="#TCP状态" class="headerlink" title="TCP状态"></a>TCP状态</h1><p>测试中，通过ss命令查看，某个中间状态下，服务端有如下状态值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SYN-RECV 17</span><br><span class="line">ESTAB 313</span><br><span class="line">CLOSE-WAIT 136</span><br><span class="line">TIME-WAIT 10</span><br></pre></td></tr></table></figure></p>
+<p>SYN-RECV 状态是建立TCP连接的3次握手中，client发出SYN包后，服务端接收后进入的状态；<br>ESTAB 是完成TCP 3次握手后的状态，到这都还不需要应用的参与；<br>CLOSE-WAIT 是关闭TCP连接中，被动关闭一方收到FIN包后的状态，在等待应用层回复FIN；<br>TIME-WAIT 是关闭TCP连接中，主动关闭连接一方在回完最后一个ACK包后等待两个MSL的状态；</p>
+<p>SYN-RECV 状态是在所有队列满了后，连接会进入的状态。建立连接时，服务端会回复SYN+ACK包，但是不会完成连接建立，所以client会处于ESTABLISTED状态，并发送后续数据包。<br>服务端由于没有完成连接建立，后续所有包都会被忽略，client在发包没有收到ACK时，TCP层从间隔200ms开始依次翻倍不断重试。服务在忽略收包的同时，会间断的发送SYN+ACK，猜测是为了保持连接？当应用层能够处理时，会最终完成连接建立，并处理请求。<br>处于SYN-RECV状态的连接，如果client提前结束，会处于FIN-WAIT-1状态，因为sever端同样也不会处理FIN包。</p>
+<h1 id="Civetweb-线程模型"><a href="#Civetweb-线程模型" class="headerlink" title="Civetweb 线程模型"></a>Civetweb 线程模型</h1><h2 id="1-主线程，master-thread"><a href="#1-主线程，master-thread" class="headerlink" title="1.主线程，master_thread"></a>1.主线程，master_thread</h2><p>负责accept请求，生成socket<br>主要函数：</p>
 <ul>
-<li>osd<br><a href="!--￼5--&gt;#添加osd">ceph-deploy</a></li>
+<li>master_thread_run<ul>
+<li>accept_new_connection</li>
+<li>produce_socket</li>
 </ul>
-<blockquote>
-<p>先把monitor的配置文件同步过来后，OSD可以按简单模式配置，启动参照复杂里的[11]</p>
-</blockquote>
-<h2 id="可能遇到的问题"><a href="#可能遇到的问题" class="headerlink" title="可能遇到的问题"></a>可能遇到的问题</h2><p>1.无法访问monitor<br>关闭防火墙，centos 6 是iptable，centos 7是firewall<br>systemctl stop firewalld.service<br>注意，这只是临时关闭，重启后会重新启动。</p>
-<p>2.sudo找不到命令<br>是因为sudo的path被重置了，如下方法修改<br>sudo visudo<br>Defaults env_reset 改成 Defaults !env_reset<br>在~/.bashrc 添加alias sudo=’sudo env PATH=$PATH’</p>
-<p>3.sudo ceph -s找不到python依赖<br>也是因为路径重置了，一劳永逸的方法，把ceph/src/pybind的内容复制到Python系统路径中。</p>
-<p>sudo cp ~/ceph/src/pybind/* /usr/lib/python2.7/site-packages</p>
-<p>最后，good luck！</p>
-<h2 id="ceph-deploy快速部署"><a href="#ceph-deploy快速部署" class="headerlink" title="ceph-deploy快速部署"></a>ceph-deploy快速部署</h2><p>主要参考<a href="http://ceph.com/docs/master/start/quick-ceph-deploy/" target="_blank" rel="noopener">官网</a><br>这里记录出现的问题</p>
-<ul>
-<li>RuntimeError: NoSectionError: No section: ‘ceph’</li>
-</ul>
-<p>执行yum remove ceph-release，据说是版本不兼容</p>
-<ul>
-<li>RuntimeError: remote connection got closed, ensure <code>requiretty</code> is disabled for</li>
-</ul>
-<p>进入要部署的机器，执行如下命令<br>sudo visudo<br>把<code>Defaults requiretty</code> 修改为 <code>Defaults:ceph !requiretty</code></p>
-<p>如果改完还么起作用，说明免密码的没有配，执行如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"ceph  ALL = (root) NOPASSWD:ALL"</span> | sudo tee /etc/sudoers.d/ceph  </span><br><span class="line">sudo chmod 0440 /etc/sudoers.d/ceph</span><br></pre></td></tr></table></figure>
-<h2 id="linux相关命令"><a href="#linux相关命令" class="headerlink" title="linux相关命令"></a>linux相关命令</h2><ul>
-<li><p>磁盘调度策略</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echo deadline &gt; /sys/block/sda/queue/scheduler </span><br><span class="line"></span><br><span class="line">#调整完会运行cat命令，显示如下，表示选中deadline。</span><br><span class="line">cat /sys/block/sda/queue/scheduler</span><br><span class="line">noop [deadline] cfq</span><br><span class="line">#因为参数是维护在内存中的，所以不能直接用vim修改，否则保存时会提示 E667:同步失败</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>添加用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd ceph   #添加用户</span><br><span class="line">sudo passwd ceph    #设置密码</span><br><span class="line">#添加sudo权限</span><br><span class="line">visudo</span><br><span class="line">#在下面仿照root，添加</span><br><span class="line">ceph ALL=(ALL) ALL</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>格式化硬盘</p>
 </li>
 </ul>
+<h2 id="2-工作线程，worker-thread"><a href="#2-工作线程，worker-thread" class="headerlink" title="2.工作线程，worker_thread"></a>2.工作线程，worker_thread</h2><p>负责消费请求，读取客户端数据，并回调注册的后端rgw处理，以及关闭socket。<br>新版本rgw配置为500，也就是有一个500线程池负责处理请求。<br>主要函数：</p>
+<ul>
+<li>worker_thread_run<ul>
+<li>consume_socket</li>
+<li>process_new_connection<ul>
+<li>getreq</li>
+<li>handle_request </li>
+</ul>
+</li>
+<li>close_connection</li>
+</ul>
+</li>
+</ul>
+<h1 id="Civetweb-处理请求过程"><a href="#Civetweb-处理请求过程" class="headerlink" title="Civetweb 处理请求过程"></a>Civetweb 处理请求过程</h1><p>Civetweb在处理请求时，包括自己和内核中由几个队列控制了请求的处理，底层超时会逐步导致各个队列满。</p>
+<p>主线程中，accept_new_connection 调用<code>accept</code>接受请求，并copy socket到内部队列，队列长度为<code>MGSQLEN = 20</code>，如果队列已满，那么就会阻塞并等待信号量。在工作线程调用consume_socket后会发送信号量。</p>
+<p>阻塞后，会导致很多请求建立了TCP连接，处于ESTAB状态，但是没有accept，内核中有独立的队列来保存这一类的请求，队列大小为<code>/proc/sys/net/core/somaxconn</code>和<code>listen(socket, backlog)</code>的backlog中取小的那个，默认为128。<br>超过128时，服务端TCP层将不会完成3次握手，这样的链接就会处于SYN-RECV状态。而SYN-RECV同样有内核队列保存，队列大小为<code>/proc/sys/net/ipv4/tcp_max_syn_backlog</code>，这个值会根据内存大小自动调整。</p>
+<p>工作线程在process_new_connection中，收到空包后断开，进入close_connection，调用<code>shutdown</code>发送FIN包，处理关闭TCP链接的四次握手。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>根据上述过程，产生这些状态的过程比较清晰了<br>1）底层IO慢，导致rgw的处理线程会卡在等待IO返回上，worker_thead卡在process_new_connection中的handle_request；<br>2）服务端卡主后，客户端会提前关闭连接，向服务端发送FIN包，但是服务端由于还在handle_request中，需要等返回后才能到getreq接收到关闭请求来处理TCP连接的关闭，所以这时候服务端就处于CLOSE_WAIT状态，客户端会处于FIN-WAIT-2状态；<br>3）当服务端不断累积有线程卡主，那么会把rgw的线程池耗完，这时候civetweb的accept队列会达到20并把主线程卡主；<br>4）主线程卡主后，会累积established状态且没有accept的链接，直到队列达到128；<br>5）等待accept队列满了后，后续请求将不再建立连接，就会处于SYN-RECV状态；</p>
+<p>参考：<a href="http://veithen.io/2014/01/01/how-tcp-backlog-works-in-linux.html" target="_blank" rel="noopener">http://veithen.io/2014/01/01/how-tcp-backlog-works-in-linux.html</a></p>
 
       
     </div>
@@ -422,7 +411,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/ceph/" rel="tag"># ceph</a>
+            <a href="/tags/rgw/" rel="tag"># rgw</a>
           
         </div>
       
@@ -435,8 +424,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/05/10/ceph-fio-deploy/" rel="next" title="ceph性能测试">
-                <i class="fa fa-chevron-left"></i> ceph性能测试
+              <a href="/2017/07/16/ceph-rgw-multisite-bucket-create/" rel="next" title="ceph rgw multisite 桶创建">
+                <i class="fa fa-chevron-left"></i> ceph rgw multisite 桶创建
               </a>
             
           </div>
@@ -444,10 +433,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/05/29/ceph-journal/" rel="prev" title="Ceph的Journal机制">
-                Ceph的Journal机制 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -583,7 +568,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-编译"><span class="nav-number">1.</span> <span class="nav-text">1.编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-部署"><span class="nav-number">2.</span> <span class="nav-text">2.部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可能遇到的问题"><span class="nav-number">3.</span> <span class="nav-text">可能遇到的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ceph-deploy快速部署"><span class="nav-number">4.</span> <span class="nav-text">ceph-deploy快速部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux相关命令"><span class="nav-number">5.</span> <span class="nav-text">linux相关命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP状态"><span class="nav-number">2.</span> <span class="nav-text">TCP状态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Civetweb-线程模型"><span class="nav-number">3.</span> <span class="nav-text">Civetweb 线程模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-主线程，master-thread"><span class="nav-number">3.1.</span> <span class="nav-text">1.主线程，master_thread</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-工作线程，worker-thread"><span class="nav-number">3.2.</span> <span class="nav-text">2.工作线程，worker_thread</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Civetweb-处理请求过程"><span class="nav-number">4.</span> <span class="nav-text">Civetweb 处理请求过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
@@ -726,9 +711,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://tianshan.github.io/2015/05/19/ceph-setup/';
-          this.page.identifier = '2015/05/19/ceph-setup/';
-          this.page.title = 'Ceph测试集群搭建';
+          this.page.url = 'http://tianshan.github.io/2019/06/12/Civetweb大并发超时分析/';
+          this.page.identifier = '2019/06/12/Civetweb大并发超时分析/';
+          this.page.title = 'Civetweb大并发超时分析';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://tianshan.disqus.com/embed.js';

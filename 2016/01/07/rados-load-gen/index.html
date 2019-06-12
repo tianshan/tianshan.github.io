@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2016/01/07/rados-load-gen/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="对Ceph的性能测试，常见的有fio测试rbd，而对rados的直接测试，可以通过rados bench命令，本篇介绍另外一个命令rados load-gen">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T12:36:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ceph Rados的测试：load-gen">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2016/01/07/rados-load-gen/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2016/01/07/rados-load-gen/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2016/01/07/rados-load-gen/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2016/01/07/rados-load-gen/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/07/rados-load-gen/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -353,12 +353,12 @@
         <p>对Ceph的性能测试，常见的有fio测试rbd，而对rados的直接测试，可以通过<code>rados bench</code>命令，本篇介绍另外一个命令<code>rados load-gen</code></p>
 <a id="more"></a>
 <p>相关代码在<code>src/tools/rados/rados.cc</code>，整体流程是这样的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1. LoadGen lg(&amp;rados);      // 实例化测试类</div><div class="line">2. lg.bootstrap(pool_name); // 生成初始的测试对象</div><div class="line">    生成指定个数和随机大小的测试对象，然后写入pool，实际只会在len位置写入1B（例如：需要生成1024B的对象，实际会在off=1024的位置写1B，相当于占了1024的空间），应该是为了快速生成，但这样的话就不能测试EC pool，可以通过修改源码来支持。</div><div class="line">3. lg.run();                // 测试过程</div><div class="line">    循环生成op提交</div><div class="line">4. lg.cleanup();            // 清理生成的对象</div></pre></td></tr></table></figure>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#生成next op的主要代码</div><div class="line"><span class="keyword">void</span> LoadGen::gen_op(LoadGenOp *op)</div><div class="line">&#123;</div><div class="line">  <span class="comment">// 随机选取生成好的对象</span></div><div class="line">  <span class="keyword">int</span> i = get_random(<span class="number">0</span>, objs.size() - <span class="number">1</span>);</div><div class="line">  obj_info&amp; info = objs[i];</div><div class="line">  op-&gt;oid = info.name;</div><div class="line"></div><div class="line">  <span class="comment">// 随机生成长度</span></div><div class="line">  <span class="keyword">size_t</span> len = get_random(min_op_len, max_op_len);</div><div class="line">  <span class="keyword">if</span> (len &gt; info.len)</div><div class="line">    len = info.len;</div><div class="line"></div><div class="line">  <span class="comment">// 随机生成偏移</span></div><div class="line">  <span class="keyword">size_t</span> off = get_random(<span class="number">0</span>, info.len);</div><div class="line">  <span class="keyword">if</span> (off + len &gt; info.len)</div><div class="line">    off = info.len - len;</div><div class="line"></div><div class="line">  op-&gt;off = off;</div><div class="line">  op-&gt;len = len;</div><div class="line"></div><div class="line">  <span class="comment">// 随机生成读或写</span></div><div class="line">  i = get_random(<span class="number">1</span>, <span class="number">100</span>);</div><div class="line">  <span class="keyword">if</span> (i &gt; read_percent)</div><div class="line">    op-&gt;type = OP_WRITE;</div><div class="line">  <span class="keyword">else</span></div><div class="line">    op-&gt;type = OP_READ;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. LoadGen lg(&amp;rados);      // 实例化测试类</span><br><span class="line">2. lg.bootstrap(pool_name); // 生成初始的测试对象</span><br><span class="line">    生成指定个数和随机大小的测试对象，然后写入pool，实际只会在len位置写入1B（例如：需要生成1024B的对象，实际会在off=1024的位置写1B，相当于占了1024的空间），应该是为了快速生成，但这样的话就不能测试EC pool，可以通过修改源码来支持。</span><br><span class="line">3. lg.run();                // 测试过程</span><br><span class="line">    循环生成op提交</span><br><span class="line">4. lg.cleanup();            // 清理生成的对象</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#生成next op的主要代码</span><br><span class="line"><span class="keyword">void</span> LoadGen::gen_op(LoadGenOp *op)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// 随机选取生成好的对象</span></span><br><span class="line">  <span class="keyword">int</span> i = get_random(<span class="number">0</span>, objs.size() - <span class="number">1</span>);</span><br><span class="line">  obj_info&amp; info = objs[i];</span><br><span class="line">  op-&gt;oid = info.name;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 随机生成长度</span></span><br><span class="line">  <span class="keyword">size_t</span> len = get_random(min_op_len, max_op_len);</span><br><span class="line">  <span class="keyword">if</span> (len &gt; info.len)</span><br><span class="line">    len = info.len;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 随机生成偏移</span></span><br><span class="line">  <span class="keyword">size_t</span> off = get_random(<span class="number">0</span>, info.len);</span><br><span class="line">  <span class="keyword">if</span> (off + len &gt; info.len)</span><br><span class="line">    off = info.len - len;</span><br><span class="line"></span><br><span class="line">  op-&gt;off = off;</span><br><span class="line">  op-&gt;len = len;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 随机生成读或写</span></span><br><span class="line">  i = get_random(<span class="number">1</span>, <span class="number">100</span>);</span><br><span class="line">  <span class="keyword">if</span> (i &gt; read_percent)</span><br><span class="line">    op-&gt;type = OP_WRITE;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    op-&gt;type = OP_READ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>再来看参数设置</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">--num-objects           初始生成测试用的对象数，默认 200</div><div class="line">--min-object-size       测试对象的最小大小，默认 1KB，单位byte </div><div class="line">--max-object-size       测试对象的最大大小，默认 5GB，单位byte</div><div class="line"></div><div class="line">--min-op-len            压测IO的最小大小，默认 1KB，单位byte</div><div class="line">--max-op-len            压测IO的最大大小，默认 2MB，单位byte</div><div class="line">--max-ops               一次提交的最大IO数，相当于iodepth</div><div class="line">--target-throughput     一次提交IO的历史累计吞吐量上限，默认 5MB/s，单位B/s</div><div class="line">--max-backlog           一次提交IO的吞吐量上限，默认10MB/s，单位B/s</div><div class="line">--<span class="built_in">read</span>-percent          读写混合中读的比例，默认80，范围[0, 100]</div><div class="line"></div><div class="line">--run-length            运行的时间，默认60s，单位秒</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">--num-objects           初始生成测试用的对象数，默认 200</span><br><span class="line">--min-object-size       测试对象的最小大小，默认 1KB，单位byte </span><br><span class="line">--max-object-size       测试对象的最大大小，默认 5GB，单位byte</span><br><span class="line"></span><br><span class="line">--min-op-len            压测IO的最小大小，默认 1KB，单位byte</span><br><span class="line">--max-op-len            压测IO的最大大小，默认 2MB，单位byte</span><br><span class="line">--max-ops               一次提交的最大IO数，相当于iodepth</span><br><span class="line">--target-throughput     一次提交IO的历史累计吞吐量上限，默认 5MB/s，单位B/s</span><br><span class="line">--max-backlog           一次提交IO的吞吐量上限，默认10MB/s，单位B/s</span><br><span class="line">--<span class="built_in">read</span>-percent          读写混合中读的比例，默认80，范围[0, 100]</span><br><span class="line"></span><br><span class="line">--run-length            运行的时间，默认60s，单位秒</span><br></pre></td></tr></table></figure>
 <p>一个典型的用例</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 测试4KB写，iodepth=64，速度不限</span></div><div class="line">rados -p rbd load-gen --num-objects 128 --min-object-size 8192 --max-object-size 8192 --run-length 20 --<span class="built_in">read</span>-percent 0 --min-op-len 4096 --max-op-len 4096 --target-throughput 104857600 --max_backlog 104857600 --max-ops 64</div></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试4KB写，iodepth=64，速度不限</span></span><br><span class="line">rados -p rbd load-gen --num-objects 128 --min-object-size 8192 --max-object-size 8192 --run-length 20 --<span class="built_in">read</span>-percent 0 --min-op-len 4096 --max-op-len 4096 --target-throughput 104857600 --max_backlog 104857600 --max-ops 64</span><br></pre></td></tr></table></figure>
 <p>整体的流程和rados bench差不多，但是支持跟丰富的测试语义。</p>
 
       
@@ -471,9 +471,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -484,7 +482,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -547,10 +545,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

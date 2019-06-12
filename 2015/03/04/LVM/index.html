@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="lvm," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="lvm,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/03/04/LVM/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="LVM全程Logical Volume Manager 逻辑卷管理器，是Linux对磁盘分区进行管理的一种机制，是建立在硬盘和分区之上、文件系统之下的一个逻辑层，可提高磁盘分区管理的灵活性。要创建逻辑卷，首先要创建物理卷PV（Physical Volume），然后卷组VG（Volume Group），最后逻辑卷LV（Logical Volume）。">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T12:15:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux LVM逻辑卷的配置">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/03/04/LVM/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/03/04/LVM/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/03/04/LVM/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/03/04/LVM/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/03/04/LVM/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -352,7 +352,7 @@
       
         <p>LVM全程Logical Volume Manager 逻辑卷管理器，是Linux对磁盘分区进行管理的一种机制，是建立在硬盘和分区之上、文件系统之下的一个逻辑层，可提高磁盘分区管理的灵活性。<br>要创建逻辑卷，首先要创建物理卷PV（Physical Volume），然后卷组VG（Volume Group），最后逻辑卷LV（Logical Volume）。</p>
 <a id="more"></a>
-<p>Ceph的单机版本部署参考<a href="http://blog.coolceph.com/?p=85" target="_blank" rel="external">博客</a>，为集群准备OSD空间。<br>注意，分配的OSD空间要大于配置文件Ceph.conf中 <code>osd journal size</code>  ，单位为MB。</p>
+<p>Ceph的单机版本部署参考<a href="http://blog.coolceph.com/?p=85" target="_blank" rel="noopener">博客</a>，为集群准备OSD空间。<br>注意，分配的OSD空间要大于配置文件Ceph.conf中 <code>osd journal size</code>  ，单位为MB。</p>
 <h2 id="创建LVM"><a href="#创建LVM" class="headerlink" title="创建LVM"></a>创建LVM</h2><h3 id="准备磁盘空间，-这一步使用逻辑卷进行操作"><a href="#准备磁盘空间，-这一步使用逻辑卷进行操作" class="headerlink" title="准备磁盘空间， 这一步使用逻辑卷进行操作"></a>准备磁盘空间， 这一步使用逻辑卷进行操作</h3><ol>
 <li>准备空闲分区为： 我的ubuntu在虚拟机，通过扩容后新建分区（可以通过fdisk命令） /dev/sda3</li>
 <li>创建物理卷：<br> pvcreate /dev/sda3<ul>
@@ -381,7 +381,7 @@
 <ul>
 <li>resize2fs 工具只适用于 <code>ext2、ext3、ext4</code> .</li>
 <li>xfs 系统可以使用 xfs_growfs</li>
-<li>btrfs系统可以使用 <code>sudo btrfs filesystem resize [+/-]&lt;newsize&gt;[gkm]|max &lt;path&gt;</code> ，其中<path></path>为挂在后的路径</li>
+<li>btrfs系统可以使用 <code>sudo btrfs filesystem resize [+/-]&lt;newsize&gt;[gkm]|max &lt;path&gt;</code> ，其中<path>为挂在后的路径</path></li>
 </ul>
 </li>
 </ol>
@@ -504,7 +504,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -515,9 +515,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -528,7 +526,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -607,10 +605,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph calamari," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph calamari,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/07/25/calamari-deploy/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="Calamari是Ceph官方出品的监控平台，监控内容很丰富，可以做一些基本的运维操作，但是还不能做Ceph部署，需要结和ceph-deploy。Calamari比较复杂，文档也比较少，记录下部署中遇到的坑。。。">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T12:31:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Calamari部署">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/07/25/calamari-deploy/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/07/25/calamari-deploy/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/07/25/calamari-deploy/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/07/25/calamari-deploy/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/25/calamari-deploy/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -366,18 +366,20 @@
 </li>
 <li>diamond 各个节点的数据收集器，收集节点信息发送到服务端。Calamari定制了一个版本。</li>
 </ul>
-<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="Ubuntu下的Calamari部署"><a href="#Ubuntu下的Calamari部署" class="headerlink" title="Ubuntu下的Calamari部署"></a>Ubuntu下的Calamari部署</h3><p>可以<a href="http://calamari.readthedocs.org/en/latest/operations/server_install.html" target="_blank" rel="external">参考官方</a>的介绍。没有尝试过。。</p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="Ubuntu下的Calamari部署"><a href="#Ubuntu下的Calamari部署" class="headerlink" title="Ubuntu下的Calamari部署"></a>Ubuntu下的Calamari部署</h3><p>可以<a href="http://calamari.readthedocs.org/en/latest/operations/server_install.html" target="_blank" rel="noopener">参考官方</a>的介绍。没有尝试过。。</p>
 <h3 id="主要是Centos的部署"><a href="#主要是Centos的部署" class="headerlink" title="主要是Centos的部署"></a>主要是Centos的部署</h3><ul>
-<li><p>从安装包部署 <a href="https://bbs.ceph.org.cn/topic/135" target="_blank" rel="external">https://bbs.ceph.org.cn/topic/135</a></p>
+<li><p>从安装包部署 <a href="https://bbs.ceph.org.cn/topic/135" target="_blank" rel="noopener">https://bbs.ceph.org.cn/topic/135</a></p>
 </li>
-<li><p>从源码部署 <a href="http://ovirt-china.org/mediawiki/index.php/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2Ceph_Calamari" target="_blank" rel="external">http://ovirt-china.org/mediawiki/index.php/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2Ceph_Calamari</a></p>
+<li><p>从源码部署 <a href="http://ovirt-china.org/mediawiki/index.php/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2Ceph_Calamari" target="_blank" rel="noopener">http://ovirt-china.org/mediawiki/index.php/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2Ceph_Calamari</a></p>
 </li>
 </ul>
 <p>刚部署完，diamond老是起不来，看log，有个包load不到，<code>PySNMP</code>，需要pip装下。</p>
 <blockquote>
 <p>特别注意，在下面版本下，需要<code>Salt-2014.1</code>版本，出现的症状就是，ceph-server能连上，但是Calamari识别不了ceph集群。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ceph 0.94.2</div><div class="line">calamari-1.3</div><div class="line">diamond-3.4.67</div></pre></td></tr></table></figure>
-<p>被这个问题坑了2天，后来发现社区前几天刚报了个bug <a href="http://tracker.ceph.com/issues/12264" target="_blank" rel="external">http://tracker.ceph.com/issues/12264</a> </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ceph 0.94.2</span><br><span class="line">calamari-1.3</span><br><span class="line">diamond-3.4.67</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>被这个问题坑了2天，后来发现社区前几天刚报了个bug <a href="http://tracker.ceph.com/issues/12264" target="_blank" rel="noopener">http://tracker.ceph.com/issues/12264</a> </p>
 </blockquote>
 
       
@@ -488,7 +490,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -499,9 +501,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -512,7 +512,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -591,10 +591,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -6,10 +6,10 @@
 
 
 <html class="theme-next mist use-motion" lang="en">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
@@ -19,8 +19,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -38,7 +38,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -72,21 +72,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ceph," />
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ceph,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1">
 
 
 
@@ -100,6 +100,7 @@
 <meta property="og:url" content="http://tianshan.github.io/2015/07/21/ceph-rpm/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="如果需要要修改Ceph源码，就要自己构建安装包，然后指定ceph-deploy的安装源。本文主要介绍从git上clone源码，然后用rpmbuild打包，最后用ceph-deploy安装。环境为Centos，ceph版本0.94.2(hammer)，不同版本的文件稍微有点不一样。">
+<meta property="og:locale" content="en">
 <meta property="og:updated_time" content="2017-07-02T12:31:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ceph源码构建并安装">
@@ -131,7 +132,7 @@
 
 
 
-  <link rel="canonical" href="http://tianshan.github.io/2015/07/21/ceph-rpm/"/>
+  <link rel="canonical" href="http://tianshan.github.io/2015/07/21/ceph-rpm/">
 
 
 
@@ -180,7 +181,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">tianshan's blog</span>
         <span class="logo-line-after"><i></i></span>
@@ -210,7 +211,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
           </a>
@@ -220,7 +221,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             About
           </a>
@@ -230,7 +231,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             Archives
           </a>
@@ -240,7 +241,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             Tags
           </a>
@@ -279,7 +280,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/images/ts.jpg">
     </span>
 
@@ -324,8 +325,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2015/07/21/ceph-rpm/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2015/07/21/ceph-rpm/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/07/21/ceph-rpm/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -352,18 +352,18 @@
       
         <p>如果需要要修改Ceph源码，就要自己构建安装包，然后指定ceph-deploy的安装源。<br>本文主要介绍从git上clone源码，然后用rpmbuild打包，最后用ceph-deploy安装。<br>环境为Centos，ceph版本0.94.2(hammer)，不同版本的文件稍微有点不一样。</p>
 <a id="more"></a>
-<h2 id="RPM打包"><a href="#RPM打包" class="headerlink" title="RPM打包"></a>RPM打包</h2><p>官方的RPM打包教程<a href="http://ceph.com/docs/master/install/build-ceph/" target="_blank" rel="external">http://ceph.com/docs/master/install/build-ceph/</a>。<br>如果只是尝试打包的话，这个教程基本够了，下面主要讲从git源码开始。</p>
+<h2 id="RPM打包"><a href="#RPM打包" class="headerlink" title="RPM打包"></a>RPM打包</h2><p>官方的RPM打包教程<a href="http://ceph.com/docs/master/install/build-ceph/" target="_blank" rel="noopener">http://ceph.com/docs/master/install/build-ceph/</a>。<br>如果只是尝试打包的话，这个教程基本够了，下面主要讲从git源码开始。</p>
 <p>1.git(recursive会把子模块一起克隆)  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">clone</span> --recursive https://github.com/ceph/ceph.git</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --recursive https://github.com/ceph/ceph.git</span><br></pre></td></tr></table></figure>
 <p>2.切换到目前最新的Hammer版（0.94.2），切换前先复制下两个用来打包的文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> ceph</div><div class="line"><span class="comment">#复制打包命令</span></div><div class="line">cp make_dist.sh ../ </div><div class="line">cp -r bin ../</div><div class="line"><span class="comment">#切换release分之</span></div><div class="line">git checkout v0.94.2</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ceph</span><br><span class="line"><span class="comment">#复制打包命令</span></span><br><span class="line">cp make_dist.sh ../ </span><br><span class="line">cp -r bin ../</span><br><span class="line"><span class="comment">#切换release分之</span></span><br><span class="line">git checkout v0.94.2</span><br></pre></td></tr></table></figure>
 <p>3.把源码压缩为bz2文件，要用到之前复制的打包命令。结束后会在目录下出现ceph-0.94.2.tar.bz2文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#复制文件</span></div><div class="line">cp ../make_dist.sh ./</div><div class="line">cp -r ../bin ./</div><div class="line"><span class="comment">#执行压缩打包</span></div><div class="line">./make_dist 0.94.2</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#复制文件</span></span><br><span class="line">cp ../make_dist.sh ./</span><br><span class="line">cp -r ../bin ./</span><br><span class="line"><span class="comment">#执行压缩打包</span></span><br><span class="line">./make_dist 0.94.2</span><br></pre></td></tr></table></figure>
 <p>4.准备rpmbuild目录</p>
 <p>5.准备构建文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#复制源码</span></div><div class="line">cp ceph/ceph-0.94.2.tar.bz2 rpmbuild/SOURCES/</div><div class="line"><span class="comment">#复制补丁文件</span></div><div class="line">cp ceph/rpm/init-ceph.in-fedora.patch rpmbuild/SOURCES/</div><div class="line"><span class="comment">#复制spec文件</span></div><div class="line">cp ceph/ceph.spec.in rpmbuild/SPECS/ceph.spec</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#复制源码</span></span><br><span class="line">cp ceph/ceph-0.94.2.tar.bz2 rpmbuild/SOURCES/</span><br><span class="line"><span class="comment">#复制补丁文件</span></span><br><span class="line">cp ceph/rpm/init-ceph.in-fedora.patch rpmbuild/SOURCES/</span><br><span class="line"><span class="comment">#复制spec文件</span></span><br><span class="line">cp ceph/ceph.spec.in rpmbuild/SPECS/ceph.spec</span><br></pre></td></tr></table></figure>
 <p>6.开始build，编译完成会在<code>rpmbuild/RPMS/x86_64</code>目录下生成打包文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rpmbuild -ba rpmbuild/SPECS/ceph.spec</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpmbuild -ba rpmbuild/SPECS/ceph.spec</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>注意，编译大概需要近20G存储空间</p>
 </blockquote>
@@ -477,7 +477,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -488,9 +488,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/images/ts.jpg"
-               alt="tianshan" />
+          <img class="site-author-image" itemprop="image" src="/images/ts.jpg" alt="tianshan">
           <p class="site-author-name" itemprop="name">tianshan</p>
            
               <p class="site-description motion-element" itemprop="description"></p>
@@ -501,7 +499,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -580,10 +578,10 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
