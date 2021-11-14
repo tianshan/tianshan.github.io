@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/ts.jpg">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tianshan.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ErasureCode应用在存储中的是满足MDS性质的线性分组码，最常用的是Reed Solomon编码。 将一份数据切成K块数据块，然后编码成M块校验块，放到K+M个OSD上，可以容忍任意M块丢失。 Ceph的EC支持主要是Loïc Dachary实现的。具体的PG层逻辑，复用了ReplicatedPG，写数据前的准备工作，都是在主OSD完成。编码的工作由对应的plugin完成，可以很灵活的实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph中EC的对齐">
+<meta property="og:url" content="http://tianshan.github.io/2015/11/23/ceph-erasure-code-alignment/index.html">
+<meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:description" content="ErasureCode应用在存储中的是满足MDS性质的线性分组码，最常用的是Reed Solomon编码。 将一份数据切成K块数据块，然后编码成M块校验块，放到K+M个OSD上，可以容忍任意M块丢失。 Ceph的EC支持主要是Loïc Dachary实现的。具体的PG层逻辑，复用了ReplicatedPG，写数据前的准备工作，都是在主OSD完成。编码的工作由对应的plugin完成，可以很灵活的实现">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-11-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T05:43:39.158Z">
+<meta property="article:author" content="tianshan">
+<meta property="article:tag" content="ceph ErasureCode">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://tianshan.github.io/2015/11/23/ceph-erasure-code-alignment/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Ceph中EC的对齐 | tianshan's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157535953-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-157535953-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fa68b808184a9e30bed3eee6cd0a15f9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">tianshan's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2015/11/23/ceph-erasure-code-alignment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ts.jpg">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ceph中EC的对齐
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-11-23 00:00:00" itemprop="dateCreated datePublished" datetime="2015-11-23T00:00:00+08:00">2015-11-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ErasureCode应用在存储中的是满足MDS性质的线性分组码，最常用的是Reed Solomon编码。 将一份数据切成K块数据块，然后编码成M块校验块，放到K+M个OSD上，可以容忍任意M块丢失。</p>
+<p>Ceph的EC支持主要是Loïc Dachary实现的。具体的PG层逻辑，复用了ReplicatedPG，写数据前的准备工作，都是在主OSD完成。<br>编码的工作由对应的plugin完成，可以很灵活的实现自己的编码。Plugin的选用是在创建ecpool时的ecprofile中指定的，具体的设置可以参考<a target="_blank" rel="noopener" href="http://docs.ceph.com/docs/master/rados/operations/erasure-code/">官网</a>。</p>
+<p>已有的Plugin是Jerasure，Intel ISA，LRC，SHEL，前两者是采用硬件加速的编码库，后两者是基于RS改进的编码方案，主要改进了修复的效率和占用的资源。</p>
+<span id="more"></span>
+
+<p>目前Ceph不支持EC的偏移写，只能writefull，或者offset要满足是strip_width的倍数，且正好是原始对象的末尾，所以最终都会转换成一个AppendOp。</p>
+<p>编码的流程</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ECTransaction::TransGenerator</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="keyword">const</span> ECTransaction::AppendOp &amp;op)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 每次编码的buf大小是stripe_width=K*chunk_size，循环编码</span></span></span><br><span class="line"><span class="function"><span class="title">ECUtil::encode</span><span class="params">(sinfo, ecimpl, bl, want, &amp;buffers)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ECPlugin实现的编码过程</span></span><br><span class="line">ecimpl-&gt;<span class="built_in">encode</span>(want, buf, &amp;encoded);</span><br></pre></td></tr></table></figure>
+
+<p>其中，chunk_size也是每个osd上要存的数据量，就是一次要对齐的大小，再来看chunk_size是怎么来的。</p>
+<p>ECBackend中有这样一个变量，<code>ECUtil::stripe_info_t sinfo</code>，sinfo包含变量stripe_width。<br>sinfo是在ECBackend构造的时候实例化的。</p>
+<p>实例化过程</p>
+<p>OSDMonitor::prepare_new_pool -&gt; prepare_pool_stripe_width</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ErasureCodeInterfaceRef erasure_code;</span><br><span class="line"><span class="comment">// 实例化ecprofile定义的ECPlugin</span></span><br><span class="line"><span class="built_in">get_erasure_code</span>(erasure_code_profile, &amp;erasure_code, ss);</span><br><span class="line"><span class="comment">// 用户期望的条带大小，读取配置文件的选项 osd_pool_erasure_code_stripe_width</span></span><br><span class="line"><span class="keyword">uint32_t</span> desired_stripe_width = g_conf-&gt;osd_pool_erasure_code_stripe_width;</span><br><span class="line"><span class="comment">// 调用ECPlugin的函数来获取条带大小</span></span><br><span class="line">stripe_width = erasure_code-&gt;<span class="built_in">get_data_chunk_count</span>() *</span><br><span class="line">      erasure_code-&gt;<span class="built_in">get_chunk_size</span>(desired_stripe_width);</span><br></pre></td></tr></table></figure>
+
+<p>不同的ECPlugin会有不同的条带大小，下面主要分析下Jerasure为例。get_chunk_size的对齐过程</p>
+<ul>
+<li><p>调用<code>alignment = get_alignment()</code>返回ECPlugin实现的编码本身需要的对齐长度，就是一次矩阵运算需要的byte数</p>
+</li>
+<li><p>然后根据对齐长度，使object_size满足为alignment的整数倍</p>
+</li>
+<li><p>如果per_chunk_alignment为true，会使每个chunk大小都是alignment的整数倍。默认false</p>
+</li>
+</ul>
+<p>详细代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ErasureCodeJerasure::<span class="built_in">get_chunk_size</span>(<span class="keyword">int</span> object_size)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">unsigned</span> alignment = <span class="built_in">get_alignment</span>();</span><br><span class="line">  <span class="keyword">if</span> (per_chunk_alignment) &#123;</span><br><span class="line">    <span class="keyword">unsigned</span> chunk_size = object_size / k;</span><br><span class="line">    <span class="keyword">if</span> (object_size % k)</span><br><span class="line">      chunk_size++;</span><br><span class="line">    <span class="keyword">unsigned</span> modulo = chunk_size % alignment;</span><br><span class="line">    <span class="keyword">if</span> (modulo) &#123;</span><br><span class="line">      chunk_size += alignment - modulo;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> chunk_size;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">unsigned</span> tail = object_size % alignment;</span><br><span class="line">    <span class="keyword">unsigned</span> padded_length = object_size + ( tail ?  ( alignment - tail ) : <span class="number">0</span> );</span><br><span class="line">    <span class="keyword">return</span> padded_length / k;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Jerasure支持不同的编码方案，会有部分差别，这只是一个例子</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="title">ErasureCodeJerasureLiberation::get_alignment</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// k: data chunk数</span></span><br><span class="line">  <span class="comment">// w: 一次编码的字长，也是有限域运算的位长，默认为8。GF(2^8)上的运算可以查表</span></span><br><span class="line">  <span class="comment">// packetsize: 一次编码组的个数</span></span><br><span class="line">  <span class="comment">// sizeof(int): jerasure是把数据存在int中的，所以要对齐int</span></span><br><span class="line">  <span class="keyword">unsigned</span> alignment = k * w * packetsize * <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>);</span><br><span class="line">  <span class="comment">// LARGEST_VECTOR_WORDSIZE 的作用未知</span></span><br><span class="line">  <span class="keyword">if</span> ( ((w*packetsize*<span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>))%LARGEST_VECTOR_WORDSIZE) )</span><br><span class="line">    alignment = k*w*packetsize*LARGEST_VECTOR_WORDSIZE;</span><br><span class="line">  <span class="keyword">return</span> alignment;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结，不同的编码本身会有不同的编码要求，跟踪get_chunk_size和get_alignment函数可以得到，了解对齐原理后合理设置参数，才能使编码性能提高。<br>每次编码都会prepare逻辑，object_size过小，会频繁prepare，导致性能下降。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">Related Posts</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2015/12/03/ceph-erasure-code-analysis-1/" rel="bookmark">Ceph EC的代码分析(一)</a></div>
+    </li>
+  </ul>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ceph-ErasureCode/" rel="tag"># ceph ErasureCode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/11/09/ceph-read-write-op/" rel="prev" title="Ceph读写流程分析二">
+      <i class="fa fa-chevron-left"></i> Ceph读写流程分析二
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/12/03/ceph-erasure-code-analysis-1/" rel="next" title="Ceph EC的代码分析(一)">
+      Ceph EC的代码分析(一) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="tianshan/tianshan.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tianshan"
+      src="/images/ts.jpg">
+  <p class="site-author-name" itemprop="name">tianshan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tianshan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tianshan" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tianshan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
