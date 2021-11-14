@@ -14,13 +14,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"tianshan.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="工作一年，基本一直在做rgw，本篇作为续写博客第一篇，从最近看的multisite写起，争取在架构和代码上给rgw写一个系列。 ceph从J版开始，重构了multisite方案，改变了原来配置复杂，同步难于管理的问题。新版简化了配置，zone之间通过内部的协程框架同步。本篇先简单介绍同步流程。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ceph-rgw-multisite">
-<meta property="og:url" content="http://tianshan.github.io/2017/07/02/ceph-rgw-multisite/index.html">
+<meta property="og:url" content="http://example.com/2017/07/02/ceph-rgw-multisite/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="工作一年，基本一直在做rgw，本篇作为续写博客第一篇，从最近看的multisite写起，争取在架构和代码上给rgw写一个系列。 ceph从J版开始，重构了multisite方案，改变了原来配置复杂，同步难于管理的问题。新版简化了配置，zone之间通过内部的协程框架同步。本篇先简单介绍同步流程。">
 <meta property="og:locale" content="en_US">
@@ -31,7 +31,7 @@
 <meta property="article:tag" content="ceph">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://tianshan.github.io/2017/07/02/ceph-rgw-multisite/">
+<link rel="canonical" href="http://example.com/2017/07/02/ceph-rgw-multisite/">
 
 
 <script id="page-configurations">
@@ -173,7 +173,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2017/07/02/ceph-rgw-multisite/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/07/02/ceph-rgw-multisite/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -241,13 +241,13 @@
       <div class="popular-posts-title"><a href="/2019/06/12/Civetweb大并发超时分析/" rel="bookmark">Civetweb大并发超时分析</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2015/02/25/ceph-code-structure/" rel="bookmark">Ceph 代码分析</a></div>
-    </li>
-    <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2016/01/13/ceph-ec-remove-object/" rel="bookmark">Ceph EC代码分析(二)</a></div>
+      <div class="popular-posts-title"><a href="/2015/02/23/ceph-compile/" rel="bookmark">Ceph 编译</a></div>
     </li>
     <li class="popular-posts-item">
       <div class="popular-posts-title"><a href="/2015/03/18/ceph-documentation/" rel="bookmark">Ceph文档编译</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2015/02/25/ceph-code-structure/" rel="bookmark">Ceph 代码分析</a></div>
     </li>
   </ul>
 
@@ -352,13 +352,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

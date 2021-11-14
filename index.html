@@ -14,18 +14,18 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"tianshan.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="tianshan&#39;s blog">
-<meta property="og:url" content="http://tianshan.github.io/index.html">
+<meta property="og:url" content="http://example.com/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="tianshan">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://tianshan.github.io/">
+<link rel="canonical" href="http://example.com/">
 
 
 <script id="page-configurations">
@@ -166,7 +166,93 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2020/02/03/Fuse-high-level-path-lookup%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/14/2111-sosp-21-read-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ts.jpg">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/11/14/2111-sosp-21-read-1/" class="post-title-link" itemprop="url">SOSP-21 存储方向论文速读一</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-11-14 16:24:33" itemprop="dateCreated datePublished" datetime="2021-11-14T16:24:33+08:00">2021-11-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近在学习新的文件存储思路，陆续整理了下，尝试做一些总结。SOSP 21年在10月份论文都放出来了，分享一部分。</p>
+<h3 id="Scale-and-Performance-in-a-Filesystem-Semi-Microkernel"><a href="#Scale-and-Performance-in-a-Filesystem-Semi-Microkernel" class="headerlink" title="Scale and Performance in a Filesystem Semi-Microkernel"></a>Scale and Performance in a Filesystem Semi-Microkernel</h3><p>论文项目：<a target="_blank" rel="noopener" href="https://github.com/WiscADSL/uFS">https://github.com/WiscADSL/uFS</a><br>论文：<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3477132.3483581">https://dl.acm.org/doi/10.1145/3477132.3483581</a></p>
+<p>总结:</p>
+<ul>
+<li>论文在用户态实现了本地文件系统，利用spdk充分利用NVME设备。<ul>
+<li>提供了一种集中处理dentry，by thread shard inode 的处理思路，提到可以并发写入journal，于此提供高性能服务。</li>
+<li>基于by thread做了一个动态调度，监控系统复杂然后可以自适应调整inode映射。</li>
+</ul>
+</li>
+<li>实现偏理想化posix功能不完整，不太适合通用文件场景，本地自己使用可以尝试。</li>
+</ul>
+<p>速读代码分析：</p>
+<ul>
+<li>类似状态机实现IO异步处理</li>
+<li>in mem inode组织<ul>
+<li>std::unordered_map&lt;uint32_t, InMemInode *&gt; inodeMap_</li>
+<li>读取用了一把全局锁</li>
+</ul>
+</li>
+<li>独立Worker<ul>
+<li>每个都包含dev指针，利用spdk实现了</li>
+</ul>
+</li>
+<li>journal可以分区的原因：<ul>
+<li>inode和dentry的存储布局设计参考了本地文件系统</li>
+<li>inode和dentry的修改是分开的</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/02/03/Fuse-high-level-path-lookup%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -231,7 +317,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -297,7 +383,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2017/07/16/ceph-rgw-multisite-bucket-create/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/07/16/ceph-rgw-multisite-bucket-create/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -362,7 +448,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2017/07/02/ceph-rgw-multisite/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/07/02/ceph-rgw-multisite/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -428,7 +514,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2017/07/02/2017-middle/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/07/02/2017-middle/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -498,7 +584,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2016/07/11/ceph-rgw-multipart/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/07/11/ceph-rgw-multipart/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -559,7 +645,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2016/03/13/fast-16/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/03/13/fast-16/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -619,7 +705,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2016/02/21/inside-the-c++-object-model/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/02/21/inside-the-c++-object-model/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -684,7 +770,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2016/02/08/to-myself/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/02/08/to-myself/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -725,74 +811,6 @@
           <p>又是除夕夜，从去年这时候开了博客，那时的新年愿望是坚持写博客，零零散散写了30篇，还挖了好多坑，算是完成了一半吧。今年愿望就是能坚持写些有质量的文章哈:)</p>
 <p>简单回顾下2015。去年有缘加入了一家创业公司，也算正式进入存储行业，进入了ceph圈，认识了很多大牛。学了很多，做了很多，还有很多要去弥补，要更多的深入原理，多看基本经典书。</p>
 <p>今年主要方向还在存储，主要是Ceph，有兴趣的可以一起讨论哈。最近贡献了Ceph的EC Overwrite模块，一些性能优化还没做好，本来要在Ceph Develop Mouthly要讨论下，然后很悲剧的话筒没调好，没能说上话。。。争取今年能够贡献更多核心模块，还得练好听力，不然赶不上老外的语速了。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2016/01/27/ceph-deploy-mon-error/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ts.jpg">
-      <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tianshan's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/01/27/ceph-deploy-mon-error/" class="post-title-link" itemprop="url">Ceph编译部署启动失败</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2016-01-27 00:00:00" itemprop="dateCreated datePublished" datetime="2016-01-27T00:00:00+08:00">2016-01-27</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Ceph编译安装经常会出现各种问题，这里记录下。</p>
-<p>1.权限问题</p>
-<p>默认ceph是以ceph用户启动的，可以查看<code>src/init-ceph</code>，导致在root用户下用ceph-deploy部署时，mon不能起来。<br>还没部署前，可以直接修改ceph为root就可以了。已经部署失败后，因为service文件已经写好了，还要改一个地方。<br><code>ls /etc/systemd/system/ceph-mon.target.wants/</code> 可以看到对应的文件为<code>/usr/lib/systemd/system/ceph-mon@.service</code>，所以修改该文件中setuser和setgroup后的用户即可。</p>
-<p>2.selinux</p>
-<p>需要关闭，否则可能会遇到<code>filestore(/var/lib/ceph/tmp/mnt.icGL7K) mkjournal error creating journal on /var/lib/ceph/tmp/mnt.icGL7K/journal: (13) Permission denied</code> 类似的错误</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">getenfoce       <span class="comment">#查看当前设置</span></span><br><span class="line">setenforce 0    <span class="comment">#临时设置</span></span><br><span class="line"></span><br><span class="line">永久设置，修改文件，然后重启</span><br><span class="line">/etc/selinux/config</span><br><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure>
-
-<p>3.动态链接库找不到</p>
-<p>默认是安装在<code>/usr/local/bin</code>，对应的库在<code>/usr/local/lib</code>。<br>这种情况需要修改 <code>/etc/ld.so.conf</code>，添加 <code>include /usr/local/lib</code>，然后执行<code>ldconfig</code> 重新加载库。<br>如果要临时设置，也可以<code>export LD_LIBRARY_PATH=/usr/local/lib</code></p>
-<p>4.python文件找不到</p>
-<p>问题同上，默认安装在<code>/usr/local/</code>。在<code>.bashrc</code>中添加python搜索路径，<code>export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/</code></p>
 
       
     </div>
@@ -879,13 +897,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

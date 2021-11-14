@@ -14,13 +14,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"tianshan.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="背景Ceph RGW压测大并发时，由于底层性能不足，会造成服务端请求超时。如果在中间有ngxin做负载均衡时，压测工具Cosbench会显示有请求失败，而直连rgw则不会显示失败，为了分析这个问题，研究了下rgw请求超时过程中发生了什么。 而关于Cosbench请求是否失败的问题，其实比较简单，由于中间有nginx时，nginx在判断server超时时，会给客户端返回50x错误，直连rgw时，请求">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Civetweb大并发超时分析">
-<meta property="og:url" content="http://tianshan.github.io/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/index.html">
+<meta property="og:url" content="http://example.com/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="tianshan&#39;s blog">
 <meta property="og:description" content="背景Ceph RGW压测大并发时，由于底层性能不足，会造成服务端请求超时。如果在中间有ngxin做负载均衡时，压测工具Cosbench会显示有请求失败，而直连rgw则不会显示失败，为了分析这个问题，研究了下rgw请求超时过程中发生了什么。 而关于Cosbench请求是否失败的问题，其实比较简单，由于中间有nginx时，nginx在判断server超时时，会给客户端返回50x错误，直连rgw时，请求">
 <meta property="og:locale" content="en_US">
@@ -30,7 +30,7 @@
 <meta property="article:tag" content="rgw">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://tianshan.github.io/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/">
+<link rel="canonical" href="http://example.com/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -172,7 +172,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tianshan.github.io/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/06/12/Civetweb%E5%A4%A7%E5%B9%B6%E5%8F%91%E8%B6%85%E6%97%B6%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -255,10 +255,10 @@
   <div class="popular-posts-header">Related Posts</div>
   <ul class="popular-posts">
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2017/07/02/ceph-rgw-multisite/" rel="bookmark">ceph-rgw-multisite</a></div>
+      <div class="popular-posts-title"><a href="/2017/07/16/ceph-rgw-multisite-bucket-create/" rel="bookmark">ceph rgw multisite 桶创建</a></div>
     </li>
     <li class="popular-posts-item">
-      <div class="popular-posts-title"><a href="/2017/07/16/ceph-rgw-multisite-bucket-create/" rel="bookmark">ceph rgw multisite 桶创建</a></div>
+      <div class="popular-posts-title"><a href="/2017/07/02/ceph-rgw-multisite/" rel="bookmark">ceph-rgw-multisite</a></div>
     </li>
   </ul>
 
@@ -362,13 +362,13 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
