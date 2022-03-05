@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/ts.jpg">
+  <link rel="mask-icon" href="/images/ts.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="最近在研习C++协程的一些用法，翻到folly::coro作者 Lewis Baker 的几篇文章，都是基于C++20协程，讲解比较详细，翻译如下。第一篇主要介绍了一下内容，并有配图说明了协程调用的过程：  协程关键字和函数调用的区别 协程栈帧的理解 协程切换的过程原文：https:&#x2F;&#x2F;lewissbaker.github.io&#x2F;2017&#x2F;09&#x2F;25&#x2F;coroutine-theory译注： act">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【翻译】Coroutine Theory">
+<meta property="og:url" content="http://example.com/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/index.html">
+<meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:description" content="最近在研习C++协程的一些用法，翻到folly::coro作者 Lewis Baker 的几篇文章，都是基于C++20协程，讲解比较详细，翻译如下。第一篇主要介绍了一下内容，并有配图说明了协程调用的过程：  协程关键字和函数调用的区别 协程栈帧的理解 协程切换的过程原文：https:&#x2F;&#x2F;lewissbaker.github.io&#x2F;2017&#x2F;09&#x2F;25&#x2F;coroutine-theory译注： act">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-27T13:36:39.000Z">
+<meta property="article:modified_time" content="2022-03-05T07:43:30.747Z">
+<meta property="article:author" content="tianshan">
+<meta property="article:tag" content="coroutine">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/","path":"2022/02/27/【翻译】coroutine-theory/","title":"【翻译】Coroutine Theory"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【翻译】Coroutine Theory | tianshan's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157535953-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-157535953-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?fa68b808184a9e30bed3eee6cd0a15f9"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tianshan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E6%97%A2%E6%98%AF%E5%87%BD%E6%95%B0%EF%BC%8C%E5%87%BD%E6%95%B0%E5%8F%88%E6%98%AF%E5%8D%8F%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">协程既是函数，函数又是协程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%9C%E6%99%AE%E9%80%9A%E2%80%9D%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">“普通”函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E5%B8%A7"><span class="nav-number">1.2.</span> <span class="nav-text">栈帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%93%8D%E4%BD%9C-%E2%80%9CCall%E2%80%9D"><span class="nav-number">1.3.</span> <span class="nav-text">调用操作 “Call”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E6%93%8D%E4%BD%9C-%E2%80%9CReturn%E2%80%9D"><span class="nav-number">1.4.</span> <span class="nav-text">返回操作 “Return”</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">协程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E6%A0%88%E5%B8%A7"><span class="nav-number">2.1.</span> <span class="nav-text">协程栈帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%82%E5%81%9C%E6%93%8D%E4%BD%9C-Suspend"><span class="nav-number">2.2.</span> <span class="nav-text">暂停操作 Suspend</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C-Resume"><span class="nav-number">2.3.</span> <span class="nav-text">恢复操作 Resume</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%80%E6%AF%81%E6%93%8D%E4%BD%9C-Destroy"><span class="nav-number">2.4.</span> <span class="nav-text">销毁操作 Destroy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9A%84%E8%B0%83%E7%94%A8%E6%93%8D%E4%BD%9C-call"><span class="nav-number">2.5.</span> <span class="nav-text">协程的调用操作 call</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E7%9A%84%E8%BF%94%E5%9B%9E%E6%93%8D%E4%BD%9C-Return"><span class="nav-number">2.6.</span> <span class="nav-text">协程的返回操作 Return</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%9B%BE%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">一些图例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tianshan"
+      src="/images/ts.jpg">
+  <p class="site-author-name" itemprop="name">tianshan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tianshan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tianshan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qutianshan0214@163.com" title="E-Mail → mailto:qutianshan0214@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ts.jpg">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【翻译】Coroutine Theory
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-02-27 21:36:39" itemprop="dateCreated datePublished" datetime="2022-02-27T21:36:39+08:00">2022-02-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>最近在研习C++协程的一些用法，翻到<code>folly::coro</code>作者 <em>Lewis Baker</em> 的几篇文章，都是基于C++20协程，讲解比较详细，翻译如下。<br>第一篇主要介绍了一下内容，并有配图说明了协程调用的过程：</p>
+<ul>
+<li>协程关键字和函数调用的区别</li>
+<li>协程栈帧的理解</li>
+<li>协程切换的过程<br>原文：<a target="_blank" rel="noopener" href="https://lewissbaker.github.io/2017/09/25/coroutine-theory">https://lewissbaker.github.io/2017/09/25/coroutine-theory</a><br>译注：</li>
+<li>activion frame和stack frame都翻译成了栈帧，可能有不到位的点，建议参考原文更好理解。</li>
+</ul>
+<p>在这个系列中，我会覆盖C++协程基础原理，以及如何应用到更高层次的抽象，例如在<a target="_blank" rel="noopener" href="https://github.com/lewissbaker/cppcoro">cppcoro</a>库中所提供的。<br>(注1：<em>Lewis Baker</em>同时也是流行库cppcoro的作者；注2：C++20的协程只是提供了协程源语，要真正用起来，还需要很多封装，例如调度器)</p>
+<p>本篇会描述函数与协程之间的区别，以及介绍所支持操作的原理。本篇目标是给读者引入C++协程的基础概念。</p>
+<span id="more"></span>
+
+<h1 id="协程既是函数，函数又是协程"><a href="#协程既是函数，函数又是协程" class="headerlink" title="协程既是函数，函数又是协程"></a>协程既是函数，函数又是协程</h1><p>协程是一类允许运行中暂停以及恢复的函数。<br>在进一步解释细节前我们来看一下普通的C++函数。</p>
+<h2 id="“普通”函数"><a href="#“普通”函数" class="headerlink" title="“普通”函数"></a>“普通”函数</h2><p>普通函数可以认为包含两个操作：<strong>Call</strong> 以及 <strong>Return</strong> （注意，这里把”抛异常“也包含在广义<strong>Return</strong>中）。</p>
+<p>操作<strong>Call</strong>创建了一个栈帧，把调用函数暂停，然后转移运行权到新函数的起始。</p>
+<p>操作<strong>Return</strong>把返回值传递给调用者，析构掉栈帧，然后恢复调用者的执行到刚刚调用函数之后。</p>
+<h2 id="栈帧"><a href="#栈帧" class="headerlink" title="栈帧"></a>栈帧</h2><p>所以，栈帧到底是什么？</p>
+<p>栈帧可以认为是一段内存，包含了函数特定调用的当前状态。这个状态包含了传入的参数以及所有局部变量。</p>
+<p>对于普通函数，栈帧同时包括了返回地址，就是指示往上转移返回函数的地址，也是调用者函数的栈帧地址。可以认为是描述了函数调用的延续，也就是描述了当前函数完成后应该继续调用哪个函数。</p>
+<p>在普通函数中，所有的栈帧都有严格嵌套的生命周期。严格嵌套意味着所有的内存分配，以及每次函数栈帧的析构都可以使用非常高效的栈结构。</p>
+<p>在栈结构上分配的栈帧通常被称为栈帧。</p>
+<p>栈结构非常常用大部分CPU架构有专门的寄存器来保存栈顶指针（例如，X64中是寄存器<code>rsp</code>）。</p>
+<p>对于新栈帧的空间分配，只需要给寄存器增加一个栈大小即可。而通过减少寄存器大小即可完成栈帧的析构。</p>
+<h2 id="调用操作-“Call”"><a href="#调用操作-“Call”" class="headerlink" title="调用操作 “Call”"></a>调用操作 “Call”</h2><p>当一个函数调用另外一个函数，函数本身就需要为自己的暂停做准备。</p>
+<p>“暂停”操作一般包括把当前在CPU寄存器中的数据都保存到内存中，以便于在函数恢复执行时可以恢复这些变量。基于函数的调用约定，调用者和被调者可以协调由谁来保存寄存器值，但还是可以把这些动作视为Call动作的一部分。</p>
+<p>调用者同时会把传入函数的参数保存到函数可以访问的新栈帧。</p>
+<p>最终，调用者将恢复点的地址写入新的栈帧，并转移执行权给调用的函数。</p>
+<p>在X86/X64体系结构中，最后一步有单独指令”call”，即会将下一条指令写入栈上，增加栈寄存器一个地址长度，然后跳到指令中的地址。</p>
+<h2 id="返回操作-“Return”"><a href="#返回操作-“Return”" class="headerlink" title="返回操作 “Return”"></a>返回操作 “Return”</h2><p>当一个函数通过”return”关键字返回时，函数首先保存返回值到调用者可以访问的地方。这个地方可以是调用者的栈帧或者当前函数的栈帧（在栈帧边界附近的参数和返回值的区别会变得模糊）。</p>
+<p>然后函数通过以下步骤销毁栈帧：</p>
+<ul>
+<li>析构所有在返回点生命到期的局部变量</li>
+<li>析构所有参数对象</li>
+<li>释放栈帧使用的内存</li>
+</ul>
+<p>最后，再通过以下步骤恢复调用者的执行：</p>
+<ul>
+<li>设置栈寄存器指向调用者的栈帧，且恢复可能被当前函数修改过的寄存器</li>
+<li>跳到保存在”Call”指令中的调用者的恢复点</li>
+</ul>
+<p>注意到通过”Call”操作，一些调用协定会把”Return”操作的任务拆分给调用者和被调者。</p>
+<h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><p>协程，概括来说就是把”Call”和”Return”操作分解为3个额外步骤：暂停Suspend、恢复Resume以及销毁Destroy。</p>
+<p>暂停操作是指，协程暂停在函数当前的执行位置，并在不销毁栈帧的情况下转移执行权给调用者或者恢复者。生命周期内的任何对象会在协程执行暂停后依旧保持存活。</p>
+<p>注意到，类似于函数的返回操作，协程只能在内部定义好的位置暂停。</p>
+<p>恢复操作是指，恢复被暂停协程的执行到之前暂停的位置。这会重新激活协程的栈帧。</p>
+<p>销毁操作是指，直接销毁协程栈帧而需恢复执行。任何在暂停时保持生命周期的对象都会被销毁。栈帧使用的内存会被释放。</p>
+<h2 id="协程栈帧"><a href="#协程栈帧" class="headerlink" title="协程栈帧"></a>协程栈帧</h2><p>因为协程的栈帧可以在任意暂停而不销毁栈帧，我们就无法保证栈帧的生命周期是严格嵌套的。也就意味着栈帧不能以通用的方式在栈上分配，或者说应该保存到堆上。</p>
+<p>C++ Coroutines标准中提供了一些机制允许协程帧分配在调用者的栈帧上，只要编译器能够确认协程的生命周期是严格嵌套在调用者之内的。这样只要有足够聪明的编译器就可以避免很多情况的堆分配。</p>
+<p>协程中，栈帧的一部分需要保留到暂停之后，一部分只需要保留在执行期间。例如变量生命周期不跨过任何协程暂停点的就可以考虑保存在栈上。</p>
+<p>逻辑上，我们就可以把协程栈帧分成两部分：协程组(coroutine frame)和栈组(stack frame)。</p>
+<p>协程组包括那些协程暂停后依旧要保持的部分，栈组只包括仅需要在协程运行期间存活的部分，也就是协程执行中存在，协程暂停转移时就释放。</p>
+<h2 id="暂停操作-Suspend"><a href="#暂停操作-Suspend" class="headerlink" title="暂停操作 Suspend"></a>暂停操作 Suspend</h2><p>协程的暂停操作，是允许协程在函数中间暂停执行，并转移执行权给协程调用者或者恢复者。</p>
+<p>协程函数体中有特定的点作为暂停点。在C++协程标准中，暂停点通过使用关键字<code>co_await</code>和<code>co_yield</code>来指示。</p>
+<p>当协程执行到暂停点之一时，首先会为后续恢复做如下准备：</p>
+<ul>
+<li>确保寄存器值都已经写到协程帧上</li>
+<li>协程栈上添加一个值来指示协程在哪个位置暂停了。这就提供了之后恢复执行的依据，或者让销毁操作可以确定哪些值还存活需要销毁。</li>
+</ul>
+<p>一旦协程做好了恢复准备，协程就可以认为是暂停了。</p>
+<p>协程在转移执行权给调用者/恢复者之前，还有机会执行一些额外的逻辑。额外的逻辑拥有访问之后用来恢复或者销毁的协程栈句柄的能力。</p>
+<p>协程进入暂停之后执行额外逻辑的能力允许协程被调度恢复而不需要同步操作，否则的话协程被调度恢复优于进入暂停状态时就需要同步，因为协程暂停和恢复可能会有竞争。后面的博客会进一步解释这部分。</p>
+<p>然后协程可以选择立即恢复/继续执行，或者选择转移执行权到调用者/恢复者。</p>
+<p>如果执行权转移到调用者/恢复者，协程栈中的栈组部分就会释放且从栈中弹出。</p>
+<h2 id="恢复操作-Resume"><a href="#恢复操作-Resume" class="headerlink" title="恢复操作 Resume"></a>恢复操作 Resume</h2><p>恢复操作可以在当前处于暂停状态的协程上调用。</p>
+<p>当一个函数要恢复协程时，需要有效地调用(Call)到函数特定中间执行点。恢复者通过在提供给对应暂停方法的协程栈上调用<code>void resume()</code>来指示恢复这个特定调用。</p>
+<p>就像正常函数调用，执行<code>resume()</code>后在转移执行权之前，会分配新的栈帧，且保存调用者的返回地址。</p>
+<p>然而，执行点会转移到函数上一次暂停点，而不是函数的开始。这是通过从协程栈中加载恢复点并跳转。</p>
+<p>当协程在这次<code>resume()</code>中运行到下一个暂停点或者执行到结束，会返回并恢复执行给调用函数。</p>
+<h2 id="销毁操作-Destroy"><a href="#销毁操作-Destroy" class="headerlink" title="销毁操作 Destroy"></a>销毁操作 Destroy</h2><p>销毁操作，是指在不恢复协程执行下销毁协程栈。</p>
+<p>这个操作仅可以在暂停状态的协程上执行。</p>
+<p>销毁操作和恢复操作的行为大体相似，主要是重新激活协程栈帧，包括分配新的栈帧以及保存销毁操作调用者的返回地址。</p>
+<p>不同于转移执行权到协程上一次的暂停点，而是转移到另外的代码路径，并且先去调用在协程暂停点还存活的局部变量的析构以及释放协程栈使用的内存。</p>
+<p>和恢复类似，销毁操作通过特定的操作来指示销毁动作，通过调用提供给暂停方法的协程栈上的<code>void destroy()</code>方法实现。</p>
+<h2 id="协程的调用操作-call"><a href="#协程的调用操作-call" class="headerlink" title="协程的调用操作 call"></a>协程的调用操作 call</h2><p>协程的调用操作和普通函数的调用很相似。事实上，从调用者来说没有区别。</p>
+<p>然而不同于函数结束后返回调用者，协程内的调用操作在协程执行到第一个暂停点时即会恢复给调用者执行。</p>
+<p>当在协程上执行调用操作，调用者会分配一个新的栈帧，将参数和返回地址写入栈帧，并转移执行权给协程。这和调用一个普通函数完全一致。</p>
+<p>协程做的第一件事是然后在堆上分配一个协程栈，并拷贝或者移动栈帧上的参数到协程栈，以便于参数的生命周期扩展到第一个暂停点以外。</p>
+<h2 id="协程的返回操作-Return"><a href="#协程的返回操作-Return" class="headerlink" title="协程的返回操作 Return"></a>协程的返回操作 Return</h2><p>协程的返回动作和普通函数有一点区别。</p>
+<p>当协程执行到<code>return</code>语句（C++协程中是<code>co_return</code>）时，会把返回值保存到一个地方（具体什么地方可以由协程决定），然后析构存活中的局部变量（不包括参数）。</p>
+<p>协程然后就有机会在转移执行权到调用者/恢复者前，执行一些额外的逻辑。</p>
+<p>这额外的逻辑可以包括传递(原词是publish)返回值，或者恢复另外一个等待这个结果的协程。这完全是可定制的。</p>
+<p>协程再然后就会执行暂停操作（保持协程存活），或者销毁动作（销毁协程栈帧）。</p>
+<p>执行权就会转移到调用者/恢复者，具体取决于暂停还是销毁语义，以及弹出栈帧中属于栈上的部分。</p>
+<p>这里比较重要的是，返回值传递给返回(Return)操作和从调用(Call)中返回时不一样的，对于调用者，返回操作的执行要远落后于初始调用操作。</p>
+<h1 id="一些图例"><a href="#一些图例" class="headerlink" title="一些图例"></a>一些图例</h1><p>为了更好的理解协程被调用、暂停以及恢复时的概念，通过一组例图来说明。</p>
+<p>假设我们有一个函数（或者协程） <code>f()</code> 调用了一个协程<code>x(int a)</code>。</p>
+<p>在调用之前，当前情形如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STACK                     REGISTERS               HEAP</span><br><span class="line"></span><br><span class="line">                          +------+</span><br><span class="line">+---------------+ &lt;------ | rsp  |</span><br><span class="line">|  f()          |         +------+</span><br><span class="line">+---------------+</span><br><span class="line">| ...           |</span><br><span class="line">|               |</span><br></pre></td></tr></table></figure>
+
+<p>当<code>x(42)</code>被调用，这里首先和普通函数一样，会为<code>x()</code>创建栈帧。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STACK                     REGISTERS               HEAP</span><br><span class="line">+----------------+ &lt;-+</span><br><span class="line">|  x()           |   |</span><br><span class="line">| a  = 42        |   |</span><br><span class="line">| ret= f()+0x123 |   |    +------+</span><br><span class="line">+----------------+   +--- | rsp  |</span><br><span class="line">|  f()           |        +------+</span><br><span class="line">+----------------+</span><br><span class="line">| ...            |</span><br><span class="line">|                |</span><br></pre></td></tr></table></figure>
+
+<p>然后一旦协程<code>x()</code>从对上分配到了协程栈，且复制/移动了参数到协程栈，就会最终得到如下的例图。注意到通常编译器会保存协程栈地址到栈指针上单独的寄存器中（例如，MSVC会保存到<code>rbp</code>寄存器）。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STACK                     REGISTERS               HEAP</span><br><span class="line">+----------------+ &lt;-+</span><br><span class="line">|  x()           |   |</span><br><span class="line">| a  = 42        |   |                   +--&gt;  +-----------+</span><br><span class="line">| ret= f()+0x123 |   |    +------+       |     |  x()      |</span><br><span class="line">+----------------+   +--- | rsp  |       |     | a =  42   |</span><br><span class="line">|  f()           |        +------+       |     +-----------+</span><br><span class="line">+----------------+        | rbp  | ------+</span><br><span class="line">| ...            |        +------+</span><br><span class="line">|                |</span><br></pre></td></tr></table></figure>
+
+<p>如果协程<code>x()</code>然后调用了另一个普通函数<code>g()</code>，会变成如下情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STACK                     REGISTERS               HEAP</span><br><span class="line">+----------------+ &lt;-+</span><br><span class="line">|  g()           |   |</span><br><span class="line">| ret= x()+0x45  |   |</span><br><span class="line">+----------------+   |</span><br><span class="line">|  x()           |   |</span><br><span class="line">| coroframe      | --|-------------------+</span><br><span class="line">| a  = 42        |   |                   +--&gt;  +-----------+</span><br><span class="line">| ret= f()+0x123 |   |    +------+             |  x()      |</span><br><span class="line">+----------------+   +--- | rsp  |             | a =  42   |</span><br><span class="line">|  f()           |        +------+             +-----------+</span><br><span class="line">+----------------+        | rbp  |</span><br><span class="line">| ...            |        +------+</span><br><span class="line">|                |</span><br></pre></td></tr></table></figure>
+
+<p>当<code>g()</code>返回时，会销毁自己的栈帧，并恢复<code>x()</code>的栈帧。假设说我们把<code>g()</code>的返回值保存到了存储在协程栈上的局部变量<code>b</code>中。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STACK                     REGISTERS               HEAP</span><br><span class="line">+----------------+ &lt;-+</span><br><span class="line">|  x()           |   |</span><br><span class="line">| a  = 42        |   |                   +--&gt;  +-----------+</span><br><span class="line">| ret= f()+0x123 |   |    +------+       |     |  x()      |</span><br><span class="line">+----------------+   +--- | rsp  |       |     | a =  42   |</span><br><span class="line">|  f()           |        +------+       |     | b = 789   |</span><br><span class="line">+----------------+        | rbp  | ------+     +-----------+</span><br><span class="line">| ...            |        +------+</span><br><span class="line">|                |</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>x()</code>现在运行到了一个暂停点，暂停执行且不销毁栈帧，然后执行转移给<code>f()</code>。</p>
+<p>这也就导致了<code>x()</code>的部分栈帧从栈上弹出了，且同时把协程栈保留在了堆上。当协程第一次暂停时，会有一个返回值返回给调用者。该返回值通常为一个指向处于暂停状态且可以恢复的协程栈的句柄。在<code>x()</code>暂停时，同时存储了<code>x()</code>的恢复点地址在协程栈（称为返回点为<code>RP</code>）。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STACK                     REGISTERS               HEAP</span><br><span class="line">                                        +----&gt; +-----------+</span><br><span class="line">                          +------+      |      |  x()      |</span><br><span class="line">+----------------+ &lt;----- | rsp  |      |      | a =  42   |</span><br><span class="line">|  f()           |        +------+      |      | b = 789   |</span><br><span class="line">| handle     ----|---+    | rbp  |      |      | RP=x()+99 |</span><br><span class="line">| ...            |   |    +------+      |      +-----------+</span><br><span class="line">|                |   |                  |</span><br><span class="line">|                |   +------------------+</span><br></pre></td></tr></table></figure>
+
+<p>这个句柄可以被当做普通纸在函数间传递。在之后的时刻，可以在另外一个调用栈，甚至另外一个线程上，会被（例如<code>h()</code>）恢复协程执行。例如当一个异步I/O操作完成时。</p>
+<p>恢复协程的函数会调用<code>void resume(handle)</code>方法来恢复协程的执行。对于调用者，这就类似于调用有一个参数且返回值为<code>void</code>的函数一样。</p>
+<p>这个操作会创建一个新的栈帧，记录了调用者到<code>resume()</code>的返回地址，并通过把加载协程栈中的寄存器来激活<code>x()</code>的协程栈，恢复到存储在协程栈中的恢复点。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">STACK                     REGISTERS               HEAP</span><br><span class="line">+----------------+ &lt;-+</span><br><span class="line">|  x()           |   |                   +--&gt;  +-----------+</span><br><span class="line">| ret= h()+0x87  |   |    +------+       |     |  x()      |</span><br><span class="line">+----------------+   +--- | rsp  |       |     | a =  42   |</span><br><span class="line">|  h()           |        +------+       |     | b = 789   |</span><br><span class="line">| handle         |        | rbp  | ------+     +-----------+</span><br><span class="line">+----------------+        +------+</span><br><span class="line">| ...            |</span><br><span class="line">|                |</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这里我把协程归纳为拥有”Suspend”,”Resume”,”Destroy”三个额外操作，以及额外”Call”和”Return”动作的一类函数。</p>
+<p>我希望这能提供一个有用的框架性思路来理解协程以及对应的控制流。</p>
+<p>下一章会梳理C++协程标准的语言扩展，以及解释编译器如何转义协程中的代码。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/coroutine/" rel="tag"># coroutine</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/14/sosp-21-%E5%AD%98%E5%82%A8%E6%96%B9%E5%90%91%E8%AE%BA%E6%96%87%E9%80%9F%E8%AF%BB%E4%B8%80/" rel="prev" title="SOSP-21 存储方向论文速读一">
+                  <i class="fa fa-chevron-left"></i> SOSP-21 存储方向论文速读一
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tianshan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tianshan/tianshan.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/ts.jpg">
+  <link rel="mask-icon" href="/images/ts.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="Librados是Ceph提供访问存储集群中RADOS（reliable autonomic distributed object store）的接口。本文主要翻译自官方文档，代码部分只保留了C++版本，其余见原文。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ceph的Librados介绍">
+<meta property="og:url" content="http://example.com/2015/03/17/ceph%E7%9A%84librados%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:description" content="Librados是Ceph提供访问存储集群中RADOS（reliable autonomic distributed object store）的接口。本文主要翻译自官方文档，代码部分只保留了C++版本，其余见原文。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/2015-03-17-librados-1.png">
+<meta property="og:image" content="http://example.com/images/2015-03-17-librados-2.png">
+<meta property="og:image" content="http://example.com/images/2015-03-17-librados-3.png">
+<meta property="og:image" content="http://example.com/images/2015-03-17-librados-4.png">
+<meta property="article:published_time" content="2015-03-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-27T14:42:53.319Z">
+<meta property="article:author" content="tianshan">
+<meta property="article:tag" content="ceph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/2015-03-17-librados-1.png">
+
+
+<link rel="canonical" href="http://example.com/2015/03/17/ceph%E7%9A%84librados%E4%BB%8B%E7%BB%8D/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2015/03/17/ceph%E7%9A%84librados%E4%BB%8B%E7%BB%8D/","path":"2015/03/17/ceph的librados介绍/","title":"Ceph的Librados介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Ceph的Librados介绍 | tianshan's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157535953-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-157535953-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?fa68b808184a9e30bed3eee6cd0a15f9"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tianshan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tianshan"
+      src="/images/ts.jpg">
+  <p class="site-author-name" itemprop="name">tianshan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tianshan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tianshan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qutianshan0214@163.com" title="E-Mail → mailto:qutianshan0214@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2015/03/17/ceph%E7%9A%84librados%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ts.jpg">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ceph的Librados介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2015-03-17 00:00:00" itemprop="dateCreated datePublished" datetime="2015-03-17T00:00:00+08:00">2015-03-17</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Librados是Ceph提供访问存储集群中RADOS（reliable autonomic distributed object store）的接口。<br>本文主要翻译自<a target="_blank" rel="noopener" href="http://ceph.com/docs/master/rados/api/librados-intro/">官方文档</a>，代码部分只保留了C++版本，其余见原文。</p>
+<span id="more"></span>
+
+<p>通过librados可以和存储集群的两类守护进程交互：</p>
+<ul>
+<li>Monitor，负责维护了集群映射的主备份</li>
+<li>OSD， 负责在存储节点存储对象数据</li>
+</ul>
+<p><img src="/images/2015-03-17-librados-1.png" alt="librados-1"></p>
+<p>1.安装librados</p>
+<p>见原文</p>
+<p>2.配置集群句柄</p>
+<p>Ceph客户端通过librados和OSD直接交互，存储或者检索数据。要和OSD交互，客户端应用必须调用librados并链接到Monitor。一旦连接后，librados从Monitor中检索集群映射。当客户端应用想要读写数据时，它会创建I/O上下文并绑定到一个pool（存储数据的逻辑分区）。pool有个关联的规则集（应用到特定pool的数据放置策略），定义了在存储集群中如何放置数据。通过I/O上下文，客户端提供对象名给librados，它根据对象名和集群映射（集群的拓扑）计算出数据所在的PG和OSD。然后客户端应用可以读写数据了。客户端应用并不需要直接知道集群的拓扑。</p>
+<p><img src="/images/2015-03-17-librados-2.png" alt="librados-2"></p>
+<p>Ceph存储集群句柄处理封装的客户端配置，包括：</p>
+<ul>
+<li>用户ID用于<code>rados_create()</code>，或者用户名用于<code>rados_create2()</code></li>
+<li><em>cephx</em> 授权密钥</li>
+<li>monitor的ID和IP地址</li>
+<li>日志级别</li>
+<li>调试级别</li>
+</ul>
+<p>然后，应用使用集群的首要步骤是1）创建集群句柄；2）使用句柄来连接集群。应用要连接集群，必须提供monitor地址，用户名和授权密钥（cephx默认是打开的）。</p>
+<blockquote>
+<p>要和不同存储集群连接或者同一个集群的不同用户，需要不同的集群句柄。</p>
+</blockquote>
+<p>RADOS提供很多方式来设置要求的值。对于monitor和加密钥匙设置，一个很容易处理方式是确保Ceph配置文件中包含<code>keyring</code>路径以及至少一个monitor地址（例如，<code>mon host</code>）。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">mon host = 192.168.1.1</span><br><span class="line">keyring = /etc/ceph/ceph.client.admin.keyring</span><br></pre></td></tr></table></figure>
+
+<p>一旦创建了句柄，就可以读取Ceph配置文件来配置句柄。你同样可以传参数到你的应用然后用函数（例如 <code>rados_conf_parse_argv()</code>）来解析命令行参数，或者解析Ceph环境变量（例如，<code>rados_conf_parse_env()</code>）。一些封装可能没有实现方便的方法，所以你可能需要实现这些功能。下图提供了初识化连接的高层流。</p>
+<p><img src="/images/2015-03-17-librados-3.png" alt="librados-3"></p>
+<p>一旦连接后，你的应用可以通过集群句柄来调用函数影响整个集群。例如，你可以：</p>
+<ul>
+<li>获取集群统计</li>
+<li>使用Pool操作（exists，create，list，delete）</li>
+<li>获取和设置配置</li>
+</ul>
+<p>Ceph的一个有力的特点是绑定到不同pools的能力。每一个pool会有不同数量的PG，对象副本和副本策略。例如，pool可以设置为”hot”来使用SSDs，用于存储频繁访问的对象，或者设置为”cold”，来用纠删码。</p>
+<p>大量librados绑定之间的区别在于C和面向对象的C++，Java，Python之间。面向对象的绑定使用对象来代表集群句柄，IO上下文，迭代器，异常等。</p>
+<p>C++ 示例</p>
+<p>Ceph工程在<code>ceph/examples/librados</code>中提供C++示例。对于C++，使用用户<code>admin</code>的简单集群句柄需要初始化一个<code>librados::Rados</code>集群句柄对象。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;rados/librados.hpp&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, const char **argv)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    int ret = 0;</span><br><span class="line"></span><br><span class="line">    /* Declare the cluster handle and required variables. */</span><br><span class="line">    librados::Rados cluster;</span><br><span class="line">    char cluster_name[] = &quot;ceph&quot;;</span><br><span class="line">    char user_name[] = &quot;client.admin&quot;;</span><br><span class="line">    uint64_t flags;</span><br><span class="line"></span><br><span class="line">    /* Initialize the cluster handle with the &quot;ceph&quot; cluster name and &quot;client.admin&quot; user */</span><br><span class="line">    &#123;</span><br><span class="line">        ret = cluster.init2(user_name, cluster_name, flags);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t initialize the cluster handle! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                ret = EXIT_FAILURE;</span><br><span class="line">                return 1;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Created a cluster handle.&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Read a Ceph configuration file to configure the cluster handle. */</span><br><span class="line">    &#123;</span><br><span class="line">        ret = cluster.conf_read_file(&quot;/etc/ceph/ceph.conf&quot;);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t read the Ceph configuration file! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                ret = EXIT_FAILURE;</span><br><span class="line">                return 1;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Read the Ceph configuration file.&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Read command line arguments */</span><br><span class="line">    &#123;</span><br><span class="line">        ret = cluster.conf_parse_argv(argc, argv);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t parse command line options! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                ret = EXIT_FAILURE;</span><br><span class="line">                return 1;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Parsed command line options.&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Connect to the cluster */</span><br><span class="line">    &#123;</span><br><span class="line">        ret = cluster.connect();</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t connect to cluster! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                ret = EXIT_FAILURE;</span><br><span class="line">                return 1;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Connected to the cluster.&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译源代码，并用librados链接。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ -g -c ceph-client.cc -o ceph-client.o</span><br><span class="line">g++ -g ceph-client.o -lrados -o ceph-client</span><br></pre></td></tr></table></figure>
+
+<p>3.创建I/O上下文</p>
+<p>一旦应用有了集群句柄并连接到了存储集群，你可以创建I/O上下文并开始读写数据。I/O上下文绑定连接到特定的pool。用户必须有特定的CAPS允许来访问特定的pool。例如，有度权限但是美柚写权限的用户就只能读数据。I/O上下文的功能包括：</p>
+<ul>
+<li>读写数据和扩展属性</li>
+<li>列出、迭代对象和扩展属性</li>
+<li>快照pools，列出快照等等</li>
+</ul>
+<p><img src="/images/2015-03-17-librados-4.png" alt="librados-4"></p>
+<p>RADOS可以同步或异步的方式交互。一旦你的应用有了I/O上下文，读写操作只需要你知道对象/扩展文件属性的名字。CRUSH算法封装在librados，使用集群映射来确认合适的OSD。OSD守护进程处理副本复制，正如在[Smart Daemons Enable Hyperscale](/2015/03/08/ceph-architecture.html#smart-daemons-enable-hyperscale)。librados库同时负责映射对象到PG，正如在[Calculating PG IDs](/2015/03/08/ceph-architecture.html#calculating-pg-ids)。</p>
+<p>下面的示例使用默认的<code>data</code>pool。然而，你可以使用API来列出所有的pool，确保是存在的，或者创建、删除pools。对于写操作，是】示例列出了如何使用同步模型。对于读操作，示例列举了如何使用异步模型。</p>
+<blockquote>
+<p>重要：用API删除pool的警告。如果删除一个pool，pool和上面的全部数据都会丢失。</p>
+</blockquote>
+<p>C++示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;rados/librados.hpp&gt;</span><br><span class="line"></span><br><span class="line">int main(int argc, const char **argv)</span><br><span class="line">&#123;</span><br><span class="line">    /* Continued from previous C++ example, where cluster handle and</span><br><span class="line">     * connection are established. First declare an I/O Context.</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    librados::IoCtx io_ctx;</span><br><span class="line">    const char *pool_name = &quot;data&quot;;</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">        ret = cluster.ioctx_create(pool_name, io_ctx);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t set up ioctx! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Created an ioctx for the pool.&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /* Write an object synchronously. */</span><br><span class="line">    &#123;</span><br><span class="line">        librados::bufferlist bl;</span><br><span class="line">        bl.append(&quot;Hello World!&quot;);</span><br><span class="line">        ret = io_ctx.write_full(&quot;hw&quot;, bl);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t write object! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Wrote new object &#x27;hw&#x27; &quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Add an xattr to the object.</span><br><span class="line">     */</span><br><span class="line">    &#123;</span><br><span class="line">        librados::bufferlist lang_bl;</span><br><span class="line">        lang_bl.append(&quot;en_US&quot;);</span><br><span class="line">        ret = io_ctx.setxattr(&quot;hw&quot;, &quot;lang&quot;, lang_bl);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;failed to set xattr version entry! error &quot;</span><br><span class="line">                &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Set the xattr &#x27;lang&#x27; on our object!&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Read the object back asynchronously.</span><br><span class="line">     */</span><br><span class="line">    &#123;</span><br><span class="line">        librados::bufferlist read_buf;</span><br><span class="line">        int read_len = 4194304;</span><br><span class="line"></span><br><span class="line">        //Create I/O Completion.</span><br><span class="line">        librados::AioCompletion *read_completion = librados::Rados::aio_create_completion();</span><br><span class="line"></span><br><span class="line">        //Send read request.</span><br><span class="line">        ret = io_ctx.aio_read(&quot;hw&quot;, read_completion, &amp;read_buf, read_len, 0);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t start read object! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // Wait for the request to complete, and check that it succeeded.</span><br><span class="line">        read_completion-&gt;wait_for_complete();</span><br><span class="line">        ret = read_completion-&gt;get_return_value();</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t read object! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Read object hw asynchronously with contents.\n&quot;</span><br><span class="line">                &lt;&lt; read_buf.c_str() &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Read the xattr.</span><br><span class="line">     */</span><br><span class="line">    &#123;</span><br><span class="line">        librados::bufferlist lang_res;</span><br><span class="line">        ret = io_ctx.getxattr(&quot;hw&quot;, &quot;lang&quot;, lang_res);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;failed to get xattr version entry! error &quot;</span><br><span class="line">                &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Got the xattr &#x27;lang&#x27; from object hw!&quot;</span><br><span class="line">                &lt;&lt; lang_res.c_str() &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Remove the xattr.</span><br><span class="line">     */</span><br><span class="line">    &#123;</span><br><span class="line">        ret = io_ctx.rmxattr(&quot;hw&quot;, &quot;lang&quot;);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Failed to remove xattr! error &quot;</span><br><span class="line">                &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Removed the xattr &#x27;lang&#x27; from our object!&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * Remove the object.</span><br><span class="line">     */</span><br><span class="line">    &#123;</span><br><span class="line">        ret = io_ctx.remove(&quot;hw&quot;);</span><br><span class="line">        if (ret &lt; 0) &#123;</span><br><span class="line">                std::cerr &lt;&lt; &quot;Couldn&#x27;t remove object! error &quot; &lt;&lt; ret &lt;&lt; std::endl;</span><br><span class="line">                exit(EXIT_FAILURE);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">                std::cout &lt;&lt; &quot;Removed object &#x27;hw&#x27;.&quot; &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4.关闭会话</p>
+<p>一旦你的应用使用完了I/O上下文和集群句柄，应用应该关闭连接并关闭句柄。对于异步I/O，应用同样需要等待直到异步操作完成。</p>
+<p>C++示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">io_ctx.close();</span><br><span class="line">cluster.shutdown();</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ceph/" rel="tag"># ceph</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/03/08/ceph%E6%9E%B6%E6%9E%84/" rel="prev" title="Ceph架构">
+                  <i class="fa fa-chevron-left"></i> Ceph架构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/03/18/ceph%E6%96%87%E6%A1%A3%E7%BC%96%E8%AF%91/" rel="next" title="Ceph文档编译">
+                  Ceph文档编译 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tianshan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tianshan/tianshan.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
