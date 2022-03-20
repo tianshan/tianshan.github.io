@@ -131,13 +131,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -174,6 +174,72 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/03/13/fast-16%E5%B9%B4%E9%83%A8%E5%88%86%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ts.jpg">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2016/03/13/fast-16%E5%B9%B4%E9%83%A8%E5%88%86%E8%AE%BA%E6%96%87/" class="post-title-link" itemprop="url">Fast 16年部分论文</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-03-13 00:00:00" itemprop="dateCreated datePublished" datetime="2016-03-13T00:00:00+08:00">2016-03-13</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Fast 16年的论文全集前段时间出来了，先读了EC相关的，其他的后面找时间读。<br>全集地址：<a target="_blank" rel="noopener" href="https://www.usenix.org/conference/fast16/technical-sessions">https://www.usenix.org/conference/fast16/technical-sessions</a></p>
+<h3 id="Efficient-and-Available-In-memory-KV-Store-with-Hybrid-Erasure-Coding-and-Replication"><a href="#Efficient-and-Available-In-memory-KV-Store-with-Hybrid-Erasure-Coding-and-Replication" class="headerlink" title="Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replication"></a>Efficient and Available In-memory KV-Store with Hybrid Erasure Coding and Replication</h3><p>内存KV系统，贡献一：元数据使用副本，保持高效访问，在数据部分失效时，还能提供访问。数据部分使用ec，节省空间。<br>贡献二：online recovery，没看出来有啥特别的。。。可能是因为memcached没有提供复杂的恢复机制？<br>贡献三：在Memcached中实现了上述<br>他有个假设是后端还有持久化系统，所以我的理解，内存掉电时，如果不够恢复，那只能依靠其他了，这部分论文没有涉及。</p>
+<h3 id="Opening-the-Chrysalis-On-the-Real-Repair-Performance-of-MSR-Codes"><a href="#Opening-the-Chrysalis-On-the-Real-Repair-Performance-of-MSR-Codes" class="headerlink" title="Opening the Chrysalis: On the Real Repair Performance of MSR Codes"></a>Opening the Chrysalis: On the Real Repair Performance of MSR Codes</h3><p>主要网络编码在工业系统中的应用，实现在了HDFS（批量编码，类似HDFS-Raid）Ceph（在线编码），并比较了多项参数。<br>网络编码<br>相比普通EC能节省传输带宽。主要思想，一个节点会存储不止一个编码块（例如r个），修复时，会将本节点的多个编码块编码成一个，所以只要传输1/r存储大小。<br>缺点，编码更复杂，计算开销也会上升。本片论文采用蝴蝶码，基于GF(2)，所以计算开销不高，只能容忍2块丢失（m固定为2，k任意），感觉有点类似Raid6。<br>暂时还未找到公开代码。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -792,77 +858,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2015/10/11/%E6%90%AD%E5%BB%BA%E7%AE%80%E6%98%93%E7%9A%84%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2015/09/14/pytest%E7%9A%84mocking%E6%A8%A1%E5%9D%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ts.jpg">
-      <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tianshan's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2015/09/14/pytest%E7%9A%84mocking%E6%A8%A1%E5%9D%97/" class="post-title-link" itemprop="url">pytest的mocking模块</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2015-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2015-09-14T00:00:00+08:00">2015-09-14</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>在用tox集成py.test时遇到个问题，一个测试脚本需要测试运行流程的正确性，但某个测试函数会调用外部的ceph的命令，又会产生一些其他的依赖，而这些函数不是测试重点，就可以使用mock模块，用一个其他函数来替换有依赖的函数，两个函数输入一致，但是这个函数可以不做任何处理，所以就跳过了依赖调用。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2015/09/14/pytest%E7%9A%84mocking%E6%A8%A1%E5%9D%97/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
