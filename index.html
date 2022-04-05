@@ -131,7 +131,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -183,7 +183,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91c-coroutines-understanding-the-promise-type/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/20/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-symmetric-transfer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -196,7 +196,88 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91c-coroutines-understanding-the-promise-type/" class="post-title-link" itemprop="url">【翻译】C++ Coroutines: understanding-the-promise-type</a>
+          <a href="/2022/03/20/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-symmetric-transfer/" class="post-title-link" itemprop="url">【翻译】 C++ Coroutines: Understanding Symmetric Transfer</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-03-20 22:25:04" itemprop="dateCreated datePublished" datetime="2022-03-20T22:25:04+08:00">2022-03-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>这是<em>Lewis Baker</em>讲解协程的第四篇。这是原作者时隔2年后的文章，第一部分从简单例子中介绍并回顾之前的例子，从例子中引出无限递归会导致的栈溢出问题，然后第二部分介绍对称转移协程的设计以及是如何解决这个问题的。<br>本篇进一步从例子中来讲述实现协程的方式。</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://lewissbaker.github.io/2020/05/11/understanding_symmetric_transfer">https://lewissbaker.github.io/2020/05/11/understanding_symmetric_transfer</a></p>
+<ul>
+<li><a href="/2022/02/27/%E7%BF%BB%E8%AF%91-coroutine-theory/" title="第一篇 Coroutine Theory">第一篇 Coroutine Theory</a></li>
+<li><a href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-operator-co-await/" title="第二篇 C++ Coroutines: understanding-operator-co-await">第二篇 C++ Coroutines: understanding-operator-co-await</a></li>
+<li><a href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-the-promise-type/" title="第三篇 C++ Coroutines: understanding-the-promise-type">第三篇 C++ Coroutines: understanding-the-promise-type</a></li>
+</ul>
+<p>协程提案提供了很方便的方式来按照同步的方式写异步代码。你只需要在合适的点带上<code>co_await</code>，然后编译器就会处理好协程的挂起、保存挂起点前后的状态，以及当操作完成时恢复协程。</p>
+<p>然而，协程提案中，特别是早期的版本，有很大的局限性，在不仔细处理时会很容易导致栈溢出。并且为了避免栈溢出，你不得不引入额外的同步开销来安全的保障你的<code>task&lt;T&gt;</code>类型。</p>
+<p>幸运的是，在2018年协程的设计对这做了修补，增加了一项对称转移(symmetric transfer)的能力，允许你挂起一个协程然后恢复另外一个协程而不需要任何额外的栈空间。该项能力消除协程提案中的关键限制，使得实现异步协程类型可以更简单且更高效，而不用牺牲为了防止栈溢出所需的安全保证。</p>
+<p>本篇中我会尝试解释栈溢出问题，以及“对称转移”能力是如何解决该问题的。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/20/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-symmetric-transfer/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-the-promise-type/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ts.jpg">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-the-promise-type/" class="post-title-link" itemprop="url">【翻译】 C++ Coroutines: understanding-the-promise-type</a>
         </h2>
 
         <div class="post-meta-container">
@@ -222,13 +303,13 @@
     <div class="post-body" itemprop="articleBody">
           <p>这是<em>Lewis Baker</em>讲解协程的第三篇。本篇主要描述如何自定义协程关键字的行为。<br>原文：<a target="_blank" rel="noopener" href="https://lewissbaker.github.io/2018/09/05/understanding-the-promise-type">https://lewissbaker.github.io/2018/09/05/understanding-the-promise-type</a></p>
 <ul>
-<li><a href="/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/" title="第一篇 Coroutine Theory">第一篇 Coroutine Theory</a></li>
-<li><a href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91c-coroutines-understanding-operator-co-await/" title="第二篇 C++ Coroutines: understanding-operator-co-await">第二篇 C++ Coroutines: understanding-operator-co-await</a></li>
+<li><a href="/2022/02/27/%E7%BF%BB%E8%AF%91-coroutine-theory/" title="第一篇 Coroutine Theory">第一篇 Coroutine Theory</a></li>
+<li><a href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-operator-co-await/" title="第二篇 C++ Coroutines: understanding-operator-co-await">第二篇 C++ Coroutines: understanding-operator-co-await</a></li>
 </ul>
 <p>本篇主要讲解编译器如何转义协程中的代码，以及如何通过自定义<strong>Promise</strong>类型来定制协程行为。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91c-coroutines-understanding-the-promise-type/#more" rel="contents">
+              <a class="btn" href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-the-promise-type/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -259,7 +340,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91c-coroutines-understanding-operator-co-await/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-operator-co-await/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -272,7 +353,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91c-coroutines-understanding-operator-co-await/" class="post-title-link" itemprop="url">【翻译】C++ Coroutines: understanding-operator-co-await</a>
+          <a href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-operator-co-await/" class="post-title-link" itemprop="url">【翻译】 C++ Coroutines: understanding-operator-co-await</a>
         </h2>
 
         <div class="post-meta-container">
@@ -298,20 +379,20 @@
     <div class="post-body" itemprop="articleBody">
           <p>这是<em>Lewis Baker</em>讲解协程的第二篇，主要介绍</p>
 <ul>
-<li><p>awaite，awaiter相关概念</p>
-</li>
-<li><p>awaite细节机制，包括c++</p>
-</li>
-<li><p>实现awaite对象的例子<br>原文：<a target="_blank" rel="noopener" href="https://lewissbaker.github.io/2017/11/17/understanding-operator-co-await">https://lewissbaker.github.io/2017/11/17/understanding-operator-co-await</a></p>
-</li>
-<li><a href="/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/" title="第一篇 Coroutine Theory">第一篇 Coroutine Theory</a></li>
+<li>awaite，awaiter相关概念</li>
+<li>awaite细节机制，包括c++</li>
+<li>实现awaite对象的例子</li>
+</ul>
+<p>原文：<a target="_blank" rel="noopener" href="https://lewissbaker.github.io/2017/11/17/understanding-operator-co-await">https://lewissbaker.github.io/2017/11/17/understanding-operator-co-await</a></p>
+<ul>
+<li><a href="/2022/02/27/%E7%BF%BB%E8%AF%91-coroutine-theory/" title="第一篇 Coroutine Theory">第一篇 Coroutine Theory</a></li>
 </ul>
 <p>在上一篇中，我描述了函数和协程的高层区别，但是没有深入<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4680.pdf" title="" target="">C++协程提案</a>中描述的语法和语义细节。</p>
 <p>该协程提案中给C++添加的关键点是挂起一个协程的能力，并允许稍后被恢复。提案中提供的机制是新的操作<code>co_await</code>。</p>
 <p>理解<code>co_await</code>是如何工作的，有助于弄清楚协程的行为，以及是如何挂起以及恢复的。本篇中会解释<code>co_await</code>操作的机制，并介绍相关的<code>Awaitable</code>和<code>Awaiter</code>类型概念。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91c-coroutines-understanding-operator-co-await/#more" rel="contents">
+              <a class="btn" href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-operator-co-await/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -342,7 +423,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/27/%E7%BF%BB%E8%AF%91-coroutine-theory/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/ts.jpg">
@@ -355,7 +436,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/" class="post-title-link" itemprop="url">【翻译】Coroutine Theory</a>
+          <a href="/2022/02/27/%E7%BF%BB%E8%AF%91-coroutine-theory/" class="post-title-link" itemprop="url">[翻译] Coroutine Theory</a>
         </h2>
 
         <div class="post-meta-container">
@@ -390,7 +471,7 @@
 <p>本篇会描述函数与协程之间的区别，以及介绍所支持操作的原理。本篇目标是给读者引入C++协程的基础概念。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/02/27/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91coroutine-theory/#more" rel="contents">
+              <a class="btn" href="/2022/02/27/%E7%BF%BB%E8%AF%91-coroutine-theory/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -830,73 +911,6 @@
 <p>其他还有些文章链接地址保持的问题和锚点格式的问题。</p>
 <p>转换脚本</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">name = sys.argv[<span class="number">1</span>]</span><br><span class="line">date = name[:<span class="number">10</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(name) <span class="keyword">as</span> fi:</span><br><span class="line">    lines = fi.readlines()</span><br><span class="line">    fw = <span class="built_in">open</span>(name, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i,line <span class="keyword">in</span> <span class="built_in">enumerate</span>(lines):</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;endhighlight&#x27;</span> <span class="keyword">in</span> line:</span><br><span class="line">            line = <span class="string">&#x27;```\n&#x27;</span></span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;highlight&#x27;</span> <span class="keyword">in</span> line:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                lang = line.split()[<span class="number">3</span>]</span><br><span class="line">                line = <span class="string">&#x27;```&#x27;</span></span><br><span class="line">                <span class="keyword">if</span> lang != <span class="string">&#x27;%&#125;&#x27;</span>:</span><br><span class="line">                    line += <span class="string">&#x27; &#x27;</span> + lang</span><br><span class="line">                line += <span class="string">&#x27;\n&#x27;</span></span><br><span class="line">            <span class="keyword">except</span>:</span><br><span class="line">                <span class="built_in">print</span> <span class="string">&#x27;not highlight&#x27;</span></span><br><span class="line">                <span class="built_in">print</span> line</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;&#123;#&#x27;</span> <span class="keyword">in</span> line:</span><br><span class="line">            line = line.replace(<span class="string">&#x27;&#123;&#x27;</span>, <span class="string">&#x27;](&#x27;</span>)</span><br><span class="line">            line = line.replace(<span class="string">&#x27;&#125;&#x27;</span>, <span class="string">&#x27;)&#x27;</span>)</span><br><span class="line">            <span class="keyword">for</span> i,c <span class="keyword">in</span> <span class="built_in">enumerate</span>(line):</span><br><span class="line">                <span class="keyword">if</span> c != <span class="string">&#x27;#&#x27;</span>:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">if</span> c == <span class="string">&#x27; &#x27;</span>:</span><br><span class="line">                i += <span class="number">1</span></span><br><span class="line">            line = line[:i] + <span class="string">&#x27;[&#x27;</span> + line[i:]</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">&#x27;site.imageurl&#x27;</span> <span class="keyword">in</span> line:</span><br><span class="line">            line = line.replace(<span class="string">&#x27;&#123;&#123;site.imageurl&#125;&#125;&#x27;</span>, <span class="string">&#x27;/images&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        fw.write(line)</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">            date = <span class="string">&#x27;date: &#x27;</span> + date + <span class="string">&#x27;\n&#x27;</span></span><br><span class="line">            fw.write(date)</span><br><span class="line">    fw.close()</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2016/07/11/ceph-rgw-multipart-%E4%B8%8A%E4%BC%A0%E7%AE%80%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/ts.jpg">
-      <meta itemprop="name" content="tianshan">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="tianshan's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2016/07/11/ceph-rgw-multipart-%E4%B8%8A%E4%BC%A0%E7%AE%80%E6%9E%90/" class="post-title-link" itemprop="url">Ceph RGW multipart 上传简析</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2016-07-11 00:00:00" itemprop="dateCreated datePublished" datetime="2016-07-11T00:00:00+08:00">2016-07-11</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>最近研究了跟了Ceph的RGW S3协议的multipart的一个<a target="_blank" rel="noopener" href="http://tracker.ceph.com/issues/15886">bug15886</a>，顺着bug分析了下多块上传的流程。问题主要是多块上传中，如果有相同upload id的重传，就有可能丢数据，目前H版和J版都已修复，并在s3-tests的master分支添加了对应的测试用例<code>test_multipart_resend_first_finishes_last</code>。</p>
-<p>Multipart是客户端发起的一个分块上传的协议。首先是一个POST消息，请求upload id，然后就是每一块的PUT上传，PUT过程类似普通块的上传。<br>如下图，是multipart的put流程图。出错逻辑主要是函数<code>add_written_obj</code>，他的作用是，记录正在写的对象，如果出错，那么会在销毁processor时清除该对象。问题在于原来函数调用位置在<code>handle_obj_data</code>，也就是写对象之前，导致对象重复时，实际没有写入，但把原来正确的对象清除了。修正后在<code>throttle_data</code>中调用，改在对象写成功后，就不会有问题了。</p>
-<p>测试的用例是，先写A，然后以重传形式写B，然后complet B，再完成A。这时实际对象内容应该是A。在B写入时，发现upload id相同的分片存在，就会重新生成临时upload id，保证不重复，所以B也就是一个临时对象，最后complete的A为实际对象内容。</p>
-<p><img src="/images/2016-07-11-ceph-rgw-multipart.png" alt="Ceph RGW Multipart 流程图"></p>
-
       
     </div>
 

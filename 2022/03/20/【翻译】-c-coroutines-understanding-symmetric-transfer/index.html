@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/ts.jpg">
+  <link rel="mask-icon" href="/images/ts.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+  <meta name="description" content="这是Lewis Baker讲解协程的第四篇。这是原作者时隔2年后的文章，第一部分从简单例子中介绍并回顾之前的例子，从例子中引出无限递归会导致的栈溢出问题，然后第二部分介绍对称转移协程的设计以及是如何解决这个问题的。本篇进一步从例子中来讲述实现协程的方式。 原文：https:&#x2F;&#x2F;lewissbaker.github.io&#x2F;2020&#x2F;05&#x2F;11&#x2F;understanding_symmetric_tran">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【翻译】 C++ Coroutines: Understanding Symmetric Transfer">
+<meta property="og:url" content="http://example.com/2022/03/20/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-symmetric-transfer/index.html">
+<meta property="og:site_name" content="tianshan&#39;s blog">
+<meta property="og:description" content="这是Lewis Baker讲解协程的第四篇。这是原作者时隔2年后的文章，第一部分从简单例子中介绍并回顾之前的例子，从例子中引出无限递归会导致的栈溢出问题，然后第二部分介绍对称转移协程的设计以及是如何解决这个问题的。本篇进一步从例子中来讲述实现协程的方式。 原文：https:&#x2F;&#x2F;lewissbaker.github.io&#x2F;2020&#x2F;05&#x2F;11&#x2F;understanding_symmetric_tran">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-20T14:25:04.000Z">
+<meta property="article:modified_time" content="2022-04-05T11:29:44.718Z">
+<meta property="article:author" content="tianshan">
+<meta property="article:tag" content="coroutine">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/03/20/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-symmetric-transfer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/03/20/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-symmetric-transfer/","path":"2022/03/20/【翻译】-c-coroutines-understanding-symmetric-transfer/","title":"【翻译】 C++ Coroutines: Understanding Symmetric Transfer"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>【翻译】 C++ Coroutines: Understanding Symmetric Transfer | tianshan's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157535953-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-157535953-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?fa68b808184a9e30bed3eee6cd0a15f9"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">tianshan's blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A6%96%E5%85%88%E4%BB%8B%E7%BB%8D%E5%8D%8F%E7%A8%8B%E4%BB%BB%E5%8A%A1%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">首先介绍协程任务如何工作的背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A6%82%E8%A6%81%E5%AE%9E%E7%8E%B0task"><span class="nav-number">2.</span> <span class="nav-text">概要实现task</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0task-promise-type"><span class="nav-number">3.</span> <span class="nav-text">实现task::promise_type</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0task-operator-co-await"><span class="nav-number">4.</span> <span class="nav-text">实现task::operator co_await()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA%E9%97%AE%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">栈溢出问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E6%8F%90%E6%A1%88%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">6.</span> <span class="nav-text">协程提案的解决方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%89%80%E5%9C%A8"><span class="nav-number">7.</span> <span class="nav-text">问题所在</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E2%80%9D%E5%AF%B9%E7%A7%B0%E8%BD%AC%E7%A7%BB%E2%80%9C%EF%BC%81"><span class="nav-number">8.</span> <span class="nav-text">使用”对称转移“！</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%BE%E8%B0%83%E7%94%A8-Tail-calls"><span class="nav-number">8.1.</span> <span class="nav-text">尾调用(Tail-calls)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E8%AE%BE%E8%AE%A1task"><span class="nav-number">9.</span> <span class="nav-text">重新设计task</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%88%E7%9A%84%E8%A1%A8%E7%8E%B0"><span class="nav-number">10.</span> <span class="nav-text">栈的表现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E8%BD%AC%E7%A7%BB%E4%BD%9C%E4%B8%BAawait-suspend%E7%9A%84%E9%80%9A%E7%94%A8%E5%BD%A2%E5%BC%8F"><span class="nav-number">11.</span> <span class="nav-text">对称转移作为await_suspend的通用形式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9D%9F%E9%80%92%E5%BD%92"><span class="nav-number">11.1.</span> <span class="nav-text">结束递归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%89%88%E6%9C%ACawait-suspend-%E7%9A%84%E5%BD%A2%E5%BC%8F"><span class="nav-number">11.2.</span> <span class="nav-text">其他版本await_suspend()的形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%89%80%E6%9C%893%E4%B8%AA%E7%89%88%E6%9C%AC%EF%BC%9F"><span class="nav-number">11.3.</span> <span class="nav-text">为什么需要所有3个版本？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">12.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="tianshan"
+      src="/images/ts.jpg">
+  <p class="site-author-name" itemprop="name">tianshan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tianshan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tianshan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qutianshan0214@163.com" title="E-Mail → mailto:qutianshan0214@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/20/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-symmetric-transfer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/ts.jpg">
+      <meta itemprop="name" content="tianshan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="tianshan's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【翻译】 C++ Coroutines: Understanding Symmetric Transfer
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-03-20 22:25:04" itemprop="dateCreated datePublished" datetime="2022-03-20T22:25:04+08:00">2022-03-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>这是<em>Lewis Baker</em>讲解协程的第四篇。这是原作者时隔2年后的文章，第一部分从简单例子中介绍并回顾之前的例子，从例子中引出无限递归会导致的栈溢出问题，然后第二部分介绍对称转移协程的设计以及是如何解决这个问题的。<br>本篇进一步从例子中来讲述实现协程的方式。</p>
+<p>原文：<a target="_blank" rel="noopener" href="https://lewissbaker.github.io/2020/05/11/understanding_symmetric_transfer">https://lewissbaker.github.io/2020/05/11/understanding_symmetric_transfer</a></p>
+<ul>
+<li><a href="/2022/02/27/%E7%BF%BB%E8%AF%91-coroutine-theory/" title="第一篇 Coroutine Theory">第一篇 Coroutine Theory</a></li>
+<li><a href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-operator-co-await/" title="第二篇 C++ Coroutines: understanding-operator-co-await">第二篇 C++ Coroutines: understanding-operator-co-await</a></li>
+<li><a href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-the-promise-type/" title="第三篇 C++ Coroutines: understanding-the-promise-type">第三篇 C++ Coroutines: understanding-the-promise-type</a></li>
+</ul>
+<p>协程提案提供了很方便的方式来按照同步的方式写异步代码。你只需要在合适的点带上<code>co_await</code>，然后编译器就会处理好协程的挂起、保存挂起点前后的状态，以及当操作完成时恢复协程。</p>
+<p>然而，协程提案中，特别是早期的版本，有很大的局限性，在不仔细处理时会很容易导致栈溢出。并且为了避免栈溢出，你不得不引入额外的同步开销来安全的保障你的<code>task&lt;T&gt;</code>类型。</p>
+<p>幸运的是，在2018年协程的设计对这做了修补，增加了一项对称转移(symmetric transfer)的能力，允许你挂起一个协程然后恢复另外一个协程而不需要任何额外的栈空间。该项能力消除协程提案中的关键限制，使得实现异步协程类型可以更简单且更高效，而不用牺牲为了防止栈溢出所需的安全保证。</p>
+<p>本篇中我会尝试解释栈溢出问题，以及“对称转移”能力是如何解决该问题的。</p>
+<span id="more"></span>
+
+<h1 id="首先介绍协程任务如何工作的背景"><a href="#首先介绍协程任务如何工作的背景" class="headerlink" title="首先介绍协程任务如何工作的背景"></a>首先介绍协程任务如何工作的背景</h1><p>有如下协程：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">task <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">co_return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">task <span class="title">bar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">co_await</span> <span class="title">foo</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设我们有一个简单<code>task</code>类型，在其他协程await时惰性执行。这个特别的<code>task</code>类型不支持返回一个值。</p>
+<p>让我们来解开看下当<code>bar()</code>执行<code>co_await foo()</code>时发生什么。</p>
+<ul>
+<li><code>bar()</code>协程调用<code>foo()</code>函数。注意到对于调用者来说，协程和普通函数一样；</li>
+<li>调用<code>foo()</code>时会执行如下步骤：<ul>
+<li>为协程栈分配存储空间（通常在堆上）</li>
+<li>拷贝参数到协程栈（本例中没有参数所以没有执行）</li>
+<li>在协程栈上狗仔promise对象</li>
+<li>调用<code>promise.get_return_object()</code>来获取<code>foo()</code>的返回值。其中构造了即将返回的<code>task</code>对象，并用指向刚创建协程栈的<code>std::coroutine_handle</code>来初始化。</li>
+<li>在初始挂起点挂起协程的执行（例如左大括号那）</li>
+<li>返回<code>task</code>对象到<code>bar()</code></li>
+</ul>
+</li>
+<li>接下来协程<code>bar()</code>对基于<code>foo()</code>返回<code>task</code>的<code>co_await</code>表达式求值；<ul>
+<li>协程<code>bar()</code>挂起，然后对返回的<code>task</code>调用<code>await_suspend()</code>方法，并传入指向<code>bar()</code>协程栈的<code>std::coroutine_handle</code></li>
+<li>方法<code>await_suspend()</code>存储<code>bar()</code>的<code>std::coroutine_handle</code>在<code>foo()</code>的promise对象，然后通过对<code>foo()</code>的<code>std::coroutine_handle</code>调用<code>.resume()</code>来恢复`foo()</li>
+</ul>
+</li>
+<li>协程<code>foo()</code>同步的运行到结束</li>
+<li>协程<code>foo()</code>在最终挂起点（例如右大括号那）挂起，然后恢复在开始前保存在promise对象中的<code>std::coroutine_handle</code>所指示的协程（例如这里的协程<code>bar()</code>）</li>
+<li>协程<code>bar()</code>恢复继续运行，并最终到最后一条包含<code>co_await</code>表达式的语句，在这个点调用从<code>foo()</code>返回的临时对象<code>task</code>的析构函数</li>
+<li><code>task</code>析构函数中对<code>foo()</code>的协程句柄调用方法<code>.destroy()</code>，该方法中会销毁协程栈以及promise对象和所有参数拷贝</li>
+</ul>
+<p>OK，看起来一个简单的调用也包含了很多步骤。</p>
+<p>为了帮助更深入的理解，我们来使用协程提案（不包括对称转移）进一步实现<code>task</code>。</p>
+<h1 id="概要实现task"><a href="#概要实现task" class="headerlink" title="概要实现task"></a>概要实现<code>task</code></h1><p>class task的轮廓如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">task</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">promise_type</span> &#123; <span class="comment">/* see below */</span> &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">task</span>(task&amp;&amp; t) <span class="keyword">noexcept</span></span><br><span class="line">  : <span class="built_in">coro_</span>(std::<span class="built_in">exchange</span>(t.coro_, &#123;&#125;))</span><br><span class="line">  &#123;&#125;</span><br><span class="line"></span><br><span class="line">  ~<span class="built_in">task</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (coro_)</span><br><span class="line">      coro_.<span class="built_in">destroy</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">awaiter</span> &#123; <span class="comment">/* see below */</span> &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="function">awaiter <span class="keyword">operator</span> <span class="title">co_await</span><span class="params">()</span> &amp;&amp; <span class="keyword">noexcept</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="keyword">explicit</span> <span class="title">task</span><span class="params">(std::coroutine_handle&lt;promise_type&gt; h)</span> <span class="keyword">noexcept</span></span></span><br><span class="line"><span class="function">  : coro_(h)</span></span><br><span class="line"><span class="function">  &#123;</span>&#125;</span><br><span class="line"></span><br><span class="line">  std::coroutine_handle&lt;promise_type&gt; coro_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>调用协程中创建的协程栈对应的<code>std::coroutine_handle</code>是<code>task</code>独有的。对象<code>task</code>是一个RAII对象，在<code>task</code>生命周期结束时会确保对<code>std::coroutine_handle</code>调用<code>.destroy()</code>。</p>
+<p>下一步让我们扩展<code>promise_type</code>。</p>
+<h1 id="实现task-promise-type"><a href="#实现task-promise-type" class="headerlink" title="实现task::promise_type"></a>实现<code>task::promise_type</code></h1><p>在<a href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-the-promise-type/" title="上一篇">上一篇</a>中，我们知道<code>promise_type</code>成员为在协程中创建的<strong>Promise</strong>对象类型，控制了协程的行为。</p>
+<p>首先，我们需要实现<code>get_return_object()</code>来构造用于在协程调用时返回的<code>task</code>对象。该方法只需要用新创建协程栈的<code>std::coroutine_handle</code>来初始化。</p>
+<p>我们可以用<code>std::coroutine_handle::from_promise()</code>方法来从promise对象中创建句柄。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">task</span>::promise_type &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function">task <span class="title">get_return_object</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> task&#123;std::coroutine_handle&lt;promise_type&gt;::<span class="built_in">from_promise</span>(*<span class="keyword">this</span>)&#125;;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>下一步，我们需要协程在大括号起始点挂起，以便于之后在返回的<code>task</code>被期待(awaited)时从该点恢复协程。</p>
+<p>惰性开始协程有如下一些好处：</p>
+<ol>
+<li>意味着我们可以在开始运行协程之前链接协程的<code>std::coroutine_handle</code>，也即我们不需要使用线程同步来仲裁链接到与协程运行到结束。</li>
+<li>意味着<code>task</code>析构函数可以无条件的销毁协程栈 - 我们不需要担心协程可能在另外一个线程上执行，因为协程并不会开始运行直到我们await，当协程运行时调用者协程会被挂起，且不会尝试调用task的析构函数支持协程结束运行。这使得编译器可以有更好的机会讲协程栈的初始化内联到调用者栈帧中。参考<a href="https://wg21.link/P0981R0" title="" target="">P0981R0</a>或者更多关于Heap Allocation eLision Optimisation (HALO).</li>
+<li>这同样改进了协程代码的异常安全性。如果你不立即对返回的<code>task</code>执行<code>co_await</code>，而执行了一些可能抛出异常的逻辑并导致退栈，那么然后会执行<code>task</code>的析构函数，因为我们知道还没有开始运行所以可以安全的销毁协程。我们不会在 分离、可能留下悬空引用、在析构函数中阻塞、终止或未定义行为中做出艰难选择。在<a href="https://www.youtube.com/watch?v=1Wy5sq3s2rg" title="" target="">CppCon 2019 talk on Structured Concurrency</a>中我给出了更多的细节。</li>
+</ol>
+<p>为了使协程能在大括号起始点挂起，我们定义一个返回内建<code>suspend_always</code>类型的<code>initial_suspend()</code>方法。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">std::suspend_always <span class="title">initial_suspend</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下一步，我们需要定义<code>return_void()</code>方法，会在执行<code>co_return;</code>或者在协程运行到结束时被调用。这个方法并不需要做任何真的做任何事，仅需要该方法存在让编译器知道<code>co_return;</code>在该协程类型中是有效的。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">return_void</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们同样需要增加方法<code>unhandled_exception()</code>，在未被捕获异常抛出协程体时会被调用。在我们的例子中可以认为<code>task</code>协程体是<code>noexcept</code>，当出现异常时则调用<code>std::terminate()</code>。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">unhandled_exception</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">  std::<span class="built_in">terminate</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终，当协程运行到右大括号时，我们希望协程能够在最终挂起点挂起，且在之后能继续运行。例如继续运行等待本协程的awaiting协程。</p>
+<p>为了支持这点，在promise的数据成员中，我们需要存储继续运行者的<code>std::coroutine_handle</code>。我们同时需要定义返回awaitable对象的<code>final_suspend()</code>方法，来在当前协程于最终挂起点挂起时恢复继续运行着。</p>
+<p>在当前协程挂起之后再恢复继续运行是重要的，因为继续运行者中可能会立即调用<code>task</code>析构函数即对协程栈调用<code>.destroy()</code>。方法<code>.destroy()</code>只能对挂起的协程执行，因此在当前协程挂起前恢复执行会是未定义行为。</p>
+<p>在右大括号结束时，编译器插入代码来对语句<code>co_await promise.final_suspend();</code>求值。</p>
+<p>需要重点注意的是在调用<code>final_suspend()</code>方法时协程并不处于挂起状态。我们需要在协程挂起前等待直到返回的awaitable的被调用<code>await_suspend()</code>方法。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">  <span class="keyword">struct</span> <span class="title class_">final_awaiter</span> &#123;</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">await_ready</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">await_suspend</span><span class="params">(std::coroutine_handle&lt;promise_type&gt; h)</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">      <span class="comment">// The coroutine is now suspended at the final-suspend point.</span></span><br><span class="line">      <span class="comment">// Lookup its continuation in the promise and resume it.</span></span><br><span class="line">      h.<span class="built_in">promise</span>().continuation.<span class="built_in">resume</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">await_resume</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;&#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="function">final_awaiter <span class="title">final_suspend</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  std::coroutine_handle&lt;&gt; continuation;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>OK，这就是完整的<code>promise_type</code>。最后需要实现的一部分是<code>task::operator co_await()</code>。</p>
+<h1 id="实现task-operator-co-await"><a href="#实现task-operator-co-await" class="headerlink" title="实现task::operator co_await()"></a>实现<code>task::operator co_await()</code></h1><p>你可能记得在<a href="/2022/03/05/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-operator-co-await/" title="Understanding operator co_await() post">Understanding operator co_await() post</a>中，当对<code>co_await</code>表达式求值时，编译器会生成对<code>operator co_await()</code>的调用，如果定义了一种，然后返回的对象必须有用<code>await_ready()</code>，<code>await_suspend()</code>和<code>await_resume()</code>方法。</p>
+<p>当协程awaits一个<code>task</code>，我们希望awaiting协程总是挂起的，一旦挂起了，就存储awaiting协程的句柄到即将恢复的协程promise中，对<code>task</code>的<code>std::coroutine_handle</code>调用<code>.resume()</code>来开始执行task。</p>
+<p>因此直观代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">task</span>::awaiter &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="type">bool</span> <span class="title">await_ready</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">await_suspend</span><span class="params">(std::coroutine_handle&lt;&gt; continuation)</span> <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Store the continuation in the task&#x27;s promise so that the final_suspend()</span></span><br><span class="line">    <span class="comment">// knows to resume this coroutine when the task completes.</span></span><br><span class="line">    coro_.<span class="built_in">promise</span>().continuation = continuation;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Then we resume the task&#x27;s coroutine, which is currently suspended</span></span><br><span class="line">    <span class="comment">// at the initial-suspend-point (ie. at the open curly brace).</span></span><br><span class="line">    coro_.<span class="built_in">resume</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">await_resume</span><span class="params">()</span> <span class="keyword">noexcept</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="keyword">explicit</span> <span class="title">awaiter</span><span class="params">(std::coroutine_handle&lt;task::promise_type&gt; h)</span> <span class="keyword">noexcept</span></span></span><br><span class="line"><span class="function">  : coro_(h)</span></span><br><span class="line"><span class="function">  &#123;</span>&#125;</span><br><span class="line"></span><br><span class="line">  std::coroutine_handle&lt;task::promise_type&gt; coro_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">task::awaiter task::<span class="keyword">operator</span> <span class="title">co_await</span><span class="params">()</span> &amp;&amp; <span class="keyword">noexcept</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> awaiter&#123;coro_&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>于是完成了一个功能型<code>task</code>类型所需的代码。</p>
+<p>可以在这里看到完整的代码：<a target="_blank" rel="noopener" href="https://godbolt.org/z/-Kw6Nf">https://godbolt.org/z/-Kw6Nf</a></p>
+<h1 id="栈溢出问题"><a href="#栈溢出问题" class="headerlink" title="栈溢出问题"></a>栈溢出问题</h1><p>然而，一些实现的限制出现了。当你开始在协程中写循环时，<code>co_await</code>任务可能会在循环体中同步的完成。</p>
+<p>例如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">task <span class="title">completes_synchronously</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">co_return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">task <span class="title">loop_synchronously</span><span class="params">(<span class="type">int</span> count)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; count; ++i) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">co_await</span> <span class="title">completes_synchronously</span><span class="params">()</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当<code>task</code>如上描述的简单实现时，<code>loop_synchronously()</code>函数在<code>count</code>是10、1000或者甚至100 000都是能正常工作的。但是一定会有值会最终导致协程开始异常。</p>
+<p>例如，在 <a target="_blank" rel="noopener" href="https://godbolt.org/z/gy5Q8q">https://godbolt.org/z/gy5Q8q</a> 中，当<code>count</code>是1’000’000时崩溃。</p>
+<p>崩溃的原因是栈溢出了。</p>
+<p>为了理解为什么会导致栈溢出，我们需要仔细看下代码运行时发生了什么。特别的，栈上发生了什么。</p>
+<p>在其他协程对返回的<code>task</code>执行<code>co_await</code>时，<code>loop_synchronously()</code>协程开始运行。这同时会挂起awaiting的协程并调用<code>task::awaiter::await_suspend()</code>，即对task的<code>std::coroutine_handle</code>调用<code>resume()</code>。</p>
+<p>因此当<code>loop_synchronously()</code>开始时，栈会看起来如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">           Stack                                                   Heap</span><br><span class="line">+------------------------------+  &lt;-- top of stack   +--------------------------+</span><br><span class="line">| loop_synchronously$resume    | active coroutine -&gt; | loop_synchronously frame |</span><br><span class="line">+------------------------------+                     | +----------------------+ |</span><br><span class="line">| coroutine_handle::resume     |                     | | task::promise        | |</span><br><span class="line">+------------------------------+                     | | - continuation --.   | |</span><br><span class="line">| task::awaiter::await_suspend |                     | +------------------|---+ |</span><br><span class="line">+------------------------------+                     | ...                |     |</span><br><span class="line">| awaiting_coroutine$resume    |                     +--------------------|-----+</span><br><span class="line">+------------------------------+                                          V</span><br><span class="line">|  ....                        |                     +--------------------------+</span><br><span class="line">+------------------------------+                     | awaiting_coroutine frame |</span><br><span class="line">                                                     |                          |</span><br><span class="line">                                                     +--------------------------+</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：编译器通常会把协程函数分为两部分：</p>
+<ol>
+<li>”ramp function“部分，用于处理协程栈的构造，参数拷贝，promise构造，以及创建返回值</li>
+<li>”coroutine body“部分，包含协程体中的用户逻辑。</li>
+</ol>
+<p>我会使用<code>$resume</code>后缀来代表协程的”coroutine body“部分。<br>后续的博客中会进一步分析拆分的逻辑。</p>
+</blockquote>
+<p>然后当<code>loop_synchronously()</code>对返回自<code>completes_synchronously()</code>的<code>task</code>执行await时，当前协程会挂起并调用<code>task::awaiter::await_suspend()</code>。然后<code>await_suspend()</code>方法会调用<code>completes_synchronously()</code>协程对应句柄的<code>.resume()</code>。</p>
+<p>这会恢复<code>completes_synchronously()</code>协程，同步地运行到结束，并在最终挂起点挂起。然后调用<code>task::promise::final_awaiter::await_suspend()</code>，这里会调用<code>loop_synchronously()</code>对应协程句柄的<code>.resume()</code>。</p>
+<p>下面网状的结果是在<code>loop_synchronously()</code>协程恢复后且在由<code>completes_synchronously()</code>返回的临时<code>task</code>销毁前即分号点的程序状态下堆栈的样子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">           Stack                                                   Heap</span><br><span class="line">+-------------------------------+ &lt;-- top of stack</span><br><span class="line">| loop_synchronously$resume     | active coroutine -.</span><br><span class="line">+-------------------------------+                   |</span><br><span class="line">| coroutine_handle::resume      |            .------&#x27;</span><br><span class="line">+-------------------------------+            |</span><br><span class="line">| final_awaiter::await_suspend  |            |</span><br><span class="line">+-------------------------------+            |  +--------------------------+ &lt;-.</span><br><span class="line">| completes_synchronously$resume|            |  | completes_synchronously  |   |</span><br><span class="line">+-------------------------------+            |  | frame                    |   |</span><br><span class="line">| coroutine_handle::resume      |            |  +--------------------------+   |</span><br><span class="line">+-------------------------------+            <span class="string">&#x27;---.                             |</span></span><br><span class="line"><span class="string">| task::awaiter::await_suspend  |                V                             |</span></span><br><span class="line"><span class="string">+-------------------------------+ &lt;-- prev top  +--------------------------+   |</span></span><br><span class="line"><span class="string">| loop_synchronously$resume     |     of stack  | loop_synchronously frame |   |</span></span><br><span class="line"><span class="string">+-------------------------------+               | +----------------------+ |   |</span></span><br><span class="line"><span class="string">| coroutine_handle::resume      |               | | task::promise        | |   |</span></span><br><span class="line"><span class="string">+-------------------------------+               | | - continuation --.   | |   |</span></span><br><span class="line"><span class="string">| task::awaiter::await_suspend  |               | +------------------|---+ |   |</span></span><br><span class="line"><span class="string">+-------------------------------+               | - task temporary --|---------&#x27;</span></span><br><span class="line">| awaiting_coroutine$resume     |               +--------------------|-----+</span><br><span class="line">+-------------------------------+                                    V</span><br><span class="line">|  ....                         |               +--------------------------+</span><br><span class="line">+-------------------------------+               | awaiting_coroutine frame |</span><br><span class="line">                                                |                          |</span><br><span class="line">                                                +--------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>下一步要做的是调用<code>task</code>析构函数来销毁<code>completes_synchronously()</code>栈。然后增加变量<code>count</code>并进入下一轮循环，创建一个新的<code>completes_synchronously()</code>栈并恢复。</p>
+<p>事实上，这里发生的是<code>loop_synchronously()</code>和<code>completes_synchronously()</code>在互相递归调用。每一次发生时都会消耗一部分栈空间，最终，在足够迭代后，超出了栈空间并导致未定义行为，典型的导致程序崩溃。</p>
+<p>在协程中以这种方式写循环很容易导致无限的递归，虽然看起来并没有任何递归。</p>
+<p>所以，在原始协程提案设计中如何解决这个问题？</p>
+<h1 id="协程提案的解决方案"><a href="#协程提案的解决方案" class="headerlink" title="协程提案的解决方案"></a>协程提案的解决方案</h1><p>OK，我们可以怎么做来避免无限递归呢？</p>
+<p>通过上述实现，我们使用的<code>await_suspend()</code>返回void的版本。协程提案中海油一个版本的<code>await_suspend()</code>返回<code>bool</code> - 如果返回<code>true</code>那么协程会挂起且运行权返回到<code>resume()</code>的调用者，如果返回<code>false</code>那么协程会立即恢复，这时不会消耗任何额外的栈空间。</p>
+<p>所以，为了避免无限相互递归，我们需要做的是，在task同步完成时使用返回<code>bool</code>版本的<code>await_suspend()</code>从<code>task::awaiter::await_suspend()</code>方法中返回<code>false</code>来恢复当前协程，而不是用<code>std::coroutine_handle::resume()</code>递归的恢复协程。</p>
+<p>通用解决方案的实现包含两部分：</p>
+<ol>
+<li>方法<code>task::awaiter::await_suspend()</code>中，可以通过调用<code>.resume()</code>来开始运行协程。然后调用<code>.resume()</code>返回时，检查协程是否运行到了结束。如果运行到完成了那么返回<code>false</code>，表明awaiting协程应该理解恢复，或者返回<code>true</code>，表明运行权需要返回到<code>std::coroutine_handle::resume()</code>的调用者；</li>
+<li>在<code>task::promise_type::final_awaiter::await_suspend()</code>中，即协程运行到结束时会被调用的函数，我们需要检查awaiting协程是否已经或者即将在<code>task::awaiter::await_suspend()</code>中返回<code>true</code>，如果是那么通过调用<code>.resume()</code>来恢复他。否则，我们应该避免恢复协程而是通知<code>task::awaiter::await_suspend()</code>来返回<code>false</code>；</li>
+</ol>
+<p>然而，还有一个复杂问题，要实现上述目标，需要让协程能够在当前线程开始运行然后挂起，之后在调用<code>.resume()</code>返回前于不同的线程恢复并运行到结束。因此我们需要解决第一部分和第二部分同时发生的潜在竞争冲突。</p>
+<p>这里使用了一个<code>std::atomic</code>值来决定竞争结果。</p>
+<p>现在对于代码我们可以做如下修改：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">task</span>::promise_type &#123;</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  std::coroutine_handle&lt;&gt; continuation;</span><br><span class="line">  std::atomic&lt;<span class="type">bool</span>&gt; ready = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">bool</span> task::awaiter::<span class="built_in">await_suspend</span>(</span><br><span class="line">    std::coroutine_handle&lt;&gt; continuation) <span class="keyword">noexcept</span> &#123;</span><br><span class="line">  promise_type&amp; promise = coro_.<span class="built_in">promise</span>();</span><br><span class="line">  promise.continuation = continuation;</span><br><span class="line">  coro_.<span class="built_in">resume</span>();</span><br><span class="line">  <span class="keyword">return</span> !promise.ready.<span class="built_in">exchange</span>(<span class="literal">true</span>, std::memory_order_acq_rel);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> task::promise_type::final_awaiter::<span class="built_in">await_suspend</span>(</span><br><span class="line">    std::coroutine_handle&lt;promise_type&gt; h) <span class="keyword">noexcept</span> &#123;</span><br><span class="line">  promise_type&amp; promise = h.<span class="built_in">promise</span>();</span><br><span class="line">  <span class="keyword">if</span> (promise.ready.<span class="built_in">exchange</span>(<span class="literal">true</span>, std::memory_order_acq_rel)) &#123;</span><br><span class="line">    <span class="comment">// The coroutine did not complete synchronously, resume it here.</span></span><br><span class="line">    promise.continuation.<span class="built_in">resume</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以在这里看到样例：<a target="_blank" rel="noopener" href="https://godbolt.org/z/7fm8Za">https://godbolt.org/z/7fm8Za</a> 可以观察到执行<code>count == 1&#39;000&#39;000</code>时不再崩溃。</p>
+<p>这也是<code>cppcoro::task&lt;T&gt;</code> <a href="https://github.com/lewissbaker/cppcoro/blob/master/include/cppcoro/task.hpp" title="" target="">implementation</a>中用来避免无限递归的方法（在某些平台仍然如此），并且运作良好。</p>
+<p>Woohoo！问题解决了，对吗？</p>
+<h1 id="问题所在"><a href="#问题所在" class="headerlink" title="问题所在"></a>问题所在</h1><p>上述解决方案虽然解决了递归问题，但是有一些缺点。</p>
+<p>首先，引入了<code>std::atomic</code>操作，带来了不小的开销。在调用者挂起awaiting协程时需要一次原子交互，在被调者运行到结束时有另外一次原子交换。如果你的程序只在单线程运行，那么你需要为额外付出线程间同步的原子操作开销。</p>
+<p>其次，引入了额外的分支。其一在调用者端，需要决定是挂起还是立即恢复协程，其二在被调者端，需要决定是继续运行或者挂起。</p>
+<p>注意额外分支的开销，甚至是原子操作，对比协程中的业务逻辑的开销通常是不值一提的。然而，协程通常被宣传为零开销的抽象，甚至有使用协程来挂起函数运行来避免L1-cache-miss(Gor的视频<a href="https://www.youtube.com/watch?v=j9tlJAqMV7U" title="" target="">CppCon talk on nanocoroutines</a>有更多细节)。</p>
+<p>第三点，可能是最重要的，在awaiting协程恢复的上下文运行中引入了不确定性。</p>
+<p>例如我有如下代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">cppcoro::static_thread_pool tp;</span><br><span class="line"></span><br><span class="line"><span class="function">task <span class="title">foo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;foo1 &quot;</span> &lt;&lt; std::this_thread::<span class="built_in">get_id</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">  <span class="comment">// Suspend coroutine and reschedule onto thread-pool thread.</span></span><br><span class="line">  <span class="keyword">co_await</span> tp.<span class="built_in">schedule</span>();</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;foo2 &quot;</span> &lt;&lt; std::this_thread::<span class="built_in">get_id</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">task <span class="title">bar</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;bar1 &quot;</span> &lt;&lt; std::this_thread::<span class="built_in">get_id</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">  <span class="function"><span class="keyword">co_await</span> <span class="title">foo</span><span class="params">()</span></span>;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;bar2&quot;</span> &lt;&lt; std::this_thread::<span class="built_in">get_id</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在原始实现中，我们保证了在<code>co_await foo()</code>之后的代码会内联在<code>foo()</code>结束的线程上运行。</p>
+<p>例如，一个可能的输出结果：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">bar1 <span class="number">1234</span></span><br><span class="line">foo1 <span class="number">1234</span></span><br><span class="line">foo2 <span class="number">3456</span></span><br><span class="line">bar2 <span class="number">3456</span></span><br></pre></td></tr></table></figure>
+
+<p>然而，在使用原子操作后，<code>foo()</code>的完成可能会和<code>bar()</code>的挂起竞争，并且在某些情况下，意味着<code>co_await foo()</code>之后的代码可能会在<code>bar()</code>一开始的线程上运行。</p>
+<p>例如，也可能会发生如下的输出序列：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">bar1 <span class="number">1234</span></span><br><span class="line">foo1 <span class="number">1234</span></span><br><span class="line">foo2 <span class="number">3456</span></span><br><span class="line">bar2 <span class="number">1234</span></span><br></pre></td></tr></table></figure>
+
+<p>对于很多使用场景，这个行为并不会导致区别。然而对于以转移运行上下文为目的的运算就会是问题。</p>
+<p>例如，算法<code>via()</code>中await一些Awaitable对象然后在特定的调度器运行上下文来使用。一个简化版本的算法如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Awaitable, <span class="keyword">typename</span> Scheduler&gt;</span><br><span class="line">task&lt;<span class="type">await_result_t</span>&lt;Awaitable&gt;&gt; <span class="built_in">via</span>(Awaitable a, Scheduler s)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">auto</span> result = <span class="keyword">co_await</span> std::<span class="built_in">move</span>(a);</span><br><span class="line">  <span class="keyword">co_await</span> s.<span class="built_in">schedule</span>();</span><br><span class="line">  <span class="keyword">co_return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">task&lt;T&gt; <span class="title">get_value</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">consume</span><span class="params">(<span class="type">const</span> T&amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">task&lt;<span class="type">void</span>&gt; <span class="title">consumer</span><span class="params">(static_thread_pool::scheduler s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  T result = <span class="keyword">co_await</span> <span class="built_in">via</span>(<span class="built_in">get_value</span>(), s);</span><br><span class="line">  <span class="built_in">consume</span>(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>初始版本的<code>consume()</code>调用始终保证了再线程池<code>s</code>上运行。然而在使用了atomic的改进版本中，<code>consume()</code>可能会运行在调度器<code>s</code>的线程上或者协程<code>consumer()</code>开始运行的线程上。</p>
+<p>所以在不引入原子操作、额外分支以及非确定恢复上下文时，我们该如何解决栈溢出问题？</p>
+<h1 id="使用”对称转移“！"><a href="#使用”对称转移“！" class="headerlink" title="使用”对称转移“！"></a>使用”对称转移“！</h1><p>Gor Nishanov在<a href="https://wg21.link/P0913R0" title="" target="">P0913R0</a>（2018）论文中提议了一种解决方案，提供允许一个协程挂起然后对称的恢复另外一个协程的机制，不消耗任何额外的栈空间。</p>
+<p>论文中提出了两个关键点：</p>
+<ul>
+<li>允许从<code>await_suspend()</code>中返回<code>std::coroutine_handle&lt;T&gt;</code>，作为指示运行权应该对称的转移到返回句柄对应的协程</li>
+<li>增加一个返回特殊<code>std::coroutine_handle</code>的<code>std::experimental::noop_coroutine()</code>函数，这个句柄可以被<code>await_suspend()</code>返回来挂起当前协程，并且从<code>.resume()</code>调用中返回，而不是转移运行到其他协程</li>
+</ul>
+<p>所以”对称转移“到底意味着什么呢？</p>
+<p>当你通过对<code>std::coroutine_handle</code>调用<code>.resume()</code>来恢复一个协程时，<code>.resume()</code>的调用者在被恢复协程运行的同时在栈上保持存活。在这个协程挂起且在挂起点调用<code>await_suspend()</code>返回<code>void</code>（表明无条件挂起）或者<code>true</code>（表明有条件挂起），然后<code>.resume()</code>的调用会返回。</p>
+<p>这可以被认为是协程的一种”非对称转移“运行，和普通函数调用一样。<code>.resume()</code>的调用者可以是任何函数（可以是协程也可以不是）。当协程挂起且在<code>await_suspend()</code>中返回<code>true</code>或者<code>void</code>，然后运行权会从<code>.resume()</code>的调用中返回。并且，每一次通过调用<code>.resume()</code>恢复一个协程都会为协程的运行创建一个新的栈帧。</p>
+<p>然而，在”对称转移“中，我们可以很简单的挂起一个协程并恢复另外一个协程。在两个协程中并没有隐式包含调用者和被调者的关系 - 当一个协程挂起时可以转移运行到任何挂起协程（包括自己），且在下一次挂起或者完成时并不一定要转移运行到上一次的协程。</p>
+<p>让我们来看下编译器会如何映射<code>co_await</code>表达式，即awaiter在什么时候使用对称转移：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="keyword">decltype</span>(<span class="keyword">auto</span>) value = &lt;expr&gt;;</span><br><span class="line">  <span class="keyword">decltype</span>(<span class="keyword">auto</span>) awaitable =</span><br><span class="line">      <span class="built_in">get_awaitable</span>(promise, <span class="built_in">static_cast</span>&lt;<span class="keyword">decltype</span>(value)&amp;&amp;&gt;(value));</span><br><span class="line">  <span class="keyword">decltype</span>(<span class="keyword">auto</span>) awaiter =</span><br><span class="line">      <span class="built_in">get_awaiter</span>(<span class="built_in">static_cast</span>&lt;<span class="keyword">decltype</span>(awaitable)&amp;&amp;&gt;(awaitable));</span><br><span class="line">  <span class="keyword">if</span> (!awaiter.<span class="built_in">await_ready</span>())</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">using</span> <span class="type">handle_t</span> = std::coroutine_handle&lt;P&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//&lt;suspend-coroutine&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> h = awaiter.<span class="built_in">await_suspend</span>(<span class="type">handle_t</span>::<span class="built_in">from_promise</span>(p));</span><br><span class="line">    h.<span class="built_in">resume</span>();</span><br><span class="line">    <span class="comment">//&lt;return-to-caller-or-resumer&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//&lt;resume-point&gt;</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> awaiter.<span class="built_in">await_resume</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>让我们深入看下和其他<code>co_await</code>形式的关键不同之处：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">auto</span> h = awaiter.<span class="built_in">await_suspend</span>(<span class="type">handle_t</span>::<span class="built_in">from_promise</span>(p));</span><br><span class="line">h.<span class="built_in">resume</span>();</span><br><span class="line"><span class="comment">//&lt;return-to-caller-or-resumer&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>一旦协程的状态机映射完（另外一篇的主题），<code>&lt;return-to-caller-or-resumer&gt;</code>部分基本就变为<code>return;</code>语句，即导致把恢复协程的<code>.resume()</code>调用返回给调用者。</p>
+<p>这意味着我们会遇到相同签名的调用会转到另外一个函数的情形，<code>std::coroutine_handle::resume()</code>，紧跟着当前函数的<code>return;</code>，该函数本身既是<code>std::coroutine_handle::resume()</code>调用的主题。</p>
+<p>一些编译器，在编译优化打开时，可以某些情形下对在尾部（就在返回前）另外一个函数的调用优化为尾调用。</p>
+<p>这类尾调用优化就是我们需要的，用来避免前述的栈溢出问题。但是与其等待编译器来决定是否执行尾调用优化，我们希望保证尾调用转化一定发生，即使没有开启优化。</p>
+<p>但是首先我们来看下什么是尾调用。</p>
+<h2 id="尾调用-Tail-calls"><a href="#尾调用-Tail-calls" class="headerlink" title="尾调用(Tail-calls)"></a>尾调用(Tail-calls)</h2><p>尾调用是指在调用之前弹出当前栈帧，且把当前函数返回地址作为被调用者的返回地址。例如，被调用者会直接返回此函数的调用者。</p>
+<p>在x86/x64架构上，这意味着编译器会生成代码，首先弹出当前栈帧，然后使用<code>jmp</code>指令跳转到被调用函数入口，而不是使用<code>call</code>指令然后在<code>call</code>返回时弹出当前栈帧。</p>
+<p>然而这个优化通常只能在有限的情形下使用。</p>
+<p>特别的，需要：</p>
+<ul>
+<li>调用者和被调用者的调用约定都要支持尾调用；</li>
+<li>返回类型一致；</li>
+<li>在返回调用者之前，不需要在调用之后运行non-trivial的析构函数；</li>
+<li>调用不在try/catch块中；</li>
+</ul>
+<p><code>co_await</code>的对称转移形式被特别设计用于使得协程满足以上所有要求。让我们一个个看一下。</p>
+<p><strong>调用约定</strong> 当编译器映射协程为机器码时，事实上会分裂协程为两部分：the ramp（分配并初始化协程栈）和函数体（包含用户编写的协程体状态机）。</p>
+<p>协程的函数签名（以及任何用户特定的调用约定）仅影响ramp部分，而协程体部分是在编译器的控制下且并不会被任何用户代码直接调用 - 仅会被ramp函数以及<code>std::coroutine_handle::resume()</code>调用。</p>
+<p>协程体部分的调用约定并不对用户可见，并且完全取决于编译器，因此可以选择一种合适的调用约定，支持尾调用且被用于所有协程体。</p>
+<p><strong>返回类型一致</strong> 源和目标协程的<code>.resume()</code>方法的返回类型都是<code>void</code>，因此要求是满足的。</p>
+<p><strong>没有non-trivial析构函数</strong> 当执行尾调用时，我们需要在调用目标函数前能释放当前栈帧，这需要所有栈分配对象的生命周期在调用前都已结束。</p>
+<p>通常来说，只要在范围内有任何已经分配在栈上，且有non-trivial析构函数对象的生命周期还没结束就是有问题的。</p>
+<p>然而，当协程挂起时在不退出任何作用域的情况就能达到，实现的方式是将任何生命周期跨越挂起点的对象放到协程栈上而不是在栈上。</p>
+<p>生命周期不跨越挂起点的局部变量可能会在栈上分配，但是这些对象的生命周期已经结束，且在协程下一个挂起点调用之前就会调用他们的析构函数。</p>
+<p>因此在尾调用返回之后，不需要运行在栈上分配的对象的non-trivial析构函数。</p>
+<p><strong>不在try/catch块中调用</strong> 这有一点tricky，因为在每个协程中，隐式的包含了一个try/catch块包住了用户编写的协程体。</p>
+<p>举例说明，我们假设协程定义如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  promise_type promise;</span><br><span class="line">  <span class="keyword">co_await</span> promise.<span class="built_in">initial_suspend</span>();</span><br><span class="line">  <span class="keyword">try</span> &#123; F; &#125;</span><br><span class="line">  <span class="built_in">catch</span> (...) &#123; promise.<span class="built_in">unhandled_exception</span>(); &#125;</span><br><span class="line">final_suspend:</span><br><span class="line">  <span class="keyword">co_await</span> promise.<span class="built_in">final_suspend</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>F</code>是用户编写的协程体。</p>
+<p>因此每一个用户编写的<code>co_await</code>表达式（除了初始和最终挂起点）都包含在一个try/catch的上下文中。</p>
+<p>但是，实现是通过在try块上下文之外再实际执行<code>.resume()</code>调用来解决。</p>
+<p>我希望能在另外一篇博客中进一步深挖这部分细节，即协程映射为机器码的细节（本篇已经足够长了）。</p>
+<blockquote>
+<p>然而，注意到当前C++规范中对要求实现的这点措辞并不明确，这只是一个非规范性说明，暗示这可能是必须的。希望我们在未来能解决。</p>
+</blockquote>
+<p>所以我们看到协程执行对称转移总体上是满足所有要求来执行尾调用。编译器保证了这总是尾调用，不管优化开启与否。</p>
+<p>这意味着通过使用返回<code>std::coroutine_handle</code>的<code>await_suspend()</code>，我们可以挂起当前协程以及转移运行到另外一个协程而不消耗额外栈空间。</p>
+<p>这允许我们编写任何深度的互相递归且互相恢复的协程而不用担心栈溢出。</p>
+<p>这就是我们需要来修复<code>task</code>的实现。</p>
+<h1 id="重新设计task"><a href="#重新设计task" class="headerlink" title="重新设计task"></a>重新设计<code>task</code></h1><p>所以在拥有新的”对称转移“能力后，让我们来回头修复<code>task</code>类型的实现。</p>
+<p>我们需要改动两个<code>await_suspend()</code>方法的实现：</p>
+<ul>
+<li>首先当我们await task时，执行一次对称转移来恢复task的协程</li>
+<li>其次当task的协程完成时，执行一次对称转移来恢复awaiting协程</li>
+</ul>
+<p>为了解决await方法，我们需要改变<code>task::awaiter</code>方法，从：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> task::awaiter::<span class="built_in">await_suspend</span>(</span><br><span class="line">    std::coroutine_handle&lt;&gt; continuation) <span class="keyword">noexcept</span> &#123;</span><br><span class="line">  <span class="comment">// Store the continuation in the task&#x27;s promise so that the final_suspend()</span></span><br><span class="line">  <span class="comment">// knows to resume this coroutine when the task completes.</span></span><br><span class="line">  coro_.<span class="built_in">promise</span>().continuation = continuation;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Then we resume the task&#x27;s coroutine, which is currently suspended</span></span><br><span class="line">  <span class="comment">// at the initial-suspend-point (ie. at the open curly brace).</span></span><br><span class="line">  coro_.<span class="built_in">resume</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>改变为：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">std::coroutine_handle&lt;&gt; task::awaiter::<span class="built_in">await_suspend</span>(</span><br><span class="line">    std::coroutine_handle&lt;&gt; continuation) <span class="keyword">noexcept</span> &#123;</span><br><span class="line">  <span class="comment">// Store the continuation in the task&#x27;s promise so that the final_suspend()</span></span><br><span class="line">  <span class="comment">// knows to resume this coroutine when the task completes.</span></span><br><span class="line">  coro_.<span class="built_in">promise</span>().continuation = continuation;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Then we tail-resume the task&#x27;s coroutine, which is currently suspended</span></span><br><span class="line">  <span class="comment">// at the initial-suspend-point (ie. at the open curly brace), by returning</span></span><br><span class="line">  <span class="comment">// its handle from await_suspend().</span></span><br><span class="line">  <span class="keyword">return</span> coro_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了解决返回路径，我们需要更新<code>task::promise_type::final_awaiter</code>方法，从：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> task::promise_type::final_awaiter::<span class="built_in">await_suspend</span>(</span><br><span class="line">    std::coroutine_handle&lt;promise_type&gt; h) <span class="keyword">noexcept</span> &#123;</span><br><span class="line">  <span class="comment">// The coroutine is now suspended at the final-suspend point.</span></span><br><span class="line">  <span class="comment">// Lookup its continuation in the promise and resume it.</span></span><br><span class="line">  h.<span class="built_in">promise</span>().continuation.<span class="built_in">resume</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>改变为：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">std::coroutine_handle&lt;&gt; task::promise_type::final_awaiter::<span class="built_in">await_suspend</span>(</span><br><span class="line">    std::coroutine_handle&lt;promise_type&gt; h) <span class="keyword">noexcept</span> &#123;</span><br><span class="line">  <span class="comment">// The coroutine is now suspended at the final-suspend point.</span></span><br><span class="line">  <span class="comment">// Lookup its continuation in the promise and resume it symmetrically.</span></span><br><span class="line">  <span class="keyword">return</span> h.<span class="built_in">promise</span>().continuation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在我们有了一个<code>task</code>实现，不会出现返回<code>void</code>版本的<code>await_suspend</code>所具有的栈溢出问题，并且不会有返回<code>bool</code>版本的<code>await_suspend</code>会出现的不确定上下文恢复问题。</p>
+<h1 id="栈的表现"><a href="#栈的表现" class="headerlink" title="栈的表现"></a>栈的表现</h1><p>现在我们再回头看一下最初的样例：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">task <span class="title">completes_synchronously</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">co_return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">task <span class="title">loop_synchronously</span><span class="params">(<span class="type">int</span> count)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; count; ++i) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">co_await</span> <span class="title">completes_synchronously</span><span class="params">()</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当<code>loop_synchronously()</code>协程第一次开始运行时，会因为其他协程<code>co_await</code>该<code>task</code>而返回。这会通过其他协程的对称转移来启动，即通过调用<code>std::coroutine_handle::resume()</code>来恢复。</p>
+<p>因此在<code>loop_synchronously()</code>开始时，堆栈会看起来如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">           Stack                                                Heap</span><br><span class="line">+---------------------------+  &lt;-- top of stack   +--------------------------+</span><br><span class="line">| loop_synchronously$resume | active coroutine -&gt; | loop_synchronously frame |</span><br><span class="line">+---------------------------+                     | +----------------------+ |</span><br><span class="line">| coroutine_handle::resume  |                     | | task::promise        | |</span><br><span class="line">+---------------------------+                     | | - continuation --.   | |</span><br><span class="line">|     ...                   |                     | +------------------|---+ |</span><br><span class="line">+---------------------------+                     | ...                |     |</span><br><span class="line">                                                  +--------------------|-----+</span><br><span class="line">                                                                       V</span><br><span class="line">                                                  +--------------------------+</span><br><span class="line">                                                  | awaiting_coroutine frame |</span><br><span class="line">                                                  |                          |</span><br><span class="line">                                                  +--------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>现在当运行<code>co_await completes_synchronously()</code>时，会执行对称转移到<code>completes_synchronously</code>协程。</p>
+<p>通过如下操作实现：</p>
+<ul>
+<li>调用<code>task::operator co_await()</code>，然后返回<code>task::awaiter</code>对象</li>
+<li>然后挂起并调用<code>task::awaiter::await_suspend()</code>，然后返回<code>completes_synchronously</code>协程的<code>coroutine_handle</code></li>
+<li>再然后执行尾调用/跳转到<code>completes_synchronously</code>协程。这会在激活<code>completes_synchronously</code>栈帧前弹出<code>loop_synchronously</code>的栈帧；</li>
+</ul>
+<p>如果我们在<code>completes_synchronously</code>恢复后查看堆栈状态如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">              Stack                                          Heap</span><br><span class="line">                                            .-&gt; +--------------------------+ &lt;-.</span><br><span class="line">                                            |   | completes_synchronously  |   |</span><br><span class="line">                                            |   | frame                    |   |</span><br><span class="line">                                            |   | +----------------------+ |   |</span><br><span class="line">                                            |   | | task::promise        | |   |</span><br><span class="line">                                            |   | | - continuation --.   | |   |</span><br><span class="line">                                            |   | +------------------|---+ |   |</span><br><span class="line">                                            `-, +--------------------|-----+   |</span><br><span class="line">                                              |                      V         |</span><br><span class="line">+-------------------------------+ &lt;-- top of  | +--------------------------+   |</span><br><span class="line">| completes_synchronously$resume|     stack   | | loop_synchronously frame |   |</span><br><span class="line">+-------------------------------+ active -----<span class="string">&#x27; | +----------------------+ |   |</span></span><br><span class="line"><span class="string">| coroutine_handle::resume      | coroutine     | | task::promise        | |   |</span></span><br><span class="line"><span class="string">+-------------------------------+               | | - continuation --.   | |   |</span></span><br><span class="line"><span class="string">|     ...                       |               | +------------------|---+ |   |</span></span><br><span class="line"><span class="string">+-------------------------------+               | task temporary     |     |   |</span></span><br><span class="line"><span class="string">                                                | - coro_       -----|---------`</span></span><br><span class="line"><span class="string">                                                +--------------------|-----+</span></span><br><span class="line"><span class="string">                                                                     V</span></span><br><span class="line"><span class="string">                                                +--------------------------+</span></span><br><span class="line"><span class="string">                                                | awaiting_coroutine frame |</span></span><br><span class="line"><span class="string">                                                |                          |</span></span><br><span class="line"><span class="string">                                                +--------------------------+</span></span><br></pre></td></tr></table></figure>
+
+<p>请注意此处的栈帧数量并没有变多。</p>
+<p>在<code>completes_synchronously</code>协程完成后，运行到右大括号会对<code>co_await promise.final_suspend()</code>求值。</p>
+<p>这会挂起协程并调用<code>final_awaiter::await_suspend()</code>，其中会返回协程的<code>std::coroutine_handle</code>（例如指向<code>loop_synchronously</code>协程的句柄）。然后执行一次对称转移/尾调用来恢复<code>loop_synchronously</code>协程。</p>
+<p>在<code>loop_synchronously</code>恢复后，查看堆栈状态如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">           Stack                                                   Heap</span><br><span class="line">                                                   +--------------------------+ &lt;-.</span><br><span class="line">                                                   | completes_synchronously  |   |</span><br><span class="line">                                                   | frame                    |   |</span><br><span class="line">                                                   | +----------------------+ |   |</span><br><span class="line">                                                   | | task::promise        | |   |</span><br><span class="line">                                                   | | - continuation --.   | |   |</span><br><span class="line">                                                   | +------------------|---+ |   |</span><br><span class="line">                                                   +--------------------|-----+   |</span><br><span class="line">                                                                        V         |</span><br><span class="line">+----------------------------+  &lt;-- top of stack   +--------------------------+   |</span><br><span class="line">| loop_synchronously$resume  | active coroutine -&gt; | loop_synchronously frame |   |</span><br><span class="line">+----------------------------+                     | +----------------------+ |   |</span><br><span class="line">| coroutine_handle::<span class="built_in">resume</span>() |                     | | task::promise        | |   |</span><br><span class="line">+----------------------------+                     | | - continuation --.   | |   |</span><br><span class="line">|     ...                    |                     | +------------------|---+ |   |</span><br><span class="line">+----------------------------+                     | task temporary     |     |   |</span><br><span class="line">                                                   | - coro_       -----|---------`</span><br><span class="line">                                                   +--------------------|-----+</span><br><span class="line">                                                                        V</span><br><span class="line">                                                   +--------------------------+</span><br><span class="line">                                                   | awaiting_coroutine frame |</span><br><span class="line">                                                   |                          |</span><br><span class="line">                                                   +--------------------------+</span><br></pre></td></tr></table></figure>
+
+<p><code>loop_synchronously</code>协程一旦返回后首先要做的是，在运行到分号时，调用对<code>completes_synchronously</code>调用中返回的临时<code>task</code>的析构函数。这会销毁协程栈，释放内存，以及进入如下状态：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">           Stack                                                   Heap</span><br><span class="line">+---------------------------+  &lt;-- top of stack   +--------------------------+</span><br><span class="line">| loop_synchronously$resume | active coroutine -&gt; | loop_synchronously frame |</span><br><span class="line">+---------------------------+                     | +----------------------+ |</span><br><span class="line">| coroutine_handle::resume  |                     | | task::promise        | |</span><br><span class="line">+---------------------------+                     | | - continuation --.   | |</span><br><span class="line">|     ...                   |                     | +------------------|---+ |</span><br><span class="line">+---------------------------+                     | ...                |     |</span><br><span class="line">                                                  +--------------------|-----+</span><br><span class="line">                                                                       V</span><br><span class="line">                                                  +--------------------------+</span><br><span class="line">                                                  | awaiting_coroutine frame |</span><br><span class="line">                                                  |                          |</span><br><span class="line">                                                  +--------------------------+</span><br></pre></td></tr></table></figure>
+
+<p>现在我们回到运行<code>loop_synchronously</code>协程，拥有和开始时一样多的栈帧和协程栈，并且每运行完一轮循环皆是如此。</p>
+<p>因此我们可以使用固定大小的存储空间来执行任意多的循环。</p>
+<p><code>task</code>类型的对称转移完整样例版本参见：<a target="_blank" rel="noopener" href="https://godbolt.org/z/9baieF">https://godbolt.org/z/9baieF</a> 。</p>
+<h1 id="对称转移作为await-suspend的通用形式"><a href="#对称转移作为await-suspend的通用形式" class="headerlink" title="对称转移作为await_suspend的通用形式"></a>对称转移作为await_suspend的通用形式</h1><p>现在我们看到了awaitable概念的对称转移的能力与重要性，我想展示这确实是通用的形式，理论上可以替代返回<code>void</code>和<code>bool</code>形式的<code>await_suspend()</code>。</p>
+<p>但是首先我们需要看下<a href="https://wg21.link/P0913R0" title="" target="">P0913R0</a>提议中给协程增加的其他设计<code>std::noop_coroutine()</code>。</p>
+<h2 id="结束递归"><a href="#结束递归" class="headerlink" title="结束递归"></a>结束递归</h2><p>拥有对称转移后的协程，每次挂起时会对称的恢复其他协程。在有另外的协程可以恢复时完全没问题，但是有时我们并没有其他协程在运行，仅需要挂起并把运行返回到<code>std::coroutine_handle::resume()</code>的调用者。</p>
+<p>返回<code>void</code>和<code>bool</code>版本的<code>await_suspend()</code>都允许协程挂起并从<code>std::coroutine_handle::resume()</code>中返回，所以我们该如何使用对称转移做到这点呢？</p>
+<p>答案是通过使用特别内建的<code>std::coroutine_handle</code>，由函数<code>std::noop_coroutine()</code>产生的”noop coroutine handle”。</p>
+<p>“noop coroutine handle”被称为如此，是因为他的<code>.resume()</code>实现是立即返回。例如，恢复的协程是no-op。典型的实现是包含单一一条<code>ret</code>指令。</p>
+<p>如果<code>await_suspend()</code>方法返回<code>std::noop_coroutine()</code>句柄，然后会转移运行回到<code>std::coroutine_handle::resume()</code>的调用者，而不是转移运行到下一个协程。</p>
+<h2 id="其他版本await-suspend-的形式"><a href="#其他版本await-suspend-的形式" class="headerlink" title="其他版本await_suspend()的形式"></a>其他版本<code>await_suspend()</code>的形式</h2><p>基于手中的信息，我们现在可以展现其他版本<code>await_suspend()</code>使用对称转移的形式。</p>
+<p>返回<code>void</code>的版本：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">my_awaiter::await_suspend</span><span class="params">(std::coroutine_handle&lt;&gt; h)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>-&gt;coro = h;</span><br><span class="line">  <span class="built_in">enqueue</span>(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>返回<code>bool</code>的版本：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">my_awaiter::await_suspend</span><span class="params">(std::coroutine_handle&lt;&gt; h)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>-&gt;coro = h;</span><br><span class="line">  <span class="built_in">enqueue</span>(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以及用对称转移形式编写如下版本：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">std::noop_coroutine_handle <span class="title">my_awaiter::await_suspend</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    std::coroutine_handle&lt;&gt; h)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>-&gt;coro = h;</span><br><span class="line">  <span class="built_in">enqueue</span>(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">return</span> std::<span class="built_in">noop_coroutine</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原本返回<code>bool</code>的版本：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">my_awaiter::await_suspend</span><span class="params">(std::coroutine_handle&lt;&gt; h)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>-&gt;coro = h;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">try_start</span>(<span class="keyword">this</span>)) &#123;</span><br><span class="line">    <span class="comment">// Operation will complete asynchronously.</span></span><br><span class="line">    <span class="comment">// Return true to transfer execution to caller of</span></span><br><span class="line">    <span class="comment">// coroutine_handle::resume().</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Operation completed synchronously.</span></span><br><span class="line">  <span class="comment">// Return false to immediately resume the current coroutine.</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样可以使用对称转移变为：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">std::coroutine_handle&lt;&gt; my_awaiter::<span class="built_in">await_suspend</span>(std::coroutine_handle&lt;&gt; h) &#123;</span><br><span class="line">  <span class="keyword">this</span>-&gt;coro = h;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">try_start</span>(<span class="keyword">this</span>)) &#123;</span><br><span class="line">    <span class="comment">// Operation will complete asynchronously.</span></span><br><span class="line">    <span class="comment">// Return std::noop_coroutine() to transfer execution to caller of</span></span><br><span class="line">    <span class="comment">// coroutine_handle::resume().</span></span><br><span class="line">    <span class="keyword">return</span> std::<span class="built_in">noop_coroutine</span>();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Operation completed synchronously.</span></span><br><span class="line">  <span class="comment">// Return current coroutine&#x27;s handle to immediately resume</span></span><br><span class="line">  <span class="comment">// the current coroutine.</span></span><br><span class="line">  <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="为什么需要所有3个版本？"><a href="#为什么需要所有3个版本？" class="headerlink" title="为什么需要所有3个版本？"></a>为什么需要所有3个版本？</h2><p>所以在有对称转移后，为什么我们还需要返回<code>void</code>和<code>bool</code>版本的<code>await_suspend()</code>呢？</p>
+<p>一部分是历史原因，一部分是实用性，一部分是性能问题。</p>
+<p>从<code>await_suspend()</code>中返回<code>void</code>的版本可以被返回<code>std::noop_coroutine_handle</code>类型完全替代，因为对编译器来说都是无条件转移运行到<code>std::coroutine_handle::resume()</code>的调用者。</p>
+<p>在我看来，这个版本被保留，一部分是因为在引入对称转移前已经使用了，一部分是因为在无条件转移场景<code>void</code>版本可以写更少的代码。</p>
+<p>而对于返回<code>bool</code>的版本，在某些场景下，优化性能会略优于对称转移。</p>
+<p>考虑我们有在<code>await_suspend()</code>返回<code>bool</code>的方法定义在另外的编译单元。这种情况下编译器可以在awaiting协程中生成代码，用于挂起当前协程，然后在调用<code>await_suspend()</code>返回后通过执行下一段代码有条件的恢复它。如果<code>await_suspend()</code>返回<code>false</code>就会确切的知道接下来要执行的代码。</p>
+<p>在使用对称转移后我们仍然需要表示相同的结果，要么返回到调用者/恢复者，或者恢复当前协程。我们需要返回<code>std::noop_coroutine()</code>或者当前协程的句柄而不是<code>true</code>或者<code>false</code>。我们可以把这两类句柄都强制转换为<code>std::coroutine_handle&lt;void&gt;</code>类型并返回。</p>
+<p>然而现在因为<code>await_suspend()</code>方法定义在另外的编译单元，编译器并不能看到返回的句柄指向哪个协程，所以对比返回<code>bool</code>版本的单一分支，现在恢复协程时必须执行更多昂贵的间接调用或者可能一些分支来恢复协程。</p>
+<p>我们可能有一天会获得相同性能的对称转移版本。例如，我们可以如下方式写代码，把<code>await_suspend()</code>定义为内联，但是调用一个在其他地方定义的返回<code>bool</code>方法，有条件的返回合适的句柄。</p>
+<p>例如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">my_awaiter</span> &#123;</span><br><span class="line">  <span class="function"><span class="type">bool</span> <span class="title">await_ready</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Compilers should in-theory be able to optimise this to the same</span></span><br><span class="line">  <span class="comment">// as the bool-returning version, but currently don&#x27;t do this optimisation.</span></span><br><span class="line">  std::coroutine_handle&lt;&gt; <span class="built_in">await_suspend</span>(std::coroutine_handle&lt;&gt; h) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">try_start</span>(h)) &#123;</span><br><span class="line">      <span class="keyword">return</span> std::<span class="built_in">noop_coroutine</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> h;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">await_resume</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="comment">// This method is defined out-of-line in a separate translation unit.</span></span><br><span class="line">  <span class="function"><span class="type">bool</span> <span class="title">try_start</span><span class="params">(std::coroutine_handle&lt;&gt; h)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然而，当前的编译器(Clang 10)还不支持把他优化为和返回<code>bool</code>的版本一样高效的代码。话虽如此，除非是在一个非常紧凑的循环中等待，否则可能都不会注意到差异。</p>
+<p>总的来说，一般的规则如下：</p>
+<ul>
+<li>如果需要无条件返回到<code>.resume()</code>调用者，使用<code>void</code>版本；</li>
+<li>如果需要有条件的返回到<code>.resume()</code>调用者或者恢复当前协程，使用<code>bool</code>版本；</li>
+<li>如果需要恢复另外的协程，使用对称转移版本；</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>添加到C++20协程新的对称转移能力使得写协程更容易了，即递归的互相恢复不再需要担心栈溢出。这个能力是编写高效且安全异步协程类型的关键，例如这里的<code>task</code>类型。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/coroutine/" rel="tag"># coroutine</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/12/%E3%80%90%E7%BF%BB%E8%AF%91%E3%80%91-c-coroutines-understanding-the-promise-type/" rel="prev" title="【翻译】 C++ Coroutines: understanding-the-promise-type">
+                  <i class="fa fa-chevron-left"></i> 【翻译】 C++ Coroutines: understanding-the-promise-type
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">tianshan</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"tianshan/tianshan.github.io","issue_term":"pathname","theme":"github-light"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
